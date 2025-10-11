@@ -1,0 +1,7 @@
+aiokafka==0.10.0
+certstream==1.12
+idna==3.7
+tldextract==5.1.2
+ujson==5.10.0
+rapidfuzz==3.9.6
+PyYAML==6.0.2

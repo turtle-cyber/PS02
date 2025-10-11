@@ -1,0 +1,2 @@
+# denylist.txt
+# e.g., *.example.com

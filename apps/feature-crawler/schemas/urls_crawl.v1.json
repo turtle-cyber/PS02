@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "urls.crawl v1",
+  "type": "object",
+  "required": ["schema_version", "url"],
+  "properties": {
+    "schema_version": {"const": "v1"},
+    "url": {"type": "string"},
+    "registrable": {"type": ["string", "null"]},
+    "cse_id": {"type": ["string", "null"]},
+    "first_seen": {"type": ["string", "null"]},
+    "priority": {"type": ["integer", "null"]}
+  }
+}

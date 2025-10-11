@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "features.page v1",
+  "type": "object",
+  "required": ["schema_version", "event_time", "url", "cse_id", "pdf_path", "url_features", "idn"],
+  "properties": {
+    "schema_version": {"const": "v1"},
+    "event_time": {"type": "string"},
+    "url": {"type": "string"},
+    "registrable": {"type": ["string", "null"]},
+    "cse_id": {"type": "string"},
+    "pdf_path": {"type": "string"},
+    "url_features": {"type": "object"},
+    "idn": {"type": "object"},
+    "favicon": {"type": "object"},
+    "images": {"type": "object"},
+    "html": {"type": "object"},
+    "forms": {"type": "object"},
+    "text": {"type": "object"},
+    "visual": {"type": "object"},
+    "ocr": {"type": "object"},
+    "image_metadata": {"type": "object"},
+    "image_ocr": {"type": "object"}
+  }
+}

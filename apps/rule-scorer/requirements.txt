@@ -1,0 +1,8 @@
+# Core
+aiokafka>=0.10.0
+ujson>=5.9.0
+
+# Optional decompressors (so the consumer can read compressed Kafka topics)
+lz4>=4.3.3          # for lz4-compressed messages
+python-snappy>=0.6.1 # for snappy-compressed messages
+zstandard>=0.22.0    # for zstd-compressed messages

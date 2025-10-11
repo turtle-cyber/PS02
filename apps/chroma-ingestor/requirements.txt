@@ -1,0 +1,6 @@
+chromadb>=1.1,<1.2
+kafka-python==2.0.2
+sentence-transformers==2.2.2
+huggingface_hub<0.25
+ujson==5.10.0
+tldextract==5.1.1

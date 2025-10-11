@@ -1,0 +1,20 @@
+defaults:
+  suspicious_tlds_union:
+    - com
+    - net
+    - org
+    - info
+    - in
+    - co
+    - co.in
+    - online
+    - app
+    - site
+    - xyz
+    - shop
+    - top
+    - io
+    - me
+    - live
+    - link
+    - help

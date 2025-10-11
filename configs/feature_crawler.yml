@@ -1,0 +1,9 @@
+concurrency: 2
+nav_timeout_ms: 15000
+user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+screenshot_full_page: true
+max_images: 64
+image_head_timeout_ms: 4000
+block_patterns: []
+evidence_serial_backend: "hash"   # choose: hash | redis (hash = deterministic from URL)
+logo_phash_threshold: 8           # <=8 Hamming distance => logo_detected = true

@@ -1,0 +1,5 @@
+aiokafka==0.10.0
+tldextract==5.1.2
+idna==3.7
+ujson==5.10.0
+python-dotenv==1.0.1

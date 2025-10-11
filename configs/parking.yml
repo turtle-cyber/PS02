@@ -1,0 +1,25 @@
+titles:
+  - '(?i)\b(domain|this domain) (is )?for sale\b'
+  - '(?i)\b(domain parked|parked domain)\b'
+  - '(?i)\bbuy this domain\b'
+brands:
+  - '(?i)\bsedo\b'
+  - '(?i)\bparkingcrew\b'
+  - '(?i)\bbodis\b'
+  - '(?i)\bafternic\b'
+  - '(?i)\buniregistry\b'
+  - '(?i)\bdan\.com\b'
+  - '(?i)\bhugedomains\b'
+market_hosts:
+  - sedo.com
+  - parkingcrew.net
+  - bodis.com
+  - afternic.com
+  - dan.com
+  - hugedomains.com
+body_hints:
+  - '(?i)This domain is for sale'
+  - '(?i)Buy now on'
+  - '(?i)Make an offer'
+content_len_cap: 50000
+score_threshold: 3

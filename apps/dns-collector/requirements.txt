@@ -1,0 +1,10 @@
+# apps/dns-collector/requirements.txt
+aiokafka>=0.11.0,<1.0.0
+dnspython>=2.3.0
+python-whois>=0.7.3
+maxminddb>=2.0.5
+geoip2>=4.7.0
+ipwhois>=1.2.0
+tldextract>=3.4.0
+ujson>=5.7.0
+python-dateutil>=2.8.2

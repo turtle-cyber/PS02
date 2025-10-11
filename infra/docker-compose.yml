@@ -1,0 +1,390 @@
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_HEAP_OPTS: "-Xmx512M -Xms256M"
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 60
+      start_period: 30s
+    ports:
+      - "9092:9092"
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  unbound:
+    image: mvance/unbound:latest
+    container_name: unbound
+    volumes:
+      - ./unbound.conf:/etc/unbound/unbound.conf:ro
+    ports:
+      - "5335:53"
+    networks:
+      default:
+        ipv4_address: 172.25.0.10
+    healthcheck:
+      test: ["CMD", "drill", "@127.0.0.1", "google.com"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ct-watcher:
+    build:
+      context: ../apps/ct-watcher
+    container_name: ct-watcher
+    environment:
+      KAFKA_ENABLED: "true"
+      KAFKA_BOOTSTRAP: "kafka:9092"
+      KAFKA_TOPIC: "raw.hosts"
+      CT_URL: "wss://certstream.calidog.io/"
+      OUTPUT_DIR: "/out"
+      MATCH_MODE: "seed"
+      HEARTBEAT_SECS: "30"
+      SEEDS_PATH: "/configs/cse_seeds.csv"
+      VERBOSE_LOGGING: "false"
+    volumes:
+      - ../configs:/configs:ro
+      - ../out:/out
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+
+  dnstwist-runner:
+    build:
+      context: ../apps/dnstwist-runner
+    container_name: dnstwist-runner
+    environment:
+      RUNNER_MODE: "continuous"  # Run in continuous mode, listening to raw.hosts
+      KAFKA_ENABLED: "true"
+      KAFKA_BOOTSTRAP: "kafka:9092"
+      KAFKA_INPUT_TOPIC: "raw.hosts"   # Listen to user submissions
+      KAFKA_OUTPUT_TOPIC: "raw.hosts"  # Emit variants back to raw.hosts
+      THREADS: "16"
+      NAMESERVERS: "unbound:5335"  # Fixed: added port
+      PROCESS_CSV_ON_STARTUP: "true"  # Process CSV seeds on startup, then continuous
+      KAFKA_RETRY_ATTEMPTS: "10"
+      KAFKA_RETRY_DELAY: "5"
+    volumes:
+      - ../configs:/configs:ro
+      - ../out:/out
+    depends_on:
+      kafka:
+        condition: service_healthy
+      unbound:
+        condition: service_started
+    restart: unless-stopped  # Keep running continuously
+
+  normalizer:
+    build:
+      context: ../apps/normalizer
+    container_name: normalizer
+    environment:
+      KAFKA_ENABLED: "true"
+      KAFKA_BOOTSTRAP: "kafka:9092"
+      INPUT_TOPIC: "raw.hosts"
+      OUTPUT_TOPIC: "domains.candidates"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      DEDUP_TTL_SECS: "10368000"
+      OUTPUT_DIR: "/out"
+    volumes:
+      - ../configs:/configs:ro
+      - ../out:/out
+    depends_on:
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  dns-collector:
+      build:
+        context: ../apps/dns-collector
+      container_name: dns-collector
+      environment:
+        KAFKA_ENABLED: "true"
+        KAFKA_BOOTSTRAP: "kafka:9092"
+        INPUT_TOPIC: "raw.hosts,domains.candidates"
+        OUTPUT_TOPIC: "domains.resolved"  # ✅ Added closing quote
+        OUTPUT_DIR: "/out"
+        NAMESERVER: "unbound"
+        MAX_WORKERS: "12"
+        GEOIP_CITY_DB: "/configs/mmdb/GeoLite2-City.mmdb"
+        GEOIP_ASN_DB: "/configs/mmdb/GeoLite2-ASN.mmdb"
+        CONSUMER_GROUP: "dns-collector-group"
+        MAX_CONCURRENT_DNS: "50"
+        # WHOIS Queue settings
+        WHOIS_WORKERS: "4"        # Only 2 concurrent WHOIS lookups
+        WHOIS_DELAY_MS: "500"
+      volumes:
+        - ../configs:/configs:ro
+        - ../out:/out
+      depends_on:
+        unbound:
+          condition: service_healthy
+        kafka:
+          condition: service_healthy
+      restart: unless-stopped
+      deploy:
+        resources:
+          limits:
+            memory: 1G
+      healthcheck:
+        test: ["CMD-SHELL", "ls /out/domains_resolved_*.jsonl 2>/dev/null || exit 1"]
+        interval: 10s
+        timeout: 5s
+        retries: 20
+        start_period: 60s
+        
+  http-fetcher:
+    build:
+      context: ../apps/http-fetcher
+    container_name: http-fetcher
+    environment:
+      KAFKA_BOOTSTRAP: "kafka:9092"
+      INPUT_TOPIC: "domains.resolved"
+      OUTPUT_TOPIC: "http.probed"
+      OUTPUT_DIR: "/out"
+      CONCURRENCY: "20"
+      USER_AGENT: "IC05-Prober/1.0 (+https://example)"
+      TIMEOUT_CONN_S: "4.0"
+      TIMEOUT_READ_S: "6.0"
+      MAX_BODY_BYTES: "200000"
+      MAX_REDIRECTS: "5"
+      FALLBACK_RESOLVE: "false"
+      PYTHONUNBUFFERED: "1"
+      MAX_WAIT_SECONDS: "300"
+    volumes:
+      - ../out:/out
+    depends_on:
+      kafka:
+        condition: service_healthy
+      dns-collector:
+        condition: service_healthy
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+
+  url-router:
+    build:
+      context: ../apps/url-router
+    container_name: url-router
+    environment:
+      - IN_TOPIC=http.probed              # MUST match http-fetcher OUTPUT_TOPIC
+      - OUT_TOPIC=phish.urls.crawl        # feature-crawler consumes this
+      - KAFKA_BOOTSTRAP=kafka:9092
+      - KAFKA_BROKERS=kafka:9092          # router.py also accepts this
+      - AUTO_OFFSET_RESET=earliest
+      - GROUP_ID=url-router-v2          # new group => no committed offsets
+      - FORCE_EARLIEST_ON_START=1       # our router.py will seek to beginning once
+      # - LOG_LEVEL=DEBUG
+      - MAX_WAIT_SECONDS=300
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command: >
+      bash -lc "
+        echo '[router] ENV:'; env | egrep 'IN_TOPIC|KAFKA_BOOTSTRAP|KAFKA_BROKERS' || true;
+        python -u /workspace/wait-for-topic-router.py
+      "
+    restart: unless-stopped
+
+  feature-crawler:
+    user: "0:0"
+    build:
+      context: ../apps/feature-crawler
+    environment:
+      - KAFKA_BROKERS=kafka:9092
+      - KAFKA_BOOTSTRAP=kafka:9092
+      - IN_TOPIC=phish.urls.crawl
+      - OUT_TOPIC_RAW=phish.http.crawled
+      - OUT_TOPIC_FEAT=phish.features.page
+      - WRITE_JSONL=1
+      - OUT_DIR=/workspace/out
+      - NAV_TIMEOUT_MS=15000
+      - PLAYWRIGHT_HEADLESS=1
+      - CONFIG_FILE=/workspace/configs/feature_crawler.yml
+      - MAX_WAIT_SECONDS=300
+    depends_on:
+      kafka:
+        condition: service_healthy
+      url-router:
+        condition: service_started
+    shm_size: "1gb"
+    volumes:
+      - ../out:/workspace/out
+      - ../configs:/workspace/configs:ro
+    restart: unless-stopped
+    deploy:
+      replicas: 3  # Run 3 parallel instances for 3x throughput
+
+  rule-scorer:
+    user: "0:0"
+    build:
+      context: ../apps/rule-scorer
+    container_name: rule-scorer
+    environment:
+      - KAFKA_BOOTSTRAP=kafka:9092
+      - INPUT_TOPICS=domains.resolved,http.probed,phish.features.page
+      - OUTPUT_TOPIC=phish.rules.verdicts
+      - WRITE_JSONL=true
+      - OUT_DIR=/out
+      - THRESH_PHISHING=70
+      - THRESH_SUSPICIOUS=40
+      - THRESH_PARKED=28
+      - MONITOR_SUSPICIOUS=true
+      - MONITOR_PARKED=true
+      - MONITOR_DAYS=90
+    volumes:
+      - ../out:/out
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:1.1.0
+    container_name: chroma
+    restart: unless-stopped
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ALLOW_RESET=FALSE
+      # (optional) tune HNSW index / server settings here
+      # - ANONYMIZED_TELEMETRY=FALSE
+    volumes:
+      - ../volumes/chroma:/chroma
+    ports:
+      - "8000:8000"
+
+  chroma-ingestor:
+    build:
+      context: ../apps/chroma-ingestor
+    container_name: chroma-ingestor
+    restart: unless-stopped
+    depends_on:
+      chroma:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+    environment:
+      # ---- Kafka streaming (unified ingestion) ----
+      - KAFKA_BOOTSTRAP=kafka:9092
+      - KAFKA_TOPIC=domains.resolved          # Domain data
+      - KAFKA_FEATURES_TOPIC=phish.features.page  # Feature data from feature-crawler
+      - KAFKA_FAILED_TOPIC=phish.urls.failed  # Failed crawls (dead/parked domains)
+      - KAFKA_VERDICTS_TOPIC=phish.rules.verdicts  # Verdicts from rule-scorer
+      - KAFKA_GROUP=chroma-ingestor
+
+      # ---- Chroma 1.x client settings ----
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+      - CHROMA_COLLECTION=domains  # Unified collection for domains + features
+      # (optional) multi-tenant/db (Chroma 1.x). Defaults are fine.
+      # - CHROMA_TENANT=default_tenant
+      # - CHROMA_DATABASE=default_database
+      - EMBED_MODEL=sentence-transformers/all-MiniLM-L6-v2
+      - BATCH_SIZE=1
+      - FLUSH_INTERVAL_SEC=5
+
+      # ---- Optional: JSONL batch ingestion ----
+      # Uncomment below to backfill from existing JSONL files:
+      # - JSONL_DIR=/data/out
+      # - FEATURES_JSONL=/data/out/features_page.jsonl
+    volumes:
+      # Needed for JSONL backfill; harmless to keep mounted.
+      - ../out:/data/out:ro
+
+  monitor-scheduler:
+    build:
+      context: ../apps/monitor-scheduler
+    container_name: monitor-scheduler
+    restart: unless-stopped
+    environment:
+      - KAFKA_BOOTSTRAP=kafka:9092
+      - VERDICTS_TOPIC=phish.rules.verdicts
+      - OUTPUT_TOPIC=raw.hosts
+      - GROUP_ID=monitor-scheduler
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MONITOR_CHECK_INTERVAL=86400  # Check every 24h
+      - MAX_RECHECKS=3
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  frontend-api:
+    build:
+      context: ../frontend/frontend-api
+      dockerfile: Dockerfile
+    container_name: frontend-api
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - KAFKA_BROKERS=kafka:9092
+      - KAFKA_TOPIC=raw.hosts
+      - LOG_LEVEL=info
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
