@@ -783,6 +783,7 @@ def main():
                         registrable = rec.get("registrable") or None
                         cse_id = rec.get("cse_id") or rec.get("cse") or None
                         seed_registrable = rec.get("seed_registrable") or registrable  # Get original seed domain
+                        log.info(f"[seed-track] variant={registrable}, seed={seed_registrable}, from_msg={rec.get('seed_registrable')}")
 
                         # Track retry attempts
                         attempt = retry_tracker.get(url, 0) + 1

@@ -595,6 +595,8 @@ async def worker(worker_id: int, queue: asyncio.Queue, prod, fobj):
                     "observed_at": time.time(),
                     "canonical_fqdn": fqdn,
                     "registrable": reg,
+                    "seed_registrable": item.get("seed_registrable"),  # Preserve seed for tracking
+                    "cse_id": item.get("cse_id"),  # Preserve CSE ID
                     "robots_respected": probe.get("robots_respected"),
                     "redirect_chain": probe.get("redirect_chain"),
                     "redirect_count": probe.get("redirect_count", 0),
@@ -616,6 +618,8 @@ async def worker(worker_id: int, queue: asyncio.Queue, prod, fobj):
                     "observed_at": time.time(),
                     "canonical_fqdn": fqdn,
                     "registrable": reg,
+                    "seed_registrable": item.get("seed_registrable"),  # Preserve seed for tracking
+                    "cse_id": item.get("cse_id"),  # Preserve CSE ID
                     "ok": False,
                     "error": f"probe_exception:{type(e).__name__}",
                     "parking_detection": {"is_parked": False, "confidence": "none", "indicators": []},

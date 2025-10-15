@@ -390,6 +390,8 @@ async def process_fqdn(fqdn, orig_payload, loop, executor, whois_queue):
         "observed_at": ts,
         "canonical_fqdn": fqdn,
         "registrable": orig_payload.get("registrable"),
+        "seed_registrable": orig_payload.get("seed_registrable"),  # Preserve seed for tracking
+        "cse_id": orig_payload.get("cse_id"),  # Preserve CSE ID
         "dns": dns_result,
         "ns_features": ns_feats,
         "whois": whois_res,
