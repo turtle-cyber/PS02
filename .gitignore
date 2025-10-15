@@ -1,0 +1,8 @@
+# Frontend Specific Files
+node_modules
+package-lock.json
+
+# Backend Specific Files
+
+
+# Pipeline Specific Files
