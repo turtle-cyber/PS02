@@ -5,11 +5,9 @@ apps/feature-crawler/worker.py
 Consumes URLs from Kafka (IN_TOPIC), crawls them with Playwright,
 extracts artifacts (HTML, screenshots, PDF) and page features,
 publishes results to Kafka (OUT_TOPIC_RAW, OUT_TOPIC_FEAT),
-and also appends JSONL locally under OUT_DIR:
-  - {OUT_DIR}/http_crawled.jsonl
-  - {OUT_DIR}/features_page.jsonl
+and also appends JSONL locally under OUT_DIR.
 
-This file only ADDS local file writes; core behavior is unchanged.
+UPDATED: Uses CSE ID for filenames instead of URL hash for easy correlation with database.
 """
 import os, sys, time, json, ujson, math, re, traceback, hashlib
 from pathlib import Path
@@ -71,6 +69,32 @@ def entropy(s: str) -> float:
     return -sum( count/lns * math.log2(count/lns) for count in p.values() )
 
 SPECIALS = set("@&%$!#?=._-/")
+
+def get_safe_filename(cse_id: str, registrable: str, url: str) -> str:
+    """
+    Generate filesystem-safe filename from CSE ID + URL hash.
+    This ensures uniqueness even when multiple URLs share the same CSE ID.
+    
+    Format: "{cse_id}_{url_hash_8chars}"
+    Example: "sdbi.co.in_1a6a63f4_a3f29c81" for https://sdbi.co.in/login
+             "sdbi.co.in_1a6a63f4_7b2e4d95" for https://sdbi.co.in/verify
+    
+    Falls back to registrable domain or full URL hash if CSE ID missing.
+    """
+    # Generate short hash from URL for uniqueness
+    url_hash = hashlib.sha256(url.encode("utf-8")).hexdigest()[:8]
+    
+    if cse_id:
+        # Replace colons and slashes with underscores for filesystem safety
+        safe_id = cse_id.replace(":", "_").replace("/", "_").replace("\\", "_")
+        # Append URL hash to ensure uniqueness
+        return f"{safe_id}_{url_hash}"
+    elif registrable:
+        # Fallback: use registrable + URL hash
+        return f"{registrable}_{url_hash}"
+    else:
+        # Last resort: full URL hash (original behavior)
+        return hashlib.sha256(url.encode("utf-8")).hexdigest()
 
 def url_struct_features(url: str) -> Dict[str, Any]:
     parts = urlsplit(url)
@@ -497,10 +521,11 @@ def pick_url(rec: Dict[str,Any]) -> str:
     return rec.get("url") or rec.get("final_url") or rec.get("final",{}).get("url") or rec.get("input_url") or rec.get("href") or ""
 
 # --------------- crawler -----------------
-def crawl_once(play, url: str) -> Dict[str,Any]:
+def crawl_once(play, url: str, cse_id: str = None, registrable: str = None) -> Dict[str,Any]:
     """
     Crawl URL with proper redirect tracking.
     Waits for final destination before extracting features.
+    Uses CSE ID for filenames.
     """
     ts = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
     t0 = time.time()
@@ -566,11 +591,12 @@ def crawl_once(play, url: str) -> Dict[str,Any]:
         title = page.title()
         status = response_status or 200
 
-        # Use final URL hash for file names
-        h = hashlib.sha256(final_url.encode("utf-8")).hexdigest()
-        html_path = OUT_DIR/"html"/f"{h}.html"
-        shot_path = OUT_DIR/"screenshots"/f"{h}_full.png"
-        pdf_path = OUT_DIR/"pdfs"/f"page_{ts}.pdf"
+        # ✅ USE CSE ID FOR FILENAMES
+        filename_base = get_safe_filename(cse_id, registrable, final_url)
+        
+        html_path = OUT_DIR/"html"/f"{filename_base}.html"
+        shot_path = OUT_DIR/"screenshots"/f"{filename_base}_full.png"
+        pdf_path = OUT_DIR/"pdfs"/f"{filename_base}.pdf"
 
         # Save HTML from final page
         html = page.content()
@@ -600,6 +626,8 @@ def crawl_once(play, url: str) -> Dict[str,Any]:
         return {
             "schema_version":"v1",
             "event_time": utcnow(),
+            "cse_id": cse_id,
+            "registrable": registrable,
             "url": url,
             "final_url": final_url,
             "status": status,
@@ -651,8 +679,8 @@ def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registra
 
     return {
         "url": url,
-        "registrable": registrable,
         "cse_id": cse_id,
+        "registrable": registrable,
         "pdf_path": artifacts.get("pdf_path"),
         "url_features": ufeat,
         "idn": idnf,
@@ -674,6 +702,7 @@ def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registra
         "redirect_count": redirects.get("redirect_count", 0),
         "redirect_chain": redirects.get("redirect_chain", []),
         "had_redirects": redirects.get("had_redirects", False),
+        "javascript": htmlf.get("javascript", {}),
     }
 
 # --------------- main -----------------
@@ -726,19 +755,23 @@ def main():
                             consumer.commit()
                             continue
 
+                        # ✅ EXTRACT CSE ID AND REGISTRABLE FROM MESSAGE
+                        cse_id = rec.get("cse_id") or rec.get("id") or rec.get("cse") or None
                         registrable = rec.get("registrable") or None
-                        cse_id = rec.get("cse_id") or rec.get("cse") or None
 
                         # Track retry attempts
                         attempt = retry_tracker.get(url, 0) + 1
                         retry_tracker[url] = attempt
 
                         # Crawl
-                        log.info(f"[crawl] attempt {attempt}/{MAX_RETRIES} for {url}")
-                        art = crawl_once(p, url)
-                        log.info("[ok] crawled %s -> %s (status=%s, ms=%s, redirects=%s)",
+                        log.info(f"[crawl] attempt {attempt}/{MAX_RETRIES} for {url} (cse_id={cse_id})")
+                        art = crawl_once(p, url, cse_id=cse_id, registrable=registrable)
+                        
+                        filename_base = get_safe_filename(cse_id, registrable, url)
+                        log.info("[ok] crawled %s -> %s (status=%s, ms=%s, redirects=%s, files=%s.*)",
                                 url, art.get("final_url"), art.get("status"),
-                                art.get("latency_ms"), art.get("redirects", {}).get("redirect_count", 0))
+                                art.get("latency_ms"), art.get("redirects", {}).get("redirect_count", 0),
+                                filename_base)
 
                         # Features
                         feat = build_features(art.get("final_url"), Path(art["html_path"]), art, registrable, cse_id)

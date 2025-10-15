@@ -8,6 +8,7 @@ from kafka import KafkaConsumer, KafkaProducer, TopicPartition
 BOOTSTRAP = os.environ.get("KAFKA_BOOTSTRAP") or os.environ.get("KAFKA_BROKERS", "kafka:9092")
 IN_TOPIC  = os.environ.get("IN_TOPIC", "http.probed")
 OUT_TOPIC = os.environ.get("OUT_TOPIC", "phish.urls.crawl")
+INACTIVE_TOPIC = os.environ.get("INACTIVE_TOPIC", "phish.urls.inactive")  # NEW: Inactive domains
 GROUP_ID  = os.environ.get("GROUP_ID", "url-router")
 AUTO_RESET = os.environ.get("AUTO_OFFSET_RESET", "latest")
 FORCE_EARLIEST_ON_START = os.environ.get("FORCE_EARLIEST_ON_START", "0") == "1"
@@ -69,12 +70,12 @@ def extract_url_and_meta(rec: dict) -> Tuple[Optional[str], dict]:
       - nested: rec["result"]["final_url"], rec["http"]["final_url"], etc.
       - http-fetcher format: rec["final"]["url"]
     Also forward any helpful context (status, title, registrable, cse_id).
-    
-    Skip failed probes (ok=False) early.
+
+    NEW: Returns special marker for failed probes (ok=False) instead of skipping.
     """
-    # Skip failed HTTP probes from http-fetcher
+    # Mark failed HTTP probes for special handling (monitoring queue)
     if rec.get("ok") is False:
-        return None, {}
+        return "INACTIVE_DOMAIN", rec  # Special marker
     
     # common keys
     url = first_non_empty(
@@ -98,8 +99,31 @@ def extract_url_and_meta(rec: dict) -> Tuple[Optional[str], dict]:
             )
 
     meta = {}
+    
+    # CRITICAL: Extract CSE ID from all possible locations
+    cse_id = first_non_empty(
+        rec.get("cse_id"),
+        rec.get("id"),
+        rec.get("cse"),
+        rec.get("canonical_id"),
+    )
+    
+    # Check nested structures for CSE ID
+    for k in ("result", "http", "http_result", "artifact", "artifacts", "data", "final"):
+        if isinstance(rec.get(k), dict):
+            cse_id = first_non_empty(
+                cse_id,
+                rec[k].get("cse_id"),
+                rec[k].get("id"),
+                rec[k].get("cse"),
+                rec[k].get("canonical_id"),
+            )
+    
+    if cse_id:
+        meta["cse_id"] = cse_id
+    
     # pass through a few useful fields if present
-    for key in ("status", "status_code", "title", "registrable", "cse_id", "brand", "seed_registrable"):
+    for key in ("status", "status_code", "title", "registrable", "brand", "seed_registrable", "canonical_fqdn", "fqdn"):
         if key in rec and rec.get(key) is not None:
             meta[key] = rec[key]
         # also check nested (including final object from http-fetcher)
@@ -133,26 +157,38 @@ def build_output(url: str, meta: dict) -> dict:
         "url": url,
         "ts": int(time.time() * 1000),
     }
+    
+    # CRITICAL: Always include CSE ID if present
+    if "cse_id" in meta:
+        out["cse_id"] = meta["cse_id"]
+    
     # surface helpful hints to feature-crawler
     if "registrable" in meta:
         out["registrable"] = meta["registrable"]
-    if "cse_id" in meta:
-        out["cse_id"] = meta["cse_id"]
     if "title" in meta:
         out["title"] = meta["title"]
     if "status" in meta:
         out["status"] = meta["status"]
     if "status_code" in meta:
         out["status_code"] = meta["status_code"]
+    if "brand" in meta:
+        out["brand"] = meta["brand"]
+    if "canonical_fqdn" in meta:
+        out["canonical_fqdn"] = meta["canonical_fqdn"]
+    if "seed_registrable" in meta:
+        out["seed_registrable"] = meta["seed_registrable"]
+    
     return out
 
+# In the main loop, add debug logging:
 def main():
-    log.info(f"starting url-router | bootstrap={BOOTSTRAP} in={IN_TOPIC} out={OUT_TOPIC}")
+    log.info(f"starting url-router | bootstrap={BOOTSTRAP} in={IN_TOPIC} out={OUT_TOPIC} inactive={INACTIVE_TOPIC}")
     consumer = make_consumer()
     producer = make_producer()
 
     forwarded = 0
     dropped = 0
+    inactive_queued = 0
 
     log.info(f"url-router ready, waiting for messages...")
 
@@ -170,6 +206,31 @@ def main():
                     continue
 
                 url, meta = extract_url_and_meta(rec)
+
+                # NEW: Handle inactive domains (ok: false)
+                if url == "INACTIVE_DOMAIN":
+                    try:
+                        registrable = meta.get("registrable") or meta.get("canonical_fqdn") or meta.get("fqdn")
+                        if registrable:
+                            inactive_rec = {
+                                "schema_version": "v1",
+                                "registrable": registrable,
+                                "canonical_fqdn": meta.get("canonical_fqdn") or registrable,
+                                "cse_id": meta.get("cse_id"),
+                                "seed_registrable": meta.get("seed_registrable"),
+                                "status": "inactive",
+                                "failure_type": meta.get("error", "connection_failed"),
+                                "ts": int(time.time() * 1000),
+                                "reasons": ["http_probe_failed"],
+                            }
+                            producer.send(INACTIVE_TOPIC, value=inactive_rec)
+                            inactive_queued += 1
+                            if inactive_queued % 10 == 0 or LOG_LEVEL == "DEBUG":
+                                log.info(f"INACTIVE#{inactive_queued} -> {registrable} (reason: {inactive_rec['failure_type']})")
+                    except Exception as e:
+                        log.error(f"ERROR inactive domain offset={msg.offset}: {e}")
+                    continue
+
                 if not url:
                     dropped += 1
                     log.warning(f"DROP no_url offset={msg.offset} key={msg.key} rec_keys={list(rec.keys())}")
@@ -182,11 +243,19 @@ def main():
                     continue
 
                 out = build_output(norm, meta)
+                
+                # DEBUG: Log CSE ID presence
+                if "cse_id" in meta:
+                    log.debug(f"CSE_ID found: {meta['cse_id']} for {norm}")
+                else:
+                    log.warning(f"CSE_ID missing for {norm} - check upstream data source")
+                
                 try:
                     producer.send(OUT_TOPIC, value=out)
                     forwarded += 1
                     if forwarded % 10 == 0 or LOG_LEVEL == "DEBUG":
-                        log.info(f"FWD#{forwarded} -> {norm}")
+                        cse_info = f" [cse={out.get('cse_id')}]" if out.get('cse_id') else ""
+                        log.info(f"FWD#{forwarded} -> {norm}{cse_info}")
                 except Exception as e:
                     dropped += 1
                     log.error(f"ERROR produce offset={msg.offset}: {e}")

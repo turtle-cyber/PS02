@@ -33,6 +33,23 @@ RISKY_TLDS = set(os.getenv(
     "RISKY_TLDS", "tk,ml,ga,cf,gq,xyz,top,club,info,online,site,website,space,tech"
 ).replace(" ", "").split(","))
 
+# Known parking providers (DNS nameservers)
+PARKING_NAMESERVERS = {
+    "sedoparking.com", "parkingcrew.net", "bodis.com", "dns-parking.com",
+    "cashparking.com", "dan.com", "undeveloped.com", "afternic.com",
+    "hugedomains.com", "sav.com", "epik.com", "dynadot.com",
+    "uniregistrymarket.link", "parklogic.com", "above.com", "voodoo.com",
+    "parkweb.com", "parklogic.com", "parkingsolutions.com"
+}
+
+# Parking provider markers in HTTP/HTML
+PARKING_MARKERS = [
+    "domain for sale", "buy this domain", "this domain is parked",
+    "make an offer", "inquire about this domain", "sponsored listings",
+    "related searches", "sedoparking", "parkingcrew", "bodis",
+    "cashparking", "afternic", "dan.com", "hugedomains"
+]
+
 MAX_KEYS = int(os.getenv("MAX_KEYS", "12000"))
 GC_AFTER = int(os.getenv("GC_AFTER", "300"))  # seconds
 
@@ -161,45 +178,57 @@ def score_bundle(domain: dict, http: dict, feat: dict):
                              (http or {}).get("final_url") or (http or {}).get("url")):
         reasons.append("Redirect crosses registrable"); cats["http"]+=12; score+=12
 
-    # Enhanced parked heuristic
-    parked = 0
-    html_size = _safe_int((feat or {}).get("html_size"))
-    ext_links = _safe_int((feat or {}).get("external_links"))
-    iframe_ct = _safe_int((feat or {}).get("iframe_count"))
-    img_count = _safe_int((feat or {}).get("images_count"))
+    # Accurate parked domain detection
+    is_parked = False
+    parked_reasons = []
 
-    # Don't flag well-established domains as parked
-    is_established = (
-        not is_very_new and
-        not is_newly and
-        (domain and domain.get("whois", {}).get("domain_age_days", 0) > 365)
-    )
+    # 1. DNS-based parking detection (highest signal)
+    dns = (domain or {}).get("dns") or {}
+    ns_records = dns.get("NS") or []
+    for ns in ns_records:
+        ns_lower = (ns or "").lower()
+        for parker in PARKING_NAMESERVERS:
+            if parker in ns_lower:
+                is_parked = True
+                parked_reasons.append(f"NS points to parking provider ({parker})")
+                break
+        if is_parked:
+            break
 
-    if form_count == 0: parked += 10
-    if kw_count == 0:   parked += 5
-    if ext_links == 0:  parked += 8
-    if iframe_ct == 0:  parked += 4
-    if html_size and html_size < 20000: parked += 10
-    if img_count <= 1:  parked += 5  # Very few images
-    if ext_links == 0 and form_count == 0: parked += 8  # No interactivity
+    # 2. HTTP redirect to parking marketplace
+    http_url = (http or {}).get("final_url") or (http or {}).get("url") or ""
+    if http_url and not is_parked:
+        http_lower = http_url.lower()
+        for parker in ["sedo.com", "dan.com", "afternic.com", "hugedomains.com", "godaddy.com/domainfind", "sav.com/auction"]:
+            if parker in http_lower:
+                is_parked = True
+                parked_reasons.append(f"Redirects to parking marketplace ({parker})")
+                break
+
+    # 3. HTML content markers (if no DNS/redirect signal)
+    if not is_parked and feat:
+        title = (feat or {}).get("title") or ""
+        page_text = (feat or {}).get("page_text") or ""
+        combined = (title + " " + page_text).lower()
+        marker_count = sum(1 for marker in PARKING_MARKERS if marker in combined)
+        if marker_count >= 2:  # At least 2 parking phrases
+            is_parked = True
+            parked_reasons.append(f"Parking page content detected ({marker_count} markers)")
+
+    # 4. No MX + parking NS (supporting signal)
+    mx_count = _safe_int((domain or {}).get("mx_count") or dns.get("MX_count", 0))
+    if is_parked and mx_count == 0:
+        parked_reasons.append("No MX records")
 
     # Verdict with monitoring support
     monitor_until = None
     monitor_reason = None
     requires_monitoring = False
 
-    # Only flag as parked if domain is NEW (not established)
-    if parked >= THRESH_PARKED and score < 35 and not is_established:
-        verdict, conf, final_score = "parked", 0.9, 0
-        # Build detailed reason for parked detection
-        parked_reasons = []
-        if form_count == 0: parked_reasons.append("no forms")
-        if kw_count == 0: parked_reasons.append("no phishing keywords")
-        if ext_links == 0: parked_reasons.append("no external links")
-        if html_size and html_size < 20000: parked_reasons.append(f"minimal content ({html_size} bytes)")
-        if img_count <= 1: parked_reasons.append("few/no images")
-        reasons = [f"Parked domain detected: {', '.join(parked_reasons)} (score: {parked})"]
-        cats = {"parked": parked}
+    if is_parked:
+        verdict, conf, final_score = "parked", 0.95, 0
+        reasons = [f"Parked domain: {'; '.join(parked_reasons)}"]
+        cats = {"parked": 100}
         if MONITOR_PARKED:
             monitor_until = int(time.time() + (MONITOR_DAYS * 86400))
             monitor_reason = "parked"

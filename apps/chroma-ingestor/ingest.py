@@ -27,7 +27,8 @@ KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP")
 KAFKA_TOPIC     = os.getenv("KAFKA_TOPIC")
 KAFKA_FEATURES_TOPIC = os.getenv("KAFKA_FEATURES_TOPIC")
 KAFKA_FAILED_TOPIC = os.getenv("KAFKA_FAILED_TOPIC")
-KAFKA_VERDICTS_TOPIC = os.getenv("KAFKA_VERDICTS_TOPIC", "phish.rules.verdicts")  # NEW: verdicts from rule-scorer
+KAFKA_VERDICTS_TOPIC = os.getenv("KAFKA_VERDICTS_TOPIC", "phish.rules.verdicts")  # Verdicts from rule-scorer
+KAFKA_INACTIVE_TOPIC = os.getenv("KAFKA_INACTIVE_TOPIC", "phish.urls.inactive")  # NEW: Inactive/unregistered domains
 KAFKA_GROUP     = os.getenv("KAFKA_GROUP", "chroma-ingestor")
 JSONL_DIR       = os.getenv("JSONL_DIR")
 FEATURES_JSONL  = os.getenv("FEATURES_JSONL")
@@ -444,6 +445,7 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
     has_features = bool(r.get("url_features") or r.get("forms"))
     has_verdict = bool(r.get("verdict") or r.get("score") is not None)
     is_failed = bool("error" in r or r.get("status") == "failed")
+    is_inactive = bool(r.get("status") in ("inactive", "unregistered"))  # NEW: Check inactive status
 
     # Set enrichment level
     if has_verdict and has_features and has_domain:
@@ -461,6 +463,9 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
     elif has_features:
         keep["record_type"] = "features_only"  # Just page features (unusual)
         keep["enrichment_level"] = 1
+    elif is_inactive:
+        keep["record_type"] = "inactive"  # NEW: Inactive/unregistered domain
+        keep["enrichment_level"] = 0
     else:
         keep["record_type"] = "partial"
         keep["enrichment_level"] = 0
@@ -472,6 +477,15 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
             keep["failure_reason"] = str(r["error"])[:500]
         if "status" in r:
             keep["failure_status"] = str(r["status"])
+
+    # NEW: Inactive/monitoring status
+    if is_inactive:
+        keep["is_inactive"] = True
+        keep["inactive_status"] = r.get("status", "unknown")  # "inactive" or "unregistered"
+        if "failure_type" in r:
+            keep["inactive_reason"] = str(r["failure_type"])
+        if "reasons" in r:
+            keep["monitoring_reasons"] = ",".join(r["reasons"]) if isinstance(r["reasons"], list) else str(r["reasons"])
 
     # Store verdict information if present
     if has_verdict:
@@ -620,6 +634,8 @@ def from_kafka(col, model):
         topics.append(KAFKA_FAILED_TOPIC)
     if KAFKA_VERDICTS_TOPIC:
         topics.append(KAFKA_VERDICTS_TOPIC)
+    if KAFKA_INACTIVE_TOPIC:
+        topics.append(KAFKA_INACTIVE_TOPIC)  # NEW: Inactive domains
 
     if not topics:
         raise ValueError("[ingestor] No Kafka topics configured!")
@@ -642,7 +658,8 @@ def from_kafka(col, model):
         "domain": 0,
         "features": 0,
         "verdict": 0,
-        "failed": 0
+        "failed": 0,
+        "inactive": 0  # NEW: Track inactive domains
     }
 
     for msg in consumer:
@@ -655,8 +672,12 @@ def from_kafka(col, model):
             has_features = bool(val.get("url_features") or val.get("forms"))
             has_verdict = bool(val.get("verdict") or val.get("score") is not None)
             is_failed = bool("error" in val or val.get("status") == "failed")
-            
-            if is_failed:
+            is_inactive = bool(val.get("status") in ("inactive", "unregistered"))  # NEW: Check for inactive status
+
+            if is_inactive:
+                enrichment_stats["inactive"] += 1
+                msg_type = "inactive"
+            elif is_failed:
                 enrichment_stats["failed"] += 1
                 msg_type = "failed"
             elif has_verdict:
@@ -764,7 +785,7 @@ if __name__ == "__main__":
         model = embedder()
 
         # Determine ingestion mode
-        has_kafka = KAFKA_BOOTSTRAP and (KAFKA_TOPIC or KAFKA_FEATURES_TOPIC or KAFKA_VERDICTS_TOPIC)
+        has_kafka = KAFKA_BOOTSTRAP and (KAFKA_TOPIC or KAFKA_FEATURES_TOPIC or KAFKA_VERDICTS_TOPIC or KAFKA_INACTIVE_TOPIC)
         has_jsonl = JSONL_DIR or FEATURES_JSONL
 
         if has_kafka:
@@ -777,6 +798,8 @@ if __name__ == "__main__":
                 topics.append(f"{KAFKA_FAILED_TOPIC} (failed)")
             if KAFKA_VERDICTS_TOPIC:
                 topics.append(f"{KAFKA_VERDICTS_TOPIC} (verdicts)")
+            if KAFKA_INACTIVE_TOPIC:
+                topics.append(f"{KAFKA_INACTIVE_TOPIC} (inactive)")  # NEW
             print(f"[ingestor] Streaming mode: consuming from Kafka topics: {', '.join(topics)}")
             from_kafka(col, model)
         elif has_jsonl:

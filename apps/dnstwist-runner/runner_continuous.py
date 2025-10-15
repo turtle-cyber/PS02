@@ -8,12 +8,14 @@ KAFKA_ENABLED = os.getenv("KAFKA_ENABLED", "true").lower() == "true"
 KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "kafka:9092")
 KAFKA_INPUT_TOPIC = os.getenv("KAFKA_INPUT_TOPIC", "raw.hosts")
 KAFKA_OUTPUT_TOPIC = os.getenv("KAFKA_OUTPUT_TOPIC", "raw.hosts")
+KAFKA_INACTIVE_TOPIC = os.getenv("KAFKA_INACTIVE_TOPIC", "phish.urls.inactive")  # NEW: Unregistered variants
 OUTPUT_DIR = Path(os.getenv("OUTPUT_DIR", "/out"))
 THREADS = int(os.getenv("THREADS", "16"))
 NAMESERVERS = os.getenv("NAMESERVERS", "unbound")
 KAFKA_RETRY_ATTEMPTS = int(os.getenv("KAFKA_RETRY_ATTEMPTS", "10"))
 KAFKA_RETRY_DELAY = int(os.getenv("KAFKA_RETRY_DELAY", "5"))
 PROCESS_CSV_ON_STARTUP = os.getenv("PROCESS_CSV_ON_STARTUP", "true").lower() == "true"
+TRACK_UNREGISTERED = os.getenv("TRACK_UNREGISTERED", "true").lower() == "true"  # NEW: Monitor unregistered variants
 
 # Config paths
 DICT_DIR = Path("/configs/dictionaries")
@@ -84,23 +86,24 @@ def run_dnstwist(seed, fuzzers, tld_dict, registered_only=True):
             print(f"[dnstwist] Command failed with return code {result.returncode}")
             if result.stderr:
                 print(f"[dnstwist] stderr: {result.stderr[:500]}")
-            return []
+            return [], []  # Return empty registered and unregistered
 
         data = ujson.loads(result.stdout)
 
         # For live processing (registered_only=False), return ALL variants
-        # For CSV seeds (registered_only=True), only return registered ones
+        # For CSV seeds (registered_only=True), split registered and unregistered
         if registered_only:
-            filtered = [r for r in data if r.get("dns_a")]
-            print(f"[dnstwist] Generated {len(data)} variants, {len(filtered)} are registered")
-            return filtered
+            registered = [r for r in data if r.get("dns_a")]
+            unregistered = [r for r in data if not r.get("dns_a")]
+            print(f"[dnstwist] Generated {len(data)} variants, {len(registered)} registered, {len(unregistered)} unregistered")
+            return registered, unregistered
         else:
             print(f"[dnstwist] Generated {len(data)} total variants (registered + unregistered)")
-            return data
+            return data, []
 
     except Exception as e:
         print(f"[dnstwist] Error running dnstwist for {seed}: {e}")
-        return []
+        return [], []
 
 async def kafka_producer():
     """Create Kafka producer with retry"""
@@ -177,55 +180,115 @@ async def emit(record, producer, file_handle=None):
 
 async def process_domain(domain, cse_id, producer, file_handle, seen_set):
     """
-    Process a single domain through DNSTwist
+    Process a single domain through DNSTwist with 3-pass comprehensive analysis
     Returns number of new variants found
     """
-    # Extract registrable domain
-    seed_reg = registrable(domain)
+    # Use the full domain as submitted (not just registrable domain)
+    seed_domain = to_ascii(domain.strip())
 
-    # Skip if we've already processed this registrable domain recently
-    if seed_reg in seen_set:
-        print(f"[dnstwist] Skipping {seed_reg} (already processed)")
+    # Skip if we've already processed this exact domain recently
+    if seed_domain in seen_set:
+        print(f"[dnstwist] Skipping {seed_domain} (already processed)")
         return 0
 
-    seen_set.add(seed_reg)
+    seen_set.add(seed_domain)
 
-    print(f"\n[dnstwist] ===== Processing: {seed_reg} (CSE: {cse_id or 'UNKNOWN'}) =====")
+    print(f"\n[dnstwist] ===== Processing: {seed_domain} (CSE: {cse_id or 'UNKNOWN'}) =====")
+    print(f"[dnstwist] Using 3-pass comprehensive analysis (same as CSV seeds)")
 
-    # Run DNSTwist with --registered flag to only get variants that resolve
-    print(f"[dnstwist] Generating variants (checking DNS for registered domains)...")
-    results = run_dnstwist(seed_reg, LIVE_FUZZERS, COMMON_TLDS, registered_only=True)
+    # PASS A: Comprehensive fuzzing with common TLDs
+    print(f"[dnstwist] Running PASS_A (common TLDs, comprehensive fuzzers)...")
+    results_a, unregistered_a = run_dnstwist(seed_domain, PASS_A_FUZZERS, COMMON_TLDS, registered_only=True)
+    print(f"[dnstwist] ✓ PASS_A: {len(results_a)} registered, {len(unregistered_a)} unregistered")
 
-    if not results:
-        print(f"[dnstwist] ⚠️ No registered variants found for {seed_reg}")
+    # PASS B: India-focused TLDs
+    print(f"[dnstwist] Running PASS_B (India TLDs)...")
+    results_b, unregistered_b = run_dnstwist(seed_domain, PASS_B_FUZZERS, INDIA_TLDS, registered_only=True)
+    print(f"[dnstwist] ✓ PASS_B: {len(results_b)} registered, {len(unregistered_b)} unregistered")
+
+    # PASS C: High-risk phishing patterns
+    print(f"[dnstwist] Running PASS_C (high-risk patterns)...")
+    results_c, unregistered_c = run_dnstwist(seed_domain, PASS_C_FUZZERS, COMMON_TLDS, registered_only=True)
+    print(f"[dnstwist] ✓ PASS_C: {len(results_c)} registered, {len(unregistered_c)} unregistered")
+
+    total_results = len(results_a) + len(results_b) + len(results_c)
+    total_unregistered = len(unregistered_a) + len(unregistered_b) + len(unregistered_c)
+
+    if total_results == 0:
+        print(f"[dnstwist] ⚠️ No registered variants found for {seed_domain}")
         print(f"[dnstwist] This means none of the generated variants are actually registered/resolving")
         return 0
 
-    print(f"[dnstwist] ✓ Found {len(results)} registered variant domains")
-
-    # Emit all variants
+    # Emit all variants with pass labels
     count = 0
-    for r in results:
-        fqdn = to_ascii(r.get("domain", ""))
-        if not fqdn:
-            continue
+    seen_variants = set()  # Track variants within this domain to avoid duplicates
 
-        record = {
-            "src": "dnstwist",
-            "observed_at": time.time(),
-            "cse_id": cse_id or "UNKNOWN",
-            "seed_registrable": seed_reg,
-            "canonical_fqdn": fqdn,
-            "registrable": registrable(fqdn),
-            "reasons": ["dnstwist:live"],
-            "fuzzer": r.get("fuzzer"),
-            "raw": r
-        }
+    for pass_name, results in [("PASS_A", results_a), ("PASS_B", results_b), ("PASS_C", results_c)]:
+        for r in results:
+            fqdn = to_ascii(r.get("domain", ""))
+            if not fqdn:
+                continue
 
-        await emit(record, producer, file_handle)
-        count += 1
+            # Skip if we've already emitted this variant in a previous pass
+            if fqdn in seen_variants:
+                continue
 
-    print(f"[dnstwist] ✓ Completed {seed_reg}: {count} variants emitted")
+            seen_variants.add(fqdn)
+
+            record = {
+                "src": "dnstwist",
+                "observed_at": time.time(),
+                "cse_id": cse_id or "UNKNOWN",
+                "seed_registrable": seed_domain,  # Store the full seed used
+                "canonical_fqdn": fqdn,
+                "registrable": registrable(fqdn),
+                "reasons": [f"dnstwist:live:{pass_name}"],
+                "fuzzer": r.get("fuzzer"),
+                "raw": r
+            }
+
+            await emit(record, producer, file_handle)
+            count += 1
+
+    print(f"[dnstwist] ✓ Completed {seed_domain}: {count} unique variants emitted")
+
+    # NEW: Track unregistered variants for monitoring (if enabled)
+    if TRACK_UNREGISTERED and total_unregistered > 0:
+        print(f"[dnstwist] Tracking {total_unregistered} unregistered variants for monitoring...")
+        unregistered_count = 0
+        seen_unregistered = set()
+
+        for pass_name, unregistered in [("PASS_A", unregistered_a), ("PASS_B", unregistered_b), ("PASS_C", unregistered_c)]:
+            for r in unregistered:
+                fqdn = to_ascii(r.get("domain", ""))
+                if not fqdn or fqdn in seen_unregistered:
+                    continue
+
+                seen_unregistered.add(fqdn)
+
+                # Emit to inactive monitoring queue
+                inactive_record = {
+                    "schema_version": "v1",
+                    "registrable": registrable(fqdn),
+                    "canonical_fqdn": fqdn,
+                    "cse_id": cse_id or "UNKNOWN",
+                    "seed_registrable": seed_domain,
+                    "status": "unregistered",
+                    "fuzzer": r.get("fuzzer"),
+                    "ts": int(time.time() * 1000),
+                    "reasons": [f"dnstwist:unregistered:{pass_name}"],
+                }
+
+                # Emit to Kafka inactive topic
+                if producer:
+                    await producer.send_and_wait(
+                        KAFKA_INACTIVE_TOPIC,
+                        ujson.dumps(inactive_record).encode("utf-8")
+                    )
+                unregistered_count += 1
+
+        print(f"[dnstwist] ✓ Tracked {unregistered_count} unregistered variants for monitoring")
+
     return count
 
 async def process_csv_seeds(producer, file_handle):
@@ -255,21 +318,21 @@ async def process_csv_seeds(producer, file_handle):
         print(f"\n[runner] [{idx}/{len(seeds)}] ===== Processing: {seed_reg} (CSE: {cse_id}) =====")
 
         # PASS A (wide, common TLDs)
-        print(f"[runner] Running PASS_A (common TLDs)...")
-        results_a = run_dnstwist(seed_reg, PASS_A_FUZZERS, COMMON_TLDS)
-        print(f"[runner] ✓ PASS_A: {len(results_a)} registered domains found")
+        print("[runner] Running PASS_A (common TLDs)...")
+        results_a, unregistered_a = run_dnstwist(seed_reg, PASS_A_FUZZERS, COMMON_TLDS, registered_only=True)
+        print(f"[runner] ✓ PASS_A: {len(results_a)} registered, {len(unregistered_a)} unregistered")
 
         # PASS B (India TLDs)
-        print(f"[runner] Running PASS_B (India TLDs)...")
-        results_b = run_dnstwist(seed_reg, PASS_B_FUZZERS, INDIA_TLDS)
-        print(f"[runner] ✓ PASS_B: {len(results_b)} registered domains found")
+        print("[runner] Running PASS_B (India TLDs)...")
+        results_b, unregistered_b = run_dnstwist(seed_reg, PASS_B_FUZZERS, INDIA_TLDS, registered_only=True)
+        print(f"[runner] ✓ PASS_B: {len(results_b)} registered, {len(unregistered_b)} unregistered")
 
         # PASS C (high-risk)
-        print(f"[runner] Running PASS_C (high-risk patterns)...")
-        results_c = run_dnstwist(seed_reg, PASS_C_FUZZERS, HIGH_RISK_DICT)
-        print(f"[runner] ✓ PASS_C: {len(results_c)} registered domains found")
+        print("[runner] Running PASS_C (high-risk patterns)...")
+        results_c, unregistered_c = run_dnstwist(seed_reg, PASS_C_FUZZERS, COMMON_TLDS, registered_only=True)
+        print(f"[runner] ✓ PASS_C: {len(results_c)} registered, {len(unregistered_c)} unregistered")
 
-        # Emit all results
+        # Emit only registered results
         count = 0
         for pass_name, results in [("PASS_A", results_a), ("PASS_B", results_b), ("PASS_C", results_c)]:
             for r in results:
@@ -288,17 +351,44 @@ async def process_csv_seeds(producer, file_handle):
                     "fuzzer": r.get("fuzzer"),
                     "raw": r
                 }
-
                 await emit(record, producer, file_handle)
                 count += 1
 
-        print(f"[runner] ✓ Completed {seed_reg}: {count} variants emitted")
+        print(f"[runner] ✓ Completed {seed_reg}: {count} registered variants emitted")
         seen.add(seed_reg)
+
+        # (Optional) also track unregistered for monitoring, like the live path
+        if TRACK_UNREGISTERED:
+            unregistered_total = 0
+            for pass_name, unreg in [("PASS_A", unregistered_a), ("PASS_B", unregistered_b), ("PASS_C", unregistered_c)]:
+                for r in unreg:
+                    fqdn = to_ascii(r.get("domain", ""))
+                    if not fqdn:
+                        continue
+                    inactive_record = {
+                        "schema_version": "v1",
+                        "registrable": registrable(fqdn),
+                        "canonical_fqdn": fqdn,
+                        "cse_id": cse_id,
+                        "seed_registrable": seed_reg,
+                        "status": "unregistered",
+                        "fuzzer": r.get("fuzzer"),
+                        "ts": int(time.time() * 1000),
+                        "reasons": [f"dnstwist:unregistered:{pass_name}"],
+                    }
+                    if producer and KAFKA_ENABLED:
+                        await producer.send_and_wait(
+                            KAFKA_INACTIVE_TOPIC,
+                            ujson.dumps(inactive_record).encode("utf-8")
+                        )
+                    unregistered_total += 1
+            if unregistered_total:
+                print(f"[runner] ✓ Tracked {unregistered_total} unregistered variants for monitoring")
 
     print(f"\n[runner] ==================== CSV PROCESSING COMPLETE ====================")
     print(f"[runner] Total seeds processed: {len(seen)}")
-
     return seen
+
 
 async def main():
     print("[runner] ==================== STARTING DNSTWIST CONTINUOUS RUNNER ====================")
