@@ -1,0 +1,52 @@
+# Dependencies
+node_modules
+npm-debug.log
+package-lock.json
+bun.lockb
+
+# Build outputs
+dist
+build
+.vite
+
+# Development
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git
+.gitignore
+
+# Testing
+coverage
+*.test.js
+*.test.ts
+*.test.tsx
+*.spec.js
+*.spec.ts
+*.spec.tsx
+
+# Documentation
+README.md
+*.md
+
+# Misc
+.eslintrc*
+.prettierrc*
+tsconfig*.json
+vite.config.ts
+eslint.config.js
+postcss.config.js
+tailwind.config.ts
+components.json
