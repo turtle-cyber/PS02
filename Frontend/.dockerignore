@@ -45,8 +45,5 @@ README.md
 .eslintrc*
 .prettierrc*
 tsconfig*.json
-vite.config.ts
 eslint.config.js
-postcss.config.js
-tailwind.config.ts
 components.json

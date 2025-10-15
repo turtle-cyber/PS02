@@ -1,8 +1,49 @@
 # Frontend Specific Files
-node_modules
+node_modules/
+dist/
+build/
+.vite/
+*.local
 package-lock.json
 
-# Backend Specific Files
+# Backend/Python Specific Files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+*.egg-info/
+.pytest_cache/
 
+# Environment Variables
+.env
+.env.local
+.env.*.local
 
 # Pipeline Specific Files
+out/
+volumes/chroma/*
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
