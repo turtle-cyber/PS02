@@ -5,9 +5,11 @@ apps/feature-crawler/worker.py
 Consumes URLs from Kafka (IN_TOPIC), crawls them with Playwright,
 extracts artifacts (HTML, screenshots, PDF) and page features,
 publishes results to Kafka (OUT_TOPIC_RAW, OUT_TOPIC_FEAT),
-and also appends JSONL locally under OUT_DIR.
+and also appends JSONL locally under OUT_DIR:
+  - {OUT_DIR}/http_crawled.jsonl
+  - {OUT_DIR}/features_page.jsonl
 
-UPDATED: Uses CSE ID for filenames instead of URL hash for easy correlation with database.
+This file only ADDS local file writes; core behavior is unchanged.
 """
 import os, sys, time, json, ujson, math, re, traceback, hashlib
 from pathlib import Path
@@ -31,6 +33,9 @@ from bs4 import BeautifulSoup
 # Playwright
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
 
+# Redis
+import redis
+
 # --------------- Env -----------------
 BOOTSTRAP = os.environ.get("KAFKA_BOOTSTRAP") or os.environ.get("KAFKA_BROKERS","kafka:9092")
 IN_TOPIC = os.environ.get("IN_TOPIC","phish.urls.crawl")
@@ -42,6 +47,10 @@ OUT_DIR = Path(os.environ.get("OUT_DIR","/workspace/out"))
 HEADLESS = (os.environ.get("PLAYWRIGHT_HEADLESS","1") != "0")
 NAV_TIMEOUT_MS = int(os.environ.get("NAV_TIMEOUT_MS","15000"))
 
+# Redis config
+REDIS_HOST = os.environ.get("REDIS_HOST", "redis")
+REDIS_PORT = int(os.environ.get("REDIS_PORT", "6379"))
+
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 (OUT_DIR/"html").mkdir(exist_ok=True, parents=True)
 (OUT_DIR/"screenshots").mkdir(exist_ok=True, parents=True)
@@ -49,6 +58,17 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 HTTP_JSONL = OUT_DIR/"http_crawled.jsonl"
 FEAT_JSONL = OUT_DIR/"features_page.jsonl"
+
+# --------------- Redis client -----------------
+def get_redis():
+    try:
+        r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True, socket_connect_timeout=5)
+        r.ping()
+        log.info("[redis] Connected successfully for seed tracking")
+        return r
+    except Exception as e:
+        log.warning(f"[redis] Could not connect: {e}. Seed tracking disabled")
+        return None
 
 # --------------- helpers -----------------
 def utcnow() -> str:
@@ -709,6 +729,9 @@ def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registra
 def main():
     log.info("[feature-crawler] listening on %s → (%s, %s)", IN_TOPIC, OUT_TOPIC_RAW, OUT_TOPIC_FEAT)
 
+    # Initialize Redis client
+    redis_client = get_redis()
+
     # Retry configuration
     MAX_RETRIES = int(os.environ.get("MAX_RETRIES", "3"))
     retry_tracker = {}  # {url: attempt_count}
@@ -758,6 +781,8 @@ def main():
                         # ✅ EXTRACT CSE ID AND REGISTRABLE FROM MESSAGE
                         cse_id = rec.get("cse_id") or rec.get("id") or rec.get("cse") or None
                         registrable = rec.get("registrable") or None
+                        cse_id = rec.get("cse_id") or rec.get("cse") or None
+                        seed_registrable = rec.get("seed_registrable") or registrable  # Get original seed domain
 
                         # Track retry attempts
                         attempt = retry_tracker.get(url, 0) + 1
@@ -791,6 +816,25 @@ def main():
                             del retry_tracker[url]
                         total_processed += 1
 
+                        # Track per-seed progress in Redis
+                        if redis_client and seed_registrable:
+                            try:
+                                redis_client.incr(f"fcrawler:seed:{seed_registrable}:crawled")
+                                redis_client.set(f"fcrawler:seed:{seed_registrable}:last_crawled", int(time.time()), ex=7776000)
+                                redis_client.zadd("fcrawler:active_seeds", {seed_registrable: time.time()})
+
+                                # Check if all variants for this seed are done
+                                crawled = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:crawled") or 0)
+                                total_variants = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:total") or 0)
+
+                                if total_variants > 0 and crawled >= total_variants:
+                                    redis_client.set(f"fcrawler:seed:{seed_registrable}:status", "completed", ex=7776000)
+                                    redis_client.zrem("fcrawler:active_seeds", seed_registrable)
+                                    redis_client.set(f"fcrawler:seed:{seed_registrable}:completed_at", int(time.time()), ex=7776000)
+                                    log.info(f"✓ COMPLETED: All {total_variants} variants for seed '{seed_registrable}' have been crawled!")
+                            except Exception as e:
+                                log.warning(f"[redis] Error tracking seed progress: {e}")
+
                         # Log stats periodically
                         if total_processed % 10 == 0:
                             log.info(f"[stats] processed={total_processed}, failed={total_failed}, retried={total_retried}")
@@ -815,6 +859,12 @@ def main():
                                 producer.send("phish.urls.failed", value=failed_rec, key=url.encode("utf-8"))
                             except Exception:
                                 pass
+                            # Track failure in Redis
+                            if redis_client and seed_registrable:
+                                try:
+                                    redis_client.incr(f"fcrawler:seed:{seed_registrable}:failed")
+                                except Exception:
+                                    pass
                             # Commit to skip this message
                             consumer.commit()
                             if url in retry_tracker:
@@ -845,6 +895,12 @@ def main():
                                 producer.send("phish.urls.failed", value=failed_rec, key=url.encode("utf-8"))
                             except Exception:
                                 pass
+                            # Track failure in Redis
+                            if redis_client and seed_registrable:
+                                try:
+                                    redis_client.incr(f"fcrawler:seed:{seed_registrable}:failed")
+                                except Exception:
+                                    pass
                             # Commit to skip this message
                             consumer.commit()
                             if url in retry_tracker:

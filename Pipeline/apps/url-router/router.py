@@ -188,7 +188,7 @@ def main():
 
     forwarded = 0
     dropped = 0
-    inactive_queued = 0
+    inactive_queued = 0  # NEW: Track inactive domains
 
     log.info(f"url-router ready, waiting for messages...")
 

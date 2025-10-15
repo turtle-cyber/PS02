@@ -2,6 +2,7 @@ import os, csv, time, ujson, asyncio, subprocess, shlex, socket, traceback
 from datetime import datetime
 from pathlib import Path
 import tldextract, idna
+import redis
 
 # Env
 KAFKA_ENABLED = os.getenv("KAFKA_ENABLED", "true").lower() == "true"
@@ -16,6 +17,10 @@ KAFKA_RETRY_ATTEMPTS = int(os.getenv("KAFKA_RETRY_ATTEMPTS", "10"))
 KAFKA_RETRY_DELAY = int(os.getenv("KAFKA_RETRY_DELAY", "5"))
 PROCESS_CSV_ON_STARTUP = os.getenv("PROCESS_CSV_ON_STARTUP", "true").lower() == "true"
 TRACK_UNREGISTERED = os.getenv("TRACK_UNREGISTERED", "true").lower() == "true"  # NEW: Monitor unregistered variants
+
+# Redis config for stats tracking
+REDIS_HOST = os.getenv("REDIS_HOST", "redis")
+REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
 
 # Config paths
 DICT_DIR = Path("/configs/dictionaries")
@@ -32,6 +37,55 @@ PASS_B_FUZZERS = "homoglyph,transposition,insertion,omission,replacement,additio
 PASS_C_FUZZERS = "dictionary,tld-swap,addition,replacement"
 
 extract = tldextract.TLDExtract(suffix_list_urls=None)
+
+# Initialize Redis client for stats tracking
+def get_redis_client():
+    """Get Redis client for stats tracking"""
+    try:
+        client = redis.Redis(
+            host=REDIS_HOST,
+            port=REDIS_PORT,
+            decode_responses=True,
+            socket_connect_timeout=5
+        )
+        client.ping()  # Test connection
+        return client
+    except Exception as e:
+        print(f"[redis] Warning: Could not connect to Redis: {e}")
+        print(f"[redis] Stats tracking will be disabled")
+        return None
+
+def store_variant_stats(redis_client, domain, registered_count, unregistered_count):
+    """Store variant statistics in Redis for API access"""
+    if not redis_client:
+        return
+
+    try:
+        timestamp = int(time.time())
+
+        # Store per-domain stats
+        redis_client.set(f"dnstwist:variants:{domain}", registered_count, ex=7776000)  # 90 days TTL
+        redis_client.set(f"dnstwist:unregistered:{domain}", unregistered_count, ex=7776000)
+        redis_client.set(f"dnstwist:timestamp:{domain}", timestamp, ex=7776000)
+
+        # Add to recent history (sorted set by timestamp)
+        redis_client.zadd("dnstwist:history", {domain: timestamp})
+
+        # Increment global counter
+        redis_client.incr("dnstwist:total_processed")
+
+        # Keep only recent 1000 entries in history
+        redis_client.zremrangebyrank("dnstwist:history", 0, -1001)
+
+        # Initialize feature crawler tracking for this seed
+        redis_client.set(f"fcrawler:seed:{domain}:total", registered_count, ex=7776000)
+        redis_client.set(f"fcrawler:seed:{domain}:crawled", 0, ex=7776000)
+        redis_client.set(f"fcrawler:seed:{domain}:failed", 0, ex=7776000)
+        redis_client.set(f"fcrawler:seed:{domain}:status", "pending", ex=7776000)
+
+        print(f"[redis] Stored stats: {domain} → {registered_count} registered, {unregistered_count} unregistered")
+    except Exception as e:
+        print(f"[redis] Error storing stats for {domain}: {e}")
 
 def _nameserver_ip():
     host = NAMESERVERS.rsplit(":", 1)[0] if ":" in NAMESERVERS else NAMESERVERS
@@ -178,7 +232,7 @@ async def emit(record, producer, file_handle=None):
         file_handle.write(ujson.dumps(record) + "\n")
         file_handle.flush()
 
-async def process_domain(domain, cse_id, producer, file_handle, seen_set):
+async def process_domain(domain, cse_id, producer, file_handle, seen_set, redis_client=None):
     """
     Process a single domain through DNSTwist with 3-pass comprehensive analysis
     Returns number of new variants found
@@ -196,17 +250,35 @@ async def process_domain(domain, cse_id, producer, file_handle, seen_set):
     print(f"\n[dnstwist] ===== Processing: {seed_domain} (CSE: {cse_id or 'UNKNOWN'}) =====")
     print(f"[dnstwist] Using 3-pass comprehensive analysis (same as CSV seeds)")
 
+    # Mark as processing in Redis
+    if redis_client:
+        try:
+            redis_client.set(f"dnstwist:status:{seed_domain}", "processing", ex=7776000)
+            redis_client.zadd("dnstwist:queue:active", {seed_domain: int(time.time())})
+            redis_client.hset(f"dnstwist:progress:{seed_domain}", mapping={
+                "started_at": str(int(time.time())),
+                "cse_id": str(cse_id or "UNKNOWN")
+            })
+        except Exception as e:
+            print(f"[redis] Error setting processing status: {e}")
+
     # PASS A: Comprehensive fuzzing with common TLDs
+    if redis_client:
+        redis_client.hset(f"dnstwist:progress:{seed_domain}", "current_pass", "A")
     print(f"[dnstwist] Running PASS_A (common TLDs, comprehensive fuzzers)...")
     results_a, unregistered_a = run_dnstwist(seed_domain, PASS_A_FUZZERS, COMMON_TLDS, registered_only=True)
     print(f"[dnstwist] ✓ PASS_A: {len(results_a)} registered, {len(unregistered_a)} unregistered")
 
     # PASS B: India-focused TLDs
+    if redis_client:
+        redis_client.hset(f"dnstwist:progress:{seed_domain}", "current_pass", "B")
     print(f"[dnstwist] Running PASS_B (India TLDs)...")
     results_b, unregistered_b = run_dnstwist(seed_domain, PASS_B_FUZZERS, INDIA_TLDS, registered_only=True)
     print(f"[dnstwist] ✓ PASS_B: {len(results_b)} registered, {len(unregistered_b)} unregistered")
 
     # PASS C: High-risk phishing patterns
+    if redis_client:
+        redis_client.hset(f"dnstwist:progress:{seed_domain}", "current_pass", "C")
     print(f"[dnstwist] Running PASS_C (high-risk patterns)...")
     results_c, unregistered_c = run_dnstwist(seed_domain, PASS_C_FUZZERS, COMMON_TLDS, registered_only=True)
     print(f"[dnstwist] ✓ PASS_C: {len(results_c)} registered, {len(unregistered_c)} unregistered")
@@ -251,6 +323,16 @@ async def process_domain(domain, cse_id, producer, file_handle, seen_set):
             count += 1
 
     print(f"[dnstwist] ✓ Completed {seed_domain}: {count} unique variants emitted")
+
+    # Store variant statistics and mark as completed in Redis
+    store_variant_stats(redis_client, seed_domain, count, total_unregistered)
+    if redis_client:
+        try:
+            redis_client.set(f"dnstwist:status:{seed_domain}", "completed", ex=7776000)
+            redis_client.zrem("dnstwist:queue:active", seed_domain)
+            redis_client.delete(f"dnstwist:progress:{seed_domain}")
+        except Exception as e:
+            print(f"[redis] Error setting completed status: {e}")
 
     # NEW: Track unregistered variants for monitoring (if enabled)
     if TRACK_UNREGISTERED and total_unregistered > 0:
@@ -408,6 +490,13 @@ async def main():
     processed_count = 0
     variant_count = 0
 
+    # Initialize Redis client for stats tracking
+    redis_client = get_redis_client()
+    if redis_client:
+        print("[redis] Connected successfully for stats tracking")
+    else:
+        print("[redis] Proceeding without stats tracking")
+
     try:
         # Connect to Kafka
         if KAFKA_ENABLED:
@@ -449,7 +538,7 @@ async def main():
 
                 # Process domain through DNSTwist
                 try:
-                    variants_found = await process_domain(domain, cse_id, producer, fobj, seen_registrables)
+                    variants_found = await process_domain(domain, cse_id, producer, fobj, seen_registrables, redis_client)
                     processed_count += 1
                     variant_count += variants_found
 
