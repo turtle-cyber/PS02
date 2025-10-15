@@ -26,7 +26,7 @@ env/
 
 # Pipeline Specific Files
 out/
-volumes/chroma/*
+Pipeline/volumes/chroma/*
 
 # Docker
 *.log
@@ -47,3 +47,4 @@ docker-compose.override.yml
 .Trashes
 ehthumbs.db
 Thumbs.db
+
