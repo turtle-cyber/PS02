@@ -98,6 +98,8 @@ services:
       KAFKA_BOOTSTRAP: "kafka:9092"
       KAFKA_INPUT_TOPIC: "raw.hosts"   # Listen to user submissions
       KAFKA_OUTPUT_TOPIC: "raw.hosts"  # Emit variants back to raw.hosts
+      KAFKA_INACTIVE_TOPIC: "phish.urls.inactive"  # NEW: Unregistered variants
+      TRACK_UNREGISTERED: "true"  # NEW: Monitor unregistered variants
       THREADS: "16"
       NAMESERVERS: "unbound:5335"  # Fixed: added port
       PROCESS_CSV_ON_STARTUP: "true"  # Process CSV seeds on startup, then continuous
@@ -143,21 +145,20 @@ services:
   dns-collector:
       build:
         context: ../apps/dns-collector
-      container_name: dns-collector
       environment:
         KAFKA_ENABLED: "true"
         KAFKA_BOOTSTRAP: "kafka:9092"
         INPUT_TOPIC: "raw.hosts,domains.candidates"
-        OUTPUT_TOPIC: "domains.resolved"  # ✅ Added closing quote
+        OUTPUT_TOPIC: "domains.resolved"
         OUTPUT_DIR: "/out"
         NAMESERVER: "unbound"
         MAX_WORKERS: "12"
         GEOIP_CITY_DB: "/configs/mmdb/GeoLite2-City.mmdb"
         GEOIP_ASN_DB: "/configs/mmdb/GeoLite2-ASN.mmdb"
-        CONSUMER_GROUP: "dns-collector-group"
+        CONSUMER_GROUP: "dns-collector-group"  # Same group = load balancing
         MAX_CONCURRENT_DNS: "50"
         # WHOIS Queue settings
-        WHOIS_WORKERS: "4"        # Only 2 concurrent WHOIS lookups
+        WHOIS_WORKERS: "4"
         WHOIS_DELAY_MS: "500"
       volumes:
         - ../configs:/configs:ro
@@ -169,6 +170,7 @@ services:
           condition: service_healthy
       restart: unless-stopped
       deploy:
+        replicas: 3  # Run 3 parallel instances for 3x throughput
         resources:
           limits:
             memory: 1G
@@ -296,10 +298,8 @@ services:
     environment:
       - IS_PERSISTENT=TRUE
       - ALLOW_RESET=FALSE
-      # (optional) tune HNSW index / server settings here
-      # - ANONYMIZED_TELEMETRY=FALSE
     volumes:
-      - ../volumes/chroma:/chroma
+      - ../volumes/chroma:/data
     ports:
       - "8000:8000"
 
@@ -320,6 +320,7 @@ services:
       - KAFKA_FEATURES_TOPIC=phish.features.page  # Feature data from feature-crawler
       - KAFKA_FAILED_TOPIC=phish.urls.failed  # Failed crawls (dead/parked domains)
       - KAFKA_VERDICTS_TOPIC=phish.rules.verdicts  # Verdicts from rule-scorer
+      - KAFKA_INACTIVE_TOPIC=phish.urls.inactive  # NEW: Inactive/unregistered domains
       - KAFKA_GROUP=chroma-ingestor
 
       # ---- Chroma 1.x client settings ----
@@ -349,12 +350,14 @@ services:
     environment:
       - KAFKA_BOOTSTRAP=kafka:9092
       - VERDICTS_TOPIC=phish.rules.verdicts
+      - INACTIVE_TOPIC=phish.urls.inactive  # NEW: Inactive/unregistered domains
       - OUTPUT_TOPIC=raw.hosts
       - GROUP_ID=monitor-scheduler
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - MONITOR_CHECK_INTERVAL=86400  # Check every 24h
       - MAX_RECHECKS=3
+      - MAX_INACTIVE_CHECKS=3  # NEW: Max checks for inactive domains
     depends_on:
       kafka:
         condition: service_healthy
