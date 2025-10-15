@@ -27,6 +27,7 @@ env/
 # Pipeline Specific Files
 out/
 Pipeline/volumes/chroma/*
+Pipeline/volumes/redis/*
 
 # Docker
 *.log

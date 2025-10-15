@@ -667,12 +667,17 @@ async def main():
                 
                 if not fqdn:
                     continue
-                
+
                 addrs = doc.get("A") or doc.get("AAAA")
                 if addrs is None and not FALLBACK_RESOLVE:
                     pass
-                
-                await queue.put({"fqdn": fqdn})
+
+                # CRITICAL: Pass seed_registrable and cse_id from input document
+                await queue.put({
+                    "fqdn": fqdn,
+                    "seed_registrable": doc.get("seed_registrable"),
+                    "cse_id": doc.get("cse_id")
+                })
                 msg_count += 1
                 
                 if msg_count % 50 == 0:

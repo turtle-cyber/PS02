@@ -781,9 +781,18 @@ def main():
                         # ✅ EXTRACT CSE ID AND REGISTRABLE FROM MESSAGE
                         cse_id = rec.get("cse_id") or rec.get("id") or rec.get("cse") or None
                         registrable = rec.get("registrable") or None
-                        cse_id = rec.get("cse_id") or rec.get("cse") or None
-                        seed_registrable = rec.get("seed_registrable") or registrable  # Get original seed domain
-                        log.info(f"[seed-track] variant={registrable}, seed={seed_registrable}, from_msg={rec.get('seed_registrable')}")
+                        seed_registrable = rec.get("seed_registrable") or None  # Get original seed domain
+
+                        # Extract full variant domain from URL for better logging
+                        from urllib.parse import urlparse
+                        variant_domain = urlparse(url).hostname or registrable or "unknown"
+
+                        # VALIDATION: Warn if seed_registrable is missing (breaks tracking!)
+                        if not seed_registrable:
+                            log.warning(f"[seed-track] ⚠️  seed_registrable missing for {url} (variant={variant_domain})! Tracking will be inaccurate. Check pipeline.")
+                            seed_registrable = registrable  # Fallback to registrable to prevent crashes
+                        else:
+                            log.info(f"[seed-track] ✓ Processing variant={variant_domain} for seed={seed_registrable}")
 
                         # Track retry attempts
                         attempt = retry_tracker.get(url, 0) + 1
@@ -820,21 +829,40 @@ def main():
                         # Track per-seed progress in Redis
                         if redis_client and seed_registrable:
                             try:
-                                redis_client.incr(f"fcrawler:seed:{seed_registrable}:crawled")
-                                redis_client.set(f"fcrawler:seed:{seed_registrable}:last_crawled", int(time.time()), ex=7776000)
-                                redis_client.zadd("fcrawler:active_seeds", {seed_registrable: time.time()})
+                                # Deduplicate: Check if this URL was already counted for this seed
+                                url_key = f"fcrawler:seed:{seed_registrable}:url:{url}"
+                                already_counted = redis_client.exists(url_key)
 
-                                # Check if all variants for this seed are done
-                                crawled = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:crawled") or 0)
-                                total_variants = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:total") or 0)
+                                if already_counted:
+                                    log.debug(f"[seed-track] Skipping counter increment - '{variant_domain}' already counted for seed '{seed_registrable}'")
+                                else:
+                                    # Mark this URL as processed (90 day TTL, same as other keys)
+                                    redis_client.setex(url_key, 7776000, "1")
 
-                                if total_variants > 0 and crawled >= total_variants:
-                                    redis_client.set(f"fcrawler:seed:{seed_registrable}:status", "completed", ex=7776000)
-                                    redis_client.zrem("fcrawler:active_seeds", seed_registrable)
-                                    redis_client.set(f"fcrawler:seed:{seed_registrable}:completed_at", int(time.time()), ex=7776000)
-                                    log.info(f"✓ COMPLETED: All {total_variants} variants for seed '{seed_registrable}' have been crawled!")
+                                    # Increment crawled count
+                                    new_crawled = redis_client.incr(f"fcrawler:seed:{seed_registrable}:crawled")
+                                    redis_client.set(f"fcrawler:seed:{seed_registrable}:last_crawled", int(time.time()), ex=7776000)
+                                    redis_client.zadd("fcrawler:active_seeds", {seed_registrable: time.time()})
+
+                                    # Get total variants for this seed
+                                    total_variants = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:total") or 0)
+                                    failed_count = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:failed") or 0)
+
+                                    # Log progress
+                                    log.info(f"[seed-track] '{seed_registrable}': {new_crawled}/{total_variants} crawled, {failed_count} failed")
+
+                                    # Check if all variants for this seed are done (crawled + failed >= total)
+                                    if total_variants > 0:
+                                        completed_count = new_crawled + failed_count
+                                        if completed_count >= total_variants:
+                                            redis_client.set(f"fcrawler:seed:{seed_registrable}:status", "completed", ex=7776000)
+                                            redis_client.zrem("fcrawler:active_seeds", seed_registrable)
+                                            redis_client.set(f"fcrawler:seed:{seed_registrable}:completed_at", int(time.time()), ex=7776000)
+                                            log.info(f"🎉 COMPLETED: All {total_variants} variants for seed '{seed_registrable}' processed! ({new_crawled} success, {failed_count} failed)")
+                                    else:
+                                        log.warning(f"[seed-track] ⚠️  Total variants not set for seed '{seed_registrable}'. Cannot determine completion.")
                             except Exception as e:
-                                log.warning(f"[redis] Error tracking seed progress: {e}")
+                                log.warning(f"[redis] Error tracking seed progress for '{seed_registrable}': {e}")
 
                         # Log stats periodically
                         if total_processed % 10 == 0:
@@ -860,12 +888,35 @@ def main():
                                 producer.send("phish.urls.failed", value=failed_rec, key=url.encode("utf-8"))
                             except Exception:
                                 pass
-                            # Track failure in Redis
+                            # Track failure in Redis (same completion logic as success path)
                             if redis_client and seed_registrable:
                                 try:
-                                    redis_client.incr(f"fcrawler:seed:{seed_registrable}:failed")
-                                except Exception:
-                                    pass
+                                    # Deduplicate: Check if this URL was already counted for this seed
+                                    url_key = f"fcrawler:seed:{seed_registrable}:url:{url}"
+                                    already_counted = redis_client.exists(url_key)
+
+                                    if already_counted:
+                                        log.debug(f"[seed-track] Skipping failure increment - '{url}' already counted for seed '{seed_registrable}'")
+                                    else:
+                                        # Mark this URL as processed (90 day TTL)
+                                        redis_client.setex(url_key, 7776000, "failed")
+
+                                        new_failed = redis_client.incr(f"fcrawler:seed:{seed_registrable}:failed")
+                                        crawled_count = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:crawled") or 0)
+                                        total_variants = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:total") or 0)
+
+                                        log.info(f"[seed-track] TIMEOUT: '{seed_registrable}': {crawled_count}/{total_variants} crawled, {new_failed} failed")
+
+                                        # Check completion (crawled + failed >= total)
+                                        if total_variants > 0:
+                                            completed_count = crawled_count + new_failed
+                                            if completed_count >= total_variants:
+                                                redis_client.set(f"fcrawler:seed:{seed_registrable}:status", "completed", ex=7776000)
+                                                redis_client.zrem("fcrawler:active_seeds", seed_registrable)
+                                                redis_client.set(f"fcrawler:seed:{seed_registrable}:completed_at", int(time.time()), ex=7776000)
+                                                log.info(f"🎉 COMPLETED (with timeouts): All {total_variants} variants for seed '{seed_registrable}' processed! ({crawled_count} success, {new_failed} failed)")
+                                except Exception as e:
+                                    log.warning(f"[redis] Error tracking timeout for '{seed_registrable}': {e}")
                             # Commit to skip this message
                             consumer.commit()
                             if url in retry_tracker:
@@ -896,12 +947,35 @@ def main():
                                 producer.send("phish.urls.failed", value=failed_rec, key=url.encode("utf-8"))
                             except Exception:
                                 pass
-                            # Track failure in Redis
+                            # Track failure in Redis (same completion logic as success path)
                             if redis_client and seed_registrable:
                                 try:
-                                    redis_client.incr(f"fcrawler:seed:{seed_registrable}:failed")
-                                except Exception:
-                                    pass
+                                    # Deduplicate: Check if this URL was already counted for this seed
+                                    url_key = f"fcrawler:seed:{seed_registrable}:url:{url}"
+                                    already_counted = redis_client.exists(url_key)
+
+                                    if already_counted:
+                                        log.debug(f"[seed-track] Skipping failure increment - '{url}' already counted for seed '{seed_registrable}'")
+                                    else:
+                                        # Mark this URL as processed (90 day TTL)
+                                        redis_client.setex(url_key, 7776000, "failed")
+
+                                        new_failed = redis_client.incr(f"fcrawler:seed:{seed_registrable}:failed")
+                                        crawled_count = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:crawled") or 0)
+                                        total_variants = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:total") or 0)
+
+                                        log.info(f"[seed-track] ERROR ({error_type}): '{seed_registrable}': {crawled_count}/{total_variants} crawled, {new_failed} failed")
+
+                                        # Check completion (crawled + failed >= total)
+                                        if total_variants > 0:
+                                            completed_count = crawled_count + new_failed
+                                            if completed_count >= total_variants:
+                                                redis_client.set(f"fcrawler:seed:{seed_registrable}:status", "completed", ex=7776000)
+                                                redis_client.zrem("fcrawler:active_seeds", seed_registrable)
+                                                redis_client.set(f"fcrawler:seed:{seed_registrable}:completed_at", int(time.time()), ex=7776000)
+                                                log.info(f"🎉 COMPLETED (with errors): All {total_variants} variants for seed '{seed_registrable}' processed! ({crawled_count} success, {new_failed} failed)")
+                                except Exception as ex:
+                                    log.warning(f"[redis] Error tracking failure for '{seed_registrable}': {ex}")
                             # Commit to skip this message
                             consumer.commit()
                             if url in retry_tracker:

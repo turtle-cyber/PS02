@@ -243,19 +243,23 @@ def main():
                     continue
 
                 out = build_output(norm, meta)
-                
-                # DEBUG: Log CSE ID presence
+
+                # DEBUG: Log CSE ID and seed_registrable presence (CRITICAL for feature-crawler tracking)
                 if "cse_id" in meta:
                     log.debug(f"CSE_ID found: {meta['cse_id']} for {norm}")
                 else:
                     log.warning(f"CSE_ID missing for {norm} - check upstream data source")
-                
+
+                if "seed_registrable" not in meta:
+                    log.warning(f"seed_registrable missing for {norm} - feature-crawler tracking will fail!")
+
                 try:
                     producer.send(OUT_TOPIC, value=out)
                     forwarded += 1
                     if forwarded % 10 == 0 or LOG_LEVEL == "DEBUG":
                         cse_info = f" [cse={out.get('cse_id')}]" if out.get('cse_id') else ""
-                        log.info(f"FWD#{forwarded} -> {norm}{cse_info}")
+                        seed_info = f" [seed={out.get('seed_registrable')}]" if out.get('seed_registrable') else ""
+                        log.info(f"FWD#{forwarded} -> {norm}{cse_info}{seed_info}")
                 except Exception as e:
                     dropped += 1
                     log.error(f"ERROR produce offset={msg.offset}: {e}")
