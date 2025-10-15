@@ -7,18 +7,19 @@ This project uses Docker and Docker Compose to orchestrate multiple services inc
 ```
 PS02/
 ├── Frontend/              # React/Vite application
-│   ├── Dockerfile        # Multi-stage build for production
-│   ├── nginx.conf        # Nginx configuration
-│   └── package.json      # Node.js dependencies
+│   ├── Dockerfile        # Vite preview server for production
+│   ├── package.json      # Node.js dependencies
+│   └── src/              # React source code
 │
 ├── Backend/              # Node.js API server
 │   ├── Dockerfile        # Backend container config
-│   ├── server.js         # Express server
+│   ├── server.js         # Express server with stats routes
+│   ├── routes/           # API route handlers
 │   └── package.json      # Node.js dependencies
 │
 └── Pipeline/             # Data pipeline services
     ├── apps/             # Individual pipeline apps
-    ├── frontend/         # Pipeline frontend API
+    ├── frontend/         # Pipeline frontend-api (submission API)
     └── infra/
         └── docker-compose.yml  # Main orchestration file
 ```
@@ -33,9 +34,8 @@ PS02/
 - **Unbound** - DNS resolver
 
 ### User-Facing Services
-- **Frontend** - React application (port 80)
-- **Backend** - API server (port 3001)
-- **Frontend-API** - Pipeline submission API (port 3000)
+- **Frontend** - React/Vite application with Vite preview server (port 4173)
+- **Backend** - Node.js API server with statistics and monitoring endpoints (port 3001)
 
 ### Pipeline Services
 - **ct-watcher** - Certificate transparency monitoring
@@ -108,29 +108,47 @@ docker-compose down -v
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| Frontend | http://localhost | React web application |
-| Backend | http://localhost:3001 | Backend API server |
-| Frontend-API | http://localhost:3000 | Pipeline submission API |
+| Frontend | http://localhost:4173 | React web application (Vite preview) |
+| Backend | http://localhost:3001 | Backend API server with stats |
 | Chroma | http://localhost:8000 | Vector database API |
 | Kafka | localhost:9092 | Message broker |
 | Redis | localhost:6379 | Cache server |
+
+### Backend API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `/health` | Health check |
+| `/api/url-detection` | Get all URLs from Chroma DB |
+| `/api/monitoring/stats` | Monitoring statistics |
+| `/api/monitoring/active` | Active monitoring queue |
+| `/api/monitoring/inactive` | Inactive/unregistered domains |
+| `/api/dnstwist/stats` | DNSTwist statistics |
+| `/api/dnstwist/recent` | Recently processed domains |
+| `/api/dnstwist/domain/:domain` | Domain-specific stats |
+| `/api/fcrawler/stats` | Feature crawler statistics |
+| `/api/fcrawler/active` | Active crawling seeds |
+| `/api/fcrawler/seed/:seed` | Seed-specific progress |
 
 ## Health Checks
 
 Check service health:
 
 ```bash
-# Frontend
-curl http://localhost/health
+# Frontend (returns HTML)
+curl http://localhost:4173
 
 # Backend
 curl http://localhost:3001/health
 
-# Frontend-API
-curl http://localhost:3000/health
-
 # Chroma
 curl http://localhost:8000/api/v1/heartbeat
+
+# Test Backend API endpoints
+curl http://localhost:3001/api/url-detection
+curl http://localhost:3001/api/monitoring/stats
+curl http://localhost:3001/api/dnstwist/stats
+curl http://localhost:3001/api/fcrawler/stats
 ```
 
 ## Building Individual Services
@@ -140,7 +158,7 @@ curl http://localhost:8000/api/v1/heartbeat
 ```bash
 cd Frontend
 docker build -t ps02-frontend .
-docker run -p 80:80 ps02-frontend
+docker run -p 4173:4173 ps02-frontend
 ```
 
 ### Backend
@@ -180,20 +198,18 @@ docker-compose up -d --build
 
 ### Frontend
 - Built at compile time from Vite configuration
-- API endpoints configured in nginx proxy
+- Uses Vite preview server in production (port 4173)
+- Configure API endpoints in `.env` file or Vite config
 
 ### Backend
 - `PORT` - Server port (default: 3000)
-- `KAFKA_BROKERS` - Kafka broker addresses
-- `REDIS_HOST` - Redis hostname
-- `CHROMA_HOST` - Chroma hostname
+- `KAFKA_BROKERS` / `KAFKA_BOOTSTRAP` - Kafka broker addresses
+- `REDIS_HOST` - Redis hostname (default: redis)
+- `REDIS_PORT` - Redis port (default: 6379)
+- `CHROMA_HOST` - Chroma hostname (default: chroma)
+- `CHROMA_PORT` - Chroma port (default: 8000)
 - `NODE_ENV` - Environment (production/development)
 - `LOG_LEVEL` - Logging level (info/debug/error)
-
-### Frontend-API
-- `PORT` - Server port (default: 3000)
-- `KAFKA_BROKERS` - Kafka broker addresses
-- `KAFKA_TOPIC` - Default Kafka topic
 
 ## Troubleshooting
 
@@ -212,8 +228,8 @@ docker-compose up -d service-name
 
 ```bash
 # Check what's using the port
-netstat -ano | findstr :80
-netstat -ano | findstr :3000
+netstat -ano | findstr :4173
+netstat -ano | findstr :3001
 
 # Kill the process or change the port in docker-compose.yml
 ```

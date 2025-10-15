@@ -1,7 +1,7 @@
 {
-  "name": "phishing-frontend-api",
+  "name": "phishing-backend-api",
   "version": "1.0.0",
-  "description": "Frontend API for phishing detection pipeline URL submission",
+  "description": "Backend API for phishing detection system with stats and monitoring",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

@@ -368,29 +368,6 @@ services:
         limits:
           memory: 256M
 
-  frontend-api:
-    build:
-      context: ../frontend/frontend-api
-      dockerfile: Dockerfile
-    container_name: frontend-api
-    ports:
-      - "3000:3000"
-    environment:
-      - PORT=3000
-      - KAFKA_BROKERS=kafka:9092
-      - KAFKA_TOPIC=raw.hosts
-      - LOG_LEVEL=info
-    depends_on:
-      kafka:
-        condition: service_healthy
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 10s
-
   # ============================================
   # Frontend - React/Vite Application
   # ============================================
@@ -400,22 +377,22 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     ports:
-      - "80:80"
+      - "4173:4173"
     restart: unless-stopped
     depends_on:
       - backend
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4173/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
       timeout: 3s
       retries: 3
-      start_period: 5s
+      start_period: 10s
     deploy:
       resources:
         limits:
-          memory: 128M
+          memory: 256M
         reservations:
-          memory: 64M
+          memory: 128M
 
   # ============================================
   # Backend - Node.js API Server
