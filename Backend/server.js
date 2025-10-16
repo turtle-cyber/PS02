@@ -13,6 +13,9 @@ const fcrawlerStatsRouter = require('./routes/featureCrawler/fcrawler-stats');
 const urlInsightsRouter = require('./routes/dashboard/url-insights');
 const originatingCountriesRouter = require('./routes/dashboard/originating-countries');
 const urlWatchRouter = require('./routes/dashboard/url-watch');
+const parkedInsightsRouter = require('./routes/dashboard/parked-insights');
+const overviewRouter = require('./routes/dashboard/overview');
+const domainStatsRouter = require('./routes/dashboard/domain-stats');
 
 // ============================================
 // Configuration
@@ -156,6 +159,9 @@ app.use('/api', fcrawlerStatsRouter);
 app.use('/api', urlInsightsRouter);
 app.use('/api', originatingCountriesRouter);
 app.use('/api', urlWatchRouter);
+app.use('/api', parkedInsightsRouter);
+app.use('/api', overviewRouter);
+app.use('/api', domainStatsRouter);
 
 /**
  * Health check endpoint

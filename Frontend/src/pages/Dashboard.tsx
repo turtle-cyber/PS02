@@ -26,7 +26,10 @@ import { useCallback, useEffect, useState } from "react";
 import { http } from "@/hooks/config";
 import { toast } from "sonner";
 import {
+  GET_DOMAINS,
   GET_ORIGINATING_COUNTRIES,
+  GET_OVERVIEW,
+  GET_PARKED_INSIGHTS,
   GET_URL_INSIGHTS,
   GET_URL_WATCH_GRAPH,
 } from "@/endpoints/dashboard.endpoints";
@@ -111,7 +114,7 @@ const useGetUrlWatch = () => {
     setUrlWatchLoading(true);
     try {
       const response = await http.get(GET_URL_WATCH_GRAPH);
-      console.log(response);
+
       setUrlWatchData(response?.data?.series || []);
     } catch (error) {
       toast.error("Error Fetching URL Insight Data");
@@ -125,6 +128,86 @@ const useGetUrlWatch = () => {
   }, [fetchUrlWatch]);
 
   return { urlWatchData, urlWatchLoading, refetch: fetchUrlWatch };
+};
+
+const useGetParkedInsight = () => {
+  const [parkedInsightData, setParkedInsightData] = useState([]);
+  const [parkedInsightLoading, setParkedInsightLoading] = useState(false);
+
+  const fetchParkedInsight = useCallback(async () => {
+    setParkedInsightLoading(true);
+    try {
+      const response = await http.get(GET_PARKED_INSIGHTS);
+
+      setParkedInsightData(response?.data?.data || []);
+    } catch (error) {
+      console.error("Error Fetching Parked Insight Data with error: ", error);
+    } finally {
+      setParkedInsightLoading(false);
+    }
+  }, []);
+  useEffect(() => {
+    fetchParkedInsight();
+  }, [fetchParkedInsight]);
+
+  return {
+    parkedInsightData,
+    parkedInsightLoading,
+    refetch: fetchParkedInsight,
+  };
+};
+
+const useGetOverview = () => {
+  const [overviewData, setOverviewData] = useState([]);
+  const [overviewLoading, setOverviewLoading] = useState(false);
+
+  const fetchOverview = useCallback(async () => {
+    setOverviewLoading(true);
+    try {
+      const response = await http.get(GET_OVERVIEW);
+      setOverviewData(response?.data?.overview || []);
+      console.log(response?.data?.overview);
+    } catch (error) {
+      console.error("Error Fetching Overview Data with error: ", error);
+    } finally {
+      setOverviewLoading(false);
+    }
+  }, []);
+  useEffect(() => {
+    fetchOverview();
+  }, [fetchOverview]);
+
+  return {
+    overviewData,
+    overviewLoading,
+    refetch: fetchOverview,
+  };
+};
+
+const useGetDomains = () => {
+  const [domainsData, setDomainsData] = useState({});
+  const [domainsLoading, setDomainsLoading] = useState(false);
+
+  const fetchDomains = useCallback(async () => {
+    setDomainsLoading(true);
+    try {
+      const response = await http.get(GET_DOMAINS);
+      setDomainsData(response?.data?.domains || {});
+    } catch (error) {
+      console.error("Error Fetching Domain Data with error: ", error);
+    } finally {
+      setDomainsLoading(false);
+    }
+  }, []);
+  useEffect(() => {
+    fetchDomains();
+  }, [fetchDomains]);
+
+  return {
+    domainsData,
+    domainsLoading,
+    refetch: fetchDomains,
+  };
 };
 
 const Dashboard = () => {
@@ -146,6 +229,9 @@ const Dashboard = () => {
   const { urlInsightsData, urlInsightsLoading } = useGetUrlInsightsData();
   const { countriesData, countriesLoading } = useGetOriginatingCountries();
   const { urlWatchData, urlWatchLoading } = useGetUrlWatch();
+  const { parkedInsightData, parkedInsightLoading } = useGetParkedInsight();
+  const { overviewData, overviewLoading } = useGetOverview();
+  const { domainsData, domainsLoading } = useGetDomains();
 
   return (
     <Box
@@ -184,7 +270,10 @@ const Dashboard = () => {
             >
               Overview
             </Typography>
-            <OverviewCards totals={mockDashboard.totals} />
+            <OverviewCards
+              data={overviewData || {}}
+              loading={overviewLoading}
+            />
           </div>
           <div className="xl:col-span-8">
             <Typography
@@ -206,7 +295,7 @@ const Dashboard = () => {
             >
               Domains
             </Typography>
-            <DomainsCard domainsSummary={mockDashboard.domainsSummary} />
+            <DomainsCard data={domainsData || {}} loading={domainsLoading} />
           </div>
           <div className="xl:col-span-4">
             <Typography
@@ -256,7 +345,10 @@ const Dashboard = () => {
             >
               Parked Insights
             </Typography>
-            <ParkedInsightsTable rows={mockDashboard.parkedInsightsRows} />
+            <ParkedInsightsTable
+              rows={parkedInsightData}
+              loading={parkedInsightLoading}
+            />
           </div>
         </div>
       </Container>

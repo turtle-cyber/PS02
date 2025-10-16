@@ -1,3 +1,6 @@
 export const GET_URL_INSIGHTS = "/dashboard/url-insights"
 export const GET_ORIGINATING_COUNTRIES = "/dashboard/originating-countries"
 export const GET_URL_WATCH_GRAPH = "/dashboard/url-watch"
+export const GET_PARKED_INSIGHTS = "/dashboard/parked-insights"
+export const GET_OVERVIEW = "/dashboard/overview"
+export const GET_DOMAINS = "/dashboard/domain-stats"
