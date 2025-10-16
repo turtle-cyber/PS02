@@ -11,24 +11,27 @@ import {
   IconButton,
   Alert,
   styled,
+  Skeleton,
 } from "@mui/material";
 import { Search, AttachFile, Send, Close } from "@mui/icons-material";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { http } from "@/hooks/config";
 import Papa from "papaparse";
-import { BULK_SUBMIT, SUBMIT_URL } from "@/endpoints/urldetection.endpoints";
+import { BULK_SUBMIT, MONITORING_URL, SUBMIT_URL, URLS_SCANNED } from "@/endpoints/urldetection.endpoints";
 
 /* ---------- KPI Card (animated) ---------- */
 type KPICardProps = {
   title: string;
   unit?: string;
   data?: number;
+  loading?: boolean;
   duration?: number;
 };
 const KPICard: React.FC<KPICardProps> = ({
   title,
   data,
+  loading,
   unit,
   duration = 1500,
 }) => {
@@ -75,7 +78,7 @@ const KPICard: React.FC<KPICardProps> = ({
         {title}
       </Typography>
       <Typography sx={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF" }}>
-        {formatted} {unit}
+        {loading? <Skeleton/> : <span>{formatted} {unit}</span>}
       </Typography>
     </Box>
   );
@@ -141,6 +144,54 @@ const CustomCheckbox = styled(MuiCheckbox)({
   "& .MuiSvgIcon-root": { fontSize: "20px" },
 });
 
+
+/* ----------- GET based API Hooks ---------*/
+const useGetScannedUrl = () => {
+  const [scannedUrlData, setScannedUrlData] = useState<any>([]);
+  const [scannedUrlLoading, setScannedUrlLoading] = useState(false);
+
+  const fetchScannedUrlData = useCallback(async ()=>  {
+      setScannedUrlLoading(true)
+    try{
+      const response = await http.get(URLS_SCANNED)
+      setScannedUrlData(response?.data || [])
+    } catch(error) {
+      toast.error('Error Fetching Count Of Scanned URLs')
+      console.error('Error Fetching Count Of Scanned URLs', error)
+    }finally {
+      setScannedUrlLoading(false)
+    }
+  },[])
+  useEffect(()=>{
+    fetchScannedUrlData()
+  },[fetchScannedUrlData])
+
+  return {scannedUrlData, scannedUrlLoading, refetch: fetchScannedUrlData}
+}
+
+const useGetMonitoringUrl = () => {
+  const [monitoringUrlData, setMonitoringUrlData] = useState<any>([]);
+  const [monitoringUrlLoading, setMonitoringUrlLoading] = useState(false);
+
+  const fetchMonitoringUrlData = useCallback(async ()=>  {
+      setMonitoringUrlLoading(true)
+    try{
+      const response = await http.get(MONITORING_URL)
+      setMonitoringUrlData(response?.data || [])
+    } catch(error) {
+      toast.error('Error Fetching Count Of Monitoring URLs')
+      console.error('Error Fetching Count Of Monitoring URLs', error)
+    }finally {
+      setMonitoringUrlLoading(false)
+    }
+  },[])
+  useEffect(()=>{
+    fetchMonitoringUrlData()
+  },[fetchMonitoringUrlData])
+
+  return {monitoringUrlData, monitoringUrlLoading, refetch: fetchMonitoringUrlData}
+}
+
 /* ---------- Page ---------- */
 const URLDetection = () => {
   // text input OR csv file
@@ -149,7 +200,10 @@ const URLDetection = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isLookalike, setIsLookAlike] = useState(false);
 
-  /* ---------- API Hook ---------- */
+  const {scannedUrlData, scannedUrlLoading} = useGetScannedUrl();
+  const {monitoringUrlData, monitoringUrlLoading} = useGetMonitoringUrl();
+
+  /* ---------- Submit API Hook ---------- */
   const handleSubmit = async (inputUrl?: string, isLookalike?: boolean) => {
     const urlToSubmit = inputUrl;
 
@@ -281,9 +335,9 @@ const URLDetection = () => {
             justifyContent: "center",
           }}
         >
-          <KPICard title="URLs Scanned" data={3781} />
-          <KPICard title="Average Risk Score" data={44} unit="%" />
-          <KPICard title="Active Watchlist" data={128} />
+          <KPICard title="URLs Scanned" data={scannedUrlData?.rowCount} loading={scannedUrlLoading}/>
+          <KPICard title="Average Risk Score" data={44} unit="%" loading={scannedUrlLoading}/>
+          <KPICard title="Active Watchlist" data={monitoringUrlData?.summary?.total_monitoring} loading={monitoringUrlLoading}/>
         </Box>
 
         {/* World Map + Search */}
@@ -453,7 +507,7 @@ const URLDetection = () => {
               </Box>
 
               {/* Right - Dropdowns */}
-              <Box sx={{ display: "flex", gap: 2 }}>
+              {/* <Box sx={{ display: "flex", gap: 2 }}>
                 <Select
                   defaultValue="duration"
                   onChange={handleDurationChange}
@@ -476,7 +530,7 @@ const URLDetection = () => {
                   <MenuItem value="medium">Medium</MenuItem>
                   <MenuItem value="high">High</MenuItem>
                 </Select>
-              </Box>
+              </Box> */}
             </Box>
           </SearchContainer>
         </Box>
