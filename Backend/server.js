@@ -12,6 +12,7 @@ const dnstwistStatsRouter = require('./routes/dnstwist/dnstwist-stats');
 const fcrawlerStatsRouter = require('./routes/featureCrawler/fcrawler-stats');
 const urlInsightsRouter = require('./routes/dashboard/url-insights');
 const originatingCountriesRouter = require('./routes/dashboard/originating-countries');
+const urlWatchRouter = require('./routes/dashboard/url-watch');
 
 // ============================================
 // Configuration
@@ -154,6 +155,7 @@ app.use('/api', dnstwistStatsRouter);
 app.use('/api', fcrawlerStatsRouter);
 app.use('/api', urlInsightsRouter);
 app.use('/api', originatingCountriesRouter);
+app.use('/api', urlWatchRouter);
 
 /**
  * Health check endpoint

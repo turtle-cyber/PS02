@@ -1,4 +1,3 @@
-
 import {
   Box,
   AppBar,
@@ -26,7 +25,11 @@ import { MonthRangePicker } from "@/components/dashboard/MonthRangePicker";
 import { useCallback, useEffect, useState } from "react";
 import { http } from "@/hooks/config";
 import { toast } from "sonner";
-import { GET_URL_INSIGHTS } from "@/endpoints/dashboard.endpoints";
+import {
+  GET_ORIGINATING_COUNTRIES,
+  GET_URL_INSIGHTS,
+  GET_URL_WATCH_GRAPH,
+} from "@/endpoints/dashboard.endpoints";
 
 const NavLink = styled(Typography)<{ active?: boolean }>(({ active }) => ({
   color: active ? "#E50914" : "#FFFFFF",
@@ -53,33 +56,82 @@ const NavLink = styled(Typography)<{ active?: boolean }>(({ active }) => ({
   }),
 }));
 
-
 const useGetUrlInsightsData = () => {
   const [urlInsightsData, setUrlInsightsData] = useState<any>({});
   const [urlInsightsLoading, setUrlInsightsLoading] = useState(false);
 
-  const fetchUrlInsights = useCallback(async ()=>  {
-      setUrlInsightsLoading(true)
-    try{
-      const response = await http.get(GET_URL_INSIGHTS)
-      setUrlInsightsData(response?.data || {})
-    } catch(error) {
-      toast.error('Error Fetching URL Insight Data')
-      console.error('Error Fetching URL Insight Data with error: ', error)
-    }finally {
-      setUrlInsightsLoading(false)
+  const fetchUrlInsights = useCallback(async () => {
+    setUrlInsightsLoading(true);
+    try {
+      const response = await http.get(GET_URL_INSIGHTS);
+      setUrlInsightsData(response?.data || {});
+    } catch (error) {
+      toast.error("Error Fetching URL Insight Data");
+      console.error("Error Fetching URL Insight Data with error: ", error);
+    } finally {
+      setUrlInsightsLoading(false);
     }
-  },[])
-  useEffect(()=>{
-    fetchUrlInsights()
-  },[fetchUrlInsights])
+  }, []);
+  useEffect(() => {
+    fetchUrlInsights();
+  }, [fetchUrlInsights]);
 
-  return {urlInsightsData, urlInsightsLoading, refetch: fetchUrlInsights}
-}
+  return { urlInsightsData, urlInsightsLoading, refetch: fetchUrlInsights };
+};
+
+const useGetOriginatingCountries = () => {
+  const [countriesData, setCountriesData] = useState([]);
+  const [countriesLoading, setCountriesLoading] = useState(false);
+
+  const fetchCountries = useCallback(async () => {
+    setCountriesLoading(true);
+    try {
+      const response = await http.get(GET_ORIGINATING_COUNTRIES);
+
+      setCountriesData(response?.data?.data || []);
+    } catch (error) {
+      toast.error("Error Fetching URL Insight Data");
+      console.error("Error Fetching URL Insight Data with error: ", error);
+    } finally {
+      setCountriesLoading(false);
+    }
+  }, []);
+  useEffect(() => {
+    fetchCountries();
+  }, [fetchCountries]);
+
+  return { countriesData, countriesLoading, refetch: fetchCountries };
+};
+
+const useGetUrlWatch = () => {
+  const [urlWatchData, setUrlWatchData] = useState([]);
+  const [urlWatchLoading, setUrlWatchLoading] = useState(false);
+
+  const fetchUrlWatch = useCallback(async () => {
+    setUrlWatchLoading(true);
+    try {
+      const response = await http.get(GET_URL_WATCH_GRAPH);
+      console.log(response);
+      setUrlWatchData(response?.data?.series || []);
+    } catch (error) {
+      toast.error("Error Fetching URL Insight Data");
+      console.error("Error Fetching URL Insight Data with error: ", error);
+    } finally {
+      setUrlWatchLoading(false);
+    }
+  }, []);
+  useEffect(() => {
+    fetchUrlWatch();
+  }, [fetchUrlWatch]);
+
+  return { urlWatchData, urlWatchLoading, refetch: fetchUrlWatch };
+};
+
 const Dashboard = () => {
   const location = useLocation();
-  const [reportsAnchorEl, setReportsAnchorEl] =
-    useState<null | HTMLElement>(null);
+  const [reportsAnchorEl, setReportsAnchorEl] = useState<null | HTMLElement>(
+    null
+  );
   const reportsOpen = Boolean(reportsAnchorEl);
 
   const handleReportsClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -91,7 +143,9 @@ const Dashboard = () => {
   };
 
   /*------ API Data Unpacking ------*/
-  const {urlInsightsData, urlInsightsLoading} = useGetUrlInsightsData();
+  const { urlInsightsData, urlInsightsLoading } = useGetUrlInsightsData();
+  const { countriesData, countriesLoading } = useGetOriginatingCountries();
+  const { urlWatchData, urlWatchLoading } = useGetUrlWatch();
 
   return (
     <Box
@@ -139,7 +193,7 @@ const Dashboard = () => {
             >
               URL watch
             </Typography>
-            <UrlWatchArea series={mockDashboard.urlWatchSeries} />
+            <UrlWatchArea series={urlWatchData} />
           </div>
         </div>
 
@@ -161,7 +215,10 @@ const Dashboard = () => {
             >
               Originating Countries
             </Typography>
-            <OriginCountriesMap data={mockDashboard.originCountries} />
+            <OriginCountriesMap
+              data={countriesData}
+              loading={countriesLoading}
+            />
           </div>
           <div className="xl:col-span-4">
             <Typography
@@ -188,7 +245,7 @@ const Dashboard = () => {
               variant="h6"
               sx={{ color: "#EEEEEE", fontWeight: 600, mb: 3 }}
             >
-            Top CSE By Risk
+              Top CSE By Risk
             </Typography>
             <TopCseByRisk data={mockDashboard.topCseByRisk} />
           </div>
@@ -197,7 +254,7 @@ const Dashboard = () => {
               variant="h6"
               sx={{ color: "#EEEEEE", fontWeight: 600, mb: 3 }}
             >
-            Parked Insights
+              Parked Insights
             </Typography>
             <ParkedInsightsTable rows={mockDashboard.parkedInsightsRows} />
           </div>
