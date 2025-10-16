@@ -92,6 +92,7 @@ async def main():
                 "canonical_fqdn": fqdn,
                 "registrable": registrable(fqdn),
                 "cse_id": data.get("cse_id"),
+                "seed_fqdn": data.get("seed_fqdn"),  # NEW: Preserve seed_fqdn
                 "seed_registrable": data.get("seed_registrable"),
                 "reasons": data.get("reasons", [])
             }

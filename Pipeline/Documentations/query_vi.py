@@ -14,6 +14,7 @@ This version supports:
 
 Notes:
 - tenant/database/collection default to: default_tenant / default_database / domains
+- For seed_domains collection, use: --collection seed_domains
 - Use --host chroma when running *inside* the Docker network; use --host localhost on the host.
 """
 

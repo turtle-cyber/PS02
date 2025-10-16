@@ -174,11 +174,16 @@ async def main():
     
     for idx, row in enumerate(seeds, 1):
         cse_id = row["cse_id"].strip()
+        seed_fqdn = row.get("seed_fqdn", "").strip()  # NEW: Optional seed_fqdn from CSV
         seed_reg = row["seed_registrable"].strip()
         if not seed_reg:
             continue
 
-        print(f"\n[runner] [{idx}/{len(seeds)}] ===== Processing: {seed_reg} (CSE: {cse_id}) =====")
+        # Fallback: if seed_fqdn not in CSV, use seed_registrable
+        if not seed_fqdn:
+            seed_fqdn = seed_reg
+
+        print(f"\n[runner] [{idx}/{len(seeds)}] ===== Processing: {seed_reg} (seed_fqdn: {seed_fqdn}, CSE: {cse_id}) =====")
 
         # Mark as processing in Redis
         if redis_client:
@@ -209,6 +214,7 @@ async def main():
                     "src": "dnstwist",
                     "observed_at": time.time(),
                     "cse_id": cse_id,
+                    "seed_fqdn": seed_fqdn,  # NEW: Original submitted FQDN
                     "seed_registrable": seed_reg,
                     "canonical_fqdn": fqdn,
                     "registrable": registrable(fqdn),
@@ -237,6 +243,7 @@ async def main():
                     "src": "dnstwist",
                     "observed_at": time.time(),
                     "cse_id": cse_id,
+                    "seed_fqdn": seed_fqdn,  # NEW: Original submitted FQDN
                     "seed_registrable": seed_reg,
                     "canonical_fqdn": fqdn,
                     "registrable": registrable(fqdn),
@@ -264,6 +271,7 @@ async def main():
                     "src": "dnstwist",
                     "observed_at": time.time(),
                     "cse_id": cse_id,
+                    "seed_fqdn": seed_fqdn,  # NEW: Original submitted FQDN
                     "seed_registrable": seed_reg,
                     "canonical_fqdn": fqdn,
                     "registrable": registrable(fqdn),

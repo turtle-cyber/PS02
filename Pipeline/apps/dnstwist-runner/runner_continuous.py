@@ -232,10 +232,19 @@ async def emit(record, producer, file_handle=None):
         file_handle.write(ujson.dumps(record) + "\n")
         file_handle.flush()
 
-async def process_domain(domain, cse_id, producer, file_handle, seen_set, redis_client=None):
+async def process_domain(domain, cse_id, seed_fqdn, producer, file_handle, seen_set, redis_client=None):
     """
     Process a single domain through DNSTwist with 3-pass comprehensive analysis
     Returns number of new variants found
+
+    Args:
+        domain: Domain to analyze (usually the registrable domain)
+        cse_id: Customer/Entity ID
+        seed_fqdn: Original submitted FQDN (for seed tracking, e.g., sbi.bank.in)
+        producer: Kafka producer
+        file_handle: Output file handle
+        seen_set: Set of already-processed domains
+        redis_client: Redis client for stats
     """
     # Use the full domain as submitted (not just registrable domain)
     seed_domain = to_ascii(domain.strip())
@@ -311,7 +320,8 @@ async def process_domain(domain, cse_id, producer, file_handle, seen_set, redis_
                 "src": "dnstwist",
                 "observed_at": time.time(),
                 "cse_id": cse_id or "UNKNOWN",
-                "seed_registrable": seed_domain,  # Store the full seed used
+                "seed_fqdn": seed_fqdn,  # Original submitted FQDN (e.g., sbi.bank.in)
+                "seed_registrable": seed_domain,  # Registrable domain for variant generation
                 "canonical_fqdn": fqdn,
                 "registrable": registrable(fqdn),
                 "reasons": [f"dnstwist:live:{pass_name}"],
@@ -354,6 +364,7 @@ async def process_domain(domain, cse_id, producer, file_handle, seen_set, redis_
                     "registrable": registrable(fqdn),
                     "canonical_fqdn": fqdn,
                     "cse_id": cse_id or "UNKNOWN",
+                    "seed_fqdn": seed_fqdn,  # Original submitted FQDN
                     "seed_registrable": seed_domain,
                     "status": "unregistered",
                     "fuzzer": r.get("fuzzer"),
@@ -393,11 +404,16 @@ async def process_csv_seeds(producer, file_handle):
 
     for idx, row in enumerate(seeds, 1):
         cse_id = row["cse_id"].strip()
+        seed_fqdn = row.get("seed_fqdn", "").strip()  # NEW: Optional seed_fqdn from CSV
         seed_reg = row["seed_registrable"].strip()
         if not seed_reg:
             continue
 
-        print(f"\n[runner] [{idx}/{len(seeds)}] ===== Processing: {seed_reg} (CSE: {cse_id}) =====")
+        # Fallback: if seed_fqdn not in CSV, use seed_registrable
+        if not seed_fqdn:
+            seed_fqdn = seed_reg
+
+        print(f"\n[runner] [{idx}/{len(seeds)}] ===== Processing: {seed_reg} (seed_fqdn: {seed_fqdn}, CSE: {cse_id}) =====")
 
         # PASS A (wide, common TLDs)
         print("[runner] Running PASS_A (common TLDs)...")
@@ -426,6 +442,7 @@ async def process_csv_seeds(producer, file_handle):
                     "src": "dnstwist",
                     "observed_at": time.time(),
                     "cse_id": cse_id,
+                    "seed_fqdn": seed_fqdn,  # NEW: Original submitted FQDN
                     "seed_registrable": seed_reg,
                     "canonical_fqdn": fqdn,
                     "registrable": registrable(fqdn),
@@ -452,6 +469,7 @@ async def process_csv_seeds(producer, file_handle):
                         "registrable": registrable(fqdn),
                         "canonical_fqdn": fqdn,
                         "cse_id": cse_id,
+                        "seed_fqdn": seed_fqdn,  # NEW: Original submitted FQDN
                         "seed_registrable": seed_reg,
                         "status": "unregistered",
                         "fuzzer": r.get("fuzzer"),
@@ -530,15 +548,18 @@ async def main():
                 # Get CSE ID if available
                 cse_id = payload.get("cse_id")
 
+                # NEW: Extract seed_fqdn (original submitted FQDN for lookalike tracking)
+                seed_fqdn = payload.get("seed_fqdn") or domain  # Fallback to domain if not provided
+
                 # Check if this is a DNSTwist variant (avoid infinite loop)
                 if payload.get("src") == "dnstwist":
                     continue  # Skip our own variants
 
-                print(f"\n[runner] 📥 Received domain: {domain} (CSE: {cse_id or 'N/A'})")
+                print(f"\n[runner] 📥 Received domain: {domain} (seed_fqdn: {seed_fqdn}, CSE: {cse_id or 'N/A'})")
 
                 # Process domain through DNSTwist
                 try:
-                    variants_found = await process_domain(domain, cse_id, producer, fobj, seen_registrables, redis_client)
+                    variants_found = await process_domain(domain, cse_id, seed_fqdn, producer, fobj, seen_registrables, redis_client)
                     processed_count += 1
                     variant_count += variants_found
 

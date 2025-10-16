@@ -9,6 +9,7 @@ BOOTSTRAP = os.environ.get("KAFKA_BOOTSTRAP") or os.environ.get("KAFKA_BROKERS",
 IN_TOPIC  = os.environ.get("IN_TOPIC", "http.probed")
 OUT_TOPIC = os.environ.get("OUT_TOPIC", "phish.urls.crawl")
 INACTIVE_TOPIC = os.environ.get("INACTIVE_TOPIC", "phish.urls.inactive")  # NEW: Inactive domains
+SEED_TOPIC = os.environ.get("SEED_TOPIC", "phish.urls.seeds")  # NEW: Seed domains (bypass feature-crawler)
 GROUP_ID  = os.environ.get("GROUP_ID", "url-router")
 AUTO_RESET = os.environ.get("AUTO_OFFSET_RESET", "latest")
 FORCE_EARLIEST_ON_START = os.environ.get("FORCE_EARLIEST_ON_START", "0") == "1"
@@ -123,7 +124,7 @@ def extract_url_and_meta(rec: dict) -> Tuple[Optional[str], dict]:
         meta["cse_id"] = cse_id
     
     # pass through a few useful fields if present
-    for key in ("status", "status_code", "title", "registrable", "brand", "seed_registrable", "canonical_fqdn", "fqdn"):
+    for key in ("status", "status_code", "title", "registrable", "brand", "seed_fqdn", "seed_registrable", "canonical_fqdn", "fqdn"):
         if key in rec and rec.get(key) is not None:
             meta[key] = rec[key]
         # also check nested (including final object from http-fetcher)
@@ -180,15 +181,64 @@ def build_output(url: str, meta: dict) -> dict:
     
     return out
 
+def is_seed_domain(meta: dict) -> bool:
+    """
+    Determine if this record is a seed domain itself (not a variant).
+    NEW: Seed criteria: canonical_fqdn == seed_fqdn (exact FQDN match)
+    """
+    canonical_fqdn = meta.get("canonical_fqdn") or meta.get("fqdn", "")
+    seed_fqdn = meta.get("seed_fqdn", "")
+
+    # If no seed_fqdn, it's not part of lookalike tracking
+    if not seed_fqdn:
+        return False
+
+    # If canonical FQDN matches seed FQDN, this IS the seed
+    if canonical_fqdn and seed_fqdn and canonical_fqdn == seed_fqdn:
+        return True
+
+    return False
+
+def build_seed_output(meta: dict) -> dict:
+    """
+    Build output record for seed domains (includes full HTTP probe + DNS data).
+    Seeds bypass feature-crawler and go directly to chroma-ingestor.
+    """
+    out = {
+        "schema_version": "v1",
+        "registrable": meta.get("registrable"),
+        "canonical_fqdn": meta.get("canonical_fqdn") or meta.get("fqdn"),
+        "seed_fqdn": meta.get("seed_fqdn"),  # NEW: Original submitted FQDN
+        "seed_registrable": meta.get("seed_registrable"),
+        "ts": int(time.time() * 1000),
+        "is_seed": True,  # Marker for chroma-ingestor
+    }
+
+    # Include CSE ID
+    if "cse_id" in meta:
+        out["cse_id"] = meta["cse_id"]
+
+    # Include URL if available
+    if "url" in meta:
+        out["url"] = meta["url"]
+
+    # Include all DNS/WHOIS/HTTP data from meta
+    for key in ["status", "status_code", "title", "brand", "fqdn"]:
+        if key in meta and meta.get(key) is not None:
+            out[key] = meta[key]
+
+    return out
+
 # In the main loop, add debug logging:
 def main():
-    log.info(f"starting url-router | bootstrap={BOOTSTRAP} in={IN_TOPIC} out={OUT_TOPIC} inactive={INACTIVE_TOPIC}")
+    log.info(f"starting url-router | bootstrap={BOOTSTRAP} in={IN_TOPIC} out={OUT_TOPIC} inactive={INACTIVE_TOPIC} seed={SEED_TOPIC}")
     consumer = make_consumer()
     producer = make_producer()
 
     forwarded = 0
     dropped = 0
     inactive_queued = 0  # NEW: Track inactive domains
+    seeds_routed = 0  # NEW: Track seed domains
 
     log.info(f"url-router ready, waiting for messages...")
 
@@ -242,6 +292,22 @@ def main():
                     log.debug(f"DROP bad_url offset={msg.offset} url={url!r}")
                     continue
 
+                # NEW: Check if this is a seed domain
+                if is_seed_domain(meta):
+                    # Route seed to SEED_TOPIC (bypasses feature-crawler)
+                    seed_out = build_seed_output(meta)
+                    try:
+                        producer.send(SEED_TOPIC, value=seed_out)
+                        seeds_routed += 1
+                        if seeds_routed % 10 == 0 or LOG_LEVEL == "DEBUG":
+                            cse_info = f" [cse={seed_out.get('cse_id')}]" if seed_out.get('cse_id') else ""
+                            log.info(f"SEED#{seeds_routed} -> {seed_out.get('registrable')}{cse_info} (bypassing feature-crawler)")
+                    except Exception as e:
+                        dropped += 1
+                        log.error(f"ERROR produce seed offset={msg.offset}: {e}")
+                    continue
+
+                # This is a variant - route to feature-crawler
                 out = build_output(norm, meta)
 
                 # DEBUG: Log CSE ID and seed_registrable presence (CRITICAL for feature-crawler tracking)

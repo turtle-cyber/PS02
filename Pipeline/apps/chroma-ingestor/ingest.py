@@ -18,6 +18,7 @@ _tld_extract = tldextract.TLDExtract(suffix_list_urls=None)
 CHROMA_HOST = os.getenv("CHROMA_HOST", "chroma")
 CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
 COLLECTION  = os.getenv("CHROMA_COLLECTION", "domains")
+SEED_COLLECTION = os.getenv("CHROMA_SEED_COLLECTION", "seed_domains")
 MODEL_NAME  = os.getenv("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 BATCH_SIZE  = int(os.getenv("BATCH_SIZE", "128"))
 CHROMA_TENANT = os.getenv("CHROMA_TENANT", DEFAULT_TENANT)
@@ -29,6 +30,7 @@ KAFKA_FEATURES_TOPIC = os.getenv("KAFKA_FEATURES_TOPIC")
 KAFKA_FAILED_TOPIC = os.getenv("KAFKA_FAILED_TOPIC")
 KAFKA_VERDICTS_TOPIC = os.getenv("KAFKA_VERDICTS_TOPIC", "phish.rules.verdicts")  # Verdicts from rule-scorer
 KAFKA_INACTIVE_TOPIC = os.getenv("KAFKA_INACTIVE_TOPIC", "phish.urls.inactive")  # NEW: Inactive/unregistered domains
+KAFKA_SEED_DIRECT_TOPIC = os.getenv("KAFKA_SEED_DIRECT_TOPIC", "phish.urls.seeds")  # NEW: Seed domains (bypass feature-crawler)
 KAFKA_GROUP     = os.getenv("KAFKA_GROUP", "chroma-ingestor")
 JSONL_DIR       = os.getenv("JSONL_DIR")
 FEATURES_JSONL  = os.getenv("FEATURES_JSONL")
@@ -48,6 +50,21 @@ def get_collection():
     print(f"[ingestor] Getting/creating collection: {COLLECTION}")
     return client.get_or_create_collection(
         name=COLLECTION,
+        metadata={"hnsw:space": "cosine"}
+    )
+
+def get_seed_collection():
+    """Create/get ChromaDB seed domains collection"""
+    client: HttpClient = chromadb.HttpClient(
+        host=CHROMA_HOST,
+        port=CHROMA_PORT,
+        settings=Settings(),
+        tenant=CHROMA_TENANT,
+        database=CHROMA_DATABASE,
+    )
+    print(f"[ingestor] Getting/creating seed collection: {SEED_COLLECTION}")
+    return client.get_or_create_collection(
+        name=SEED_COLLECTION,
         metadata={"hnsw:space": "cosine"}
     )
 
@@ -415,7 +432,7 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
     keep = {}
 
     # Common metadata fields
-    for k in ("cse_id","seed_registrable","registrable","reasons","first_seen","stage"):
+    for k in ("cse_id","seed_registrable","registrable","reasons","first_seen","stage","fuzzer"):
         if k in r:
             val = r[k]
             if isinstance(val, list):
@@ -604,14 +621,60 @@ def batched(iterable: Iterable, n: int):
 
 # --------------- ingestion functions ---------------
 
-def upsert_docs(col, model, rows: List[Dict[str,Any]]):
+def is_seed_domain(r: Dict[str,Any]) -> bool:
+    """
+    Check if this record is a seed domain itself (not a variant).
+    NEW: Uses seed_fqdn for exact FQDN matching instead of registrable domain.
+    """
+    canonical_fqdn = r.get("canonical_fqdn", "")
+    seed_fqdn = r.get("seed_fqdn", "")
+    source = r.get("source", "")
+
+    # NEW: Check for explicit marker from url-router
+    if r.get("is_seed") is True:
+        return True
+
+    # NEW: Check FQDN match (exact domain match)
+    if canonical_fqdn and seed_fqdn and canonical_fqdn == seed_fqdn:
+        return True
+
+    # Seed domains: source is frontend_api_direct (direct submissions without lookalike)
+    if "frontend_api_direct" in source:
+        return True
+
+    # REMOVED: Old fallback logic that was too broad and caused duplicates
+    # if not seed_registrable: return True  ← DELETED
+
+    return False
+
+def upsert_docs(col, model, rows: List[Dict[str,Any]], seed_col=None):
     """Embed and upsert documents into ChromaDB"""
+    # Separate seed domains from variants
+    seed_rows = []
+    variant_rows = []
+
+    for r in rows:
+        if is_seed_domain(r):
+            seed_rows.append(r)
+        else:
+            variant_rows.append(r)
+
+    # Upsert variants to main collection
+    if variant_rows:
+        _upsert_to_collection(col, model, variant_rows)
+
+    # Upsert seeds to seed collection
+    if seed_rows and seed_col:
+        _upsert_to_collection(seed_col, model, seed_rows)
+
+def _upsert_to_collection(col, model, rows: List[Dict[str,Any]]):
+    """Internal function to upsert to a specific collection"""
     docs, metas, ids = [], [], []
     for r in rows:
         ids.append(stable_id(r))
         metas.append(to_metadata(r))
         docs.append(record_to_text(r))
-    
+
     print(f"[ingestor] Encoding {len(docs)} documents...")
     vecs = model.encode(docs, batch_size=min(64, len(docs)), show_progress_bar=False, normalize_embeddings=True).tolist()
     
@@ -623,7 +686,7 @@ def upsert_docs(col, model, rows: List[Dict[str,Any]]):
         col.add(ids=ids, documents=docs, embeddings=vecs, metadatas=metas)
         print(f"[ingestor] ✓ Added {len(docs)} documents")
 
-def from_kafka(col, model):
+def from_kafka(col, model, seed_col=None):
     """Stream from Kafka and continuously ingest from multiple topics"""
     topics = []
     if KAFKA_TOPIC:
@@ -636,6 +699,8 @@ def from_kafka(col, model):
         topics.append(KAFKA_VERDICTS_TOPIC)
     if KAFKA_INACTIVE_TOPIC:
         topics.append(KAFKA_INACTIVE_TOPIC)  # NEW: Inactive domains
+    if KAFKA_SEED_DIRECT_TOPIC:
+        topics.append(KAFKA_SEED_DIRECT_TOPIC)  # NEW: Seed domains (bypass feature-crawler)
 
     if not topics:
         raise ValueError("[ingestor] No Kafka topics configured!")
@@ -699,7 +764,7 @@ def from_kafka(col, model):
 
             if len(buffer) >= BATCH_SIZE:
                 print(f"[ingestor] Buffer full ({len(buffer)} docs), upserting...")
-                upsert_docs(col, model, buffer)
+                upsert_docs(col, model, buffer, seed_col)
                 buffer.clear()
 
         # Periodic status update
@@ -708,7 +773,7 @@ def from_kafka(col, model):
 
     if buffer:
         print(f"[ingestor] Flushing remaining {len(buffer)} documents...")
-        upsert_docs(col, model, buffer)
+        upsert_docs(col, model, buffer, seed_col)
     
     print(f"[ingestor] Final statistics: {enrichment_stats}")
 
@@ -782,6 +847,7 @@ if __name__ == "__main__":
 
     try:
         col = get_collection()
+        seed_col = get_seed_collection()
         model = embedder()
 
         # Determine ingestion mode
@@ -801,7 +867,7 @@ if __name__ == "__main__":
             if KAFKA_INACTIVE_TOPIC:
                 topics.append(f"{KAFKA_INACTIVE_TOPIC} (inactive)")  # NEW
             print(f"[ingestor] Streaming mode: consuming from Kafka topics: {', '.join(topics)}")
-            from_kafka(col, model)
+            from_kafka(col, model, seed_col)
         elif has_jsonl:
             sources = []
             if JSONL_DIR:

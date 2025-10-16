@@ -10,6 +10,7 @@ const urlDetectionRouter = require('./routes/urlDetection/url-detection');
 const monitoringStatsRouter = require('./routes/monitoring/monitoring-stats');
 const dnstwistStatsRouter = require('./routes/dnstwist/dnstwist-stats');
 const fcrawlerStatsRouter = require('./routes/featureCrawler/fcrawler-stats');
+const lookalikeReportsRouter = require('./routes/reports/lookalike-reports');
 
 // ============================================
 // Configuration
@@ -150,6 +151,7 @@ app.use('/api', urlDetectionRouter);
 app.use('/api', monitoringStatsRouter);
 app.use('/api', dnstwistStatsRouter);
 app.use('/api', fcrawlerStatsRouter);
+app.use('/api', lookalikeReportsRouter);
 
 /**
  * Health check endpoint
@@ -236,6 +238,7 @@ app.post('/api/submit', async (req, res) => {
             targetTopic = 'raw.hosts';
             message = {
                 fqdn: extractedDomain,
+                seed_fqdn: extractedDomain,  // Track original submitted FQDN for seed identification
                 source: 'frontend_api',
                 timestamp: Math.floor(Date.now() / 1000),
                 cse_id: cse_id,

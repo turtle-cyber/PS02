@@ -224,6 +224,8 @@ services:
     environment:
       - IN_TOPIC=http.probed              # MUST match http-fetcher OUTPUT_TOPIC
       - OUT_TOPIC=phish.urls.crawl        # feature-crawler consumes this
+      - INACTIVE_TOPIC=phish.urls.inactive  # Inactive domains
+      - SEED_TOPIC=phish.urls.seeds       # NEW: Seed domains (bypass feature-crawler)
       - KAFKA_BOOTSTRAP=kafka:9092
       - KAFKA_BROKERS=kafka:9092          # router.py also accepts this
       - AUTO_OFFSET_RESET=earliest
@@ -324,12 +326,14 @@ services:
       - KAFKA_FAILED_TOPIC=phish.urls.failed  # Failed crawls (dead/parked domains)
       - KAFKA_VERDICTS_TOPIC=phish.rules.verdicts  # Verdicts from rule-scorer
       - KAFKA_INACTIVE_TOPIC=phish.urls.inactive  # NEW: Inactive/unregistered domains
+      - KAFKA_SEED_DIRECT_TOPIC=phish.urls.seeds  # NEW: Seed domains (bypass feature-crawler)
       - KAFKA_GROUP=chroma-ingestor
 
       # ---- Chroma 1.x client settings ----
       - CHROMA_HOST=chroma
       - CHROMA_PORT=8000
       - CHROMA_COLLECTION=domains  # Unified collection for domains + features
+      - CHROMA_SEED_COLLECTION=seed_domains  # NEW: Seed domains collection
       # (optional) multi-tenant/db (Chroma 1.x). Defaults are fine.
       # - CHROMA_TENANT=default_tenant
       # - CHROMA_DATABASE=default_database
