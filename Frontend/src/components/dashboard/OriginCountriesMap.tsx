@@ -111,8 +111,8 @@ export const OriginCountriesMap: React.FC<OriginCountriesMapProps> = ({
 
   return (
     <LiquidCard variant="glass" className="p-4">
-      <div className="gap-6 h-[450px] overflow-auto">
-        <div className="w-full h-[300px] flex items-center justify-center">
+      <div className="gap-6 overflow-auto">
+        <div className="w-full h-[200px] flex items-center justify-center">
           {loading ? (
             <CircularProgress size={28} />
           ) : !hasData ? (
@@ -177,7 +177,7 @@ export const OriginCountriesMap: React.FC<OriginCountriesMapProps> = ({
         </div>
 
         {/* Right-side Top-N bars */}
-        <div className="mt-5 grid grid-cols-2 gap-4">
+        <div className="mt-2 grid grid-cols-2 gap-4">
           {(hasData ? top : []).map((row, idx) => (
             <div key={`${row.country}-${idx}`}>
               <div className="flex justify-between items-center mb-1">
