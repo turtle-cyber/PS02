@@ -286,6 +286,7 @@ services:
       - THRESH_PARKED=28
       - MONITOR_SUSPICIOUS=true
       - MONITOR_PARKED=true
+      - GROUP_ID=rule-scorer
       - MONITOR_DAYS=90
     volumes:
       - ../out:/out

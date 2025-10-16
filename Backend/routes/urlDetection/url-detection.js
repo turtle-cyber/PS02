@@ -10,9 +10,13 @@ const chroma = new ChromaClient({
 // Helper function to fetch data directly from Chroma DB
 async function fetchData() {
     try {
-        // Connect to Chroma DB and get the collection
+        // Connect to Chroma DB and get/create the collection
         const client = chroma;
-        const col = await client.getCollection({ name: 'domains' }); // Get collection by name
+        // Use getOrCreateCollection to avoid "collection not found" errors
+        const col = await client.getOrCreateCollection({
+            name: 'domains',
+            metadata: { "hnsw:space": "cosine" }
+        });
 
         // Query Chroma DB to get all records
         const res = await col.get(); // Returns { ids, documents, metadatas }
@@ -31,11 +35,13 @@ async function fetchData() {
 router.get('/url-detection', async (req, res) => {
     try {
         const rows = await fetchData();
-        
+
         if (rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: 'No records found in Chroma DB',
+            return res.status(200).json({
+                success: true,
+                message: 'No domains have been processed yet. Submit URLs to begin analysis.',
+                rowCount: 0,
+                data: [],
             });
         }
 
@@ -46,10 +52,17 @@ router.get('/url-detection', async (req, res) => {
             data: rows, // Return the rows directly in the response
         });
     } catch (error) {
+        console.error('ChromaDB error details:', {
+            message: error.message,
+            name: error.name,
+            stack: error.stack
+        });
+
         res.status(500).json({
             success: false,
             error: 'Failed to fetch data from Chroma DB',
             details: error.message,
+            hint: 'Ensure ChromaDB service is running and accessible'
         });
     }
 });
