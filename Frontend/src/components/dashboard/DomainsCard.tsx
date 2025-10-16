@@ -3,7 +3,6 @@ import { LiquidCard } from "@/components/ui/liquid-card";
 import { Skeleton } from "@mui/material";
 
 export const DomainsCard: React.FC<any> = ({ data, loading }) => {
-  console.log(data);
   return (
     <LiquidCard variant="glass" className="p-6 min-h-[360px]">
       <div className="grid grid-cols-2 gap-20">
