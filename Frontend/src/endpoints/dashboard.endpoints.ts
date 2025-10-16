@@ -1,0 +1,1 @@
+export const GET_URL_INSIGHTS = "/dashboard/url-insights"

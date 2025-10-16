@@ -1,4 +1,4 @@
-import * as React from "react";
+
 import {
   Box,
   AppBar,
@@ -23,6 +23,10 @@ import { ThreatLandscapeBar } from "@/components/dashboard/ThreatLandscapeBar";
 import { TopCseByRisk } from "@/components/dashboard/TopCseByRisk";
 import { ParkedInsightsTable } from "@/components/dashboard/ParkedInsightsTable";
 import { MonthRangePicker } from "@/components/dashboard/MonthRangePicker";
+import { useCallback, useEffect, useState } from "react";
+import { http } from "@/hooks/config";
+import { toast } from "sonner";
+import { GET_URL_INSIGHTS } from "@/endpoints/dashboard.endpoints";
 
 const NavLink = styled(Typography)<{ active?: boolean }>(({ active }) => ({
   color: active ? "#E50914" : "#FFFFFF",
@@ -49,10 +53,33 @@ const NavLink = styled(Typography)<{ active?: boolean }>(({ active }) => ({
   }),
 }));
 
+
+const useGetUrlInsightsData = () => {
+  const [urlInsightsData, setUrlInsightsData] = useState<any>({});
+  const [urlInsightsLoading, setUrlInsightsLoading] = useState(false);
+
+  const fetchUrlInsights = useCallback(async ()=>  {
+      setUrlInsightsLoading(true)
+    try{
+      const response = await http.get(GET_URL_INSIGHTS)
+      setUrlInsightsData(response?.data || {})
+    } catch(error) {
+      toast.error('Error Fetching URL Insight Data')
+      console.error('Error Fetching URL Insight Data with error: ', error)
+    }finally {
+      setUrlInsightsLoading(false)
+    }
+  },[])
+  useEffect(()=>{
+    fetchUrlInsights()
+  },[fetchUrlInsights])
+
+  return {urlInsightsData, urlInsightsLoading, refetch: fetchUrlInsights}
+}
 const Dashboard = () => {
   const location = useLocation();
   const [reportsAnchorEl, setReportsAnchorEl] =
-    React.useState<null | HTMLElement>(null);
+    useState<null | HTMLElement>(null);
   const reportsOpen = Boolean(reportsAnchorEl);
 
   const handleReportsClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -62,6 +89,9 @@ const Dashboard = () => {
   const handleReportsClose = () => {
     setReportsAnchorEl(null);
   };
+
+  /*------ API Data Unpacking ------*/
+  const {urlInsightsData, urlInsightsLoading} = useGetUrlInsightsData();
 
   return (
     <Box
@@ -91,7 +121,6 @@ const Dashboard = () => {
           <MonthRangePicker range={mockDashboard.monthRange} />
         </div>
 
-        {/* Top Grid: Overview, URL Watch, URL Insights */}
         {/* Top Grid: Overview, URL Watch, URL Insights */}
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-6">
           <div className="xl:col-span-4">
@@ -141,7 +170,7 @@ const Dashboard = () => {
             >
               URL Insights
             </Typography>
-            <UrlInsightsTable rows={mockDashboard.urlInsightsRows} />
+            <UrlInsightsTable rows={urlInsightsData?.table_data || []} />
           </div>
         </div>
 
