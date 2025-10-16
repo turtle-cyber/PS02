@@ -252,6 +252,7 @@ app.post('/api/submit', async (req, res) => {
                 fqdn: extractedDomain,
                 canonical_fqdn: extractedDomain,
                 registrable: extractedDomain,
+                seed_registrable: extractedDomain,  // For tracking: no variants in direct flow
                 source: 'frontend_api_direct',
                 timestamp: Math.floor(Date.now() / 1000),
                 cse_id: cse_id,
@@ -447,6 +448,7 @@ app.post('/api/submit-bulk', async (req, res) => {
                         fqdn: extractedDomain,
                         canonical_fqdn: extractedDomain,
                         registrable: extractedDomain,
+                        seed_registrable: extractedDomain,  // For tracking: no variants in direct flow
                         source: 'frontend_api_bulk_direct',
                         timestamp: Math.floor(Date.now() / 1000),
                         cse_id: cse_id,

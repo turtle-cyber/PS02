@@ -848,6 +848,13 @@ def main():
                                     total_variants = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:total") or 0)
                                     failed_count = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:failed") or 0)
 
+                                    # Auto-initialize for direct flow (when seed_registrable == registrable and total not set)
+                                    if total_variants == 0 and seed_registrable == registrable:
+                                        log.info(f"[seed-track] 🔧 Auto-initializing direct flow seed '{seed_registrable}' with total=1")
+                                        redis_client.set(f"fcrawler:seed:{seed_registrable}:total", 1, ex=7776000)
+                                        redis_client.set(f"fcrawler:seed:{seed_registrable}:status", "pending", ex=7776000)
+                                        total_variants = 1
+
                                     # Log progress
                                     log.info(f"[seed-track] '{seed_registrable}': {new_crawled}/{total_variants} crawled, {failed_count} failed")
 
@@ -904,6 +911,13 @@ def main():
                                         new_failed = redis_client.incr(f"fcrawler:seed:{seed_registrable}:failed")
                                         crawled_count = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:crawled") or 0)
                                         total_variants = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:total") or 0)
+
+                                        # Auto-initialize for direct flow (when seed_registrable == registrable and total not set)
+                                        if total_variants == 0 and seed_registrable == registrable:
+                                            log.info(f"[seed-track] 🔧 Auto-initializing direct flow seed '{seed_registrable}' with total=1")
+                                            redis_client.set(f"fcrawler:seed:{seed_registrable}:total", 1, ex=7776000)
+                                            redis_client.set(f"fcrawler:seed:{seed_registrable}:status", "pending", ex=7776000)
+                                            total_variants = 1
 
                                         log.info(f"[seed-track] TIMEOUT: '{seed_registrable}': {crawled_count}/{total_variants} crawled, {new_failed} failed")
 
@@ -963,6 +977,13 @@ def main():
                                         new_failed = redis_client.incr(f"fcrawler:seed:{seed_registrable}:failed")
                                         crawled_count = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:crawled") or 0)
                                         total_variants = int(redis_client.get(f"fcrawler:seed:{seed_registrable}:total") or 0)
+
+                                        # Auto-initialize for direct flow (when seed_registrable == registrable and total not set)
+                                        if total_variants == 0 and seed_registrable == registrable:
+                                            log.info(f"[seed-track] 🔧 Auto-initializing direct flow seed '{seed_registrable}' with total=1")
+                                            redis_client.set(f"fcrawler:seed:{seed_registrable}:total", 1, ex=7776000)
+                                            redis_client.set(f"fcrawler:seed:{seed_registrable}:status", "pending", ex=7776000)
+                                            total_variants = 1
 
                                         log.info(f"[seed-track] ERROR ({error_type}): '{seed_registrable}': {crawled_count}/{total_variants} crawled, {new_failed} failed")
 
