@@ -110,7 +110,7 @@ def to_ascii(s):
     except Exception:
         return s.lower()
 
-def run_dnstwist(seed, fuzzers, tld_dict, registered_only=True):
+def run_dnstwist(seed, fuzzers, tld_dict, word_dict=None, registered_only=True):
     """Run dnstwist with given parameters"""
     cmd = [
         "dnstwist",
@@ -119,13 +119,18 @@ def run_dnstwist(seed, fuzzers, tld_dict, registered_only=True):
         "--format", "json",
         "--fuzzers", fuzzers,
         "--tld", tld_dict,
-        seed
     ]
+
+    # Add dictionary (default to ENGLISH_DICT if not specified)
+    dictionary = word_dict if word_dict else ENGLISH_DICT
+    cmd.extend(["--dictionary", dictionary])
 
     # Only add --registered flag if requested (for CSV seeds)
     # For live processing, we skip --registered to get all variants
     if registered_only:
         cmd.insert(5, "--registered")
+
+    cmd.append(seed)
 
     try:
         result = subprocess.run(
@@ -280,7 +285,7 @@ async def process_domain(domain, cse_id, producer, file_handle, seen_set, redis_
     if redis_client:
         redis_client.hset(f"dnstwist:progress:{seed_domain}", "current_pass", "C")
     print(f"[dnstwist] Running PASS_C (high-risk patterns)...")
-    results_c, unregistered_c = run_dnstwist(seed_domain, PASS_C_FUZZERS, COMMON_TLDS, registered_only=True)
+    results_c, unregistered_c = run_dnstwist(seed_domain, PASS_C_FUZZERS, COMMON_TLDS, HIGH_RISK_DICT, registered_only=True)
     print(f"[dnstwist] ✓ PASS_C: {len(results_c)} registered, {len(unregistered_c)} unregistered")
 
     total_results = len(results_a) + len(results_b) + len(results_c)
@@ -411,7 +416,7 @@ async def process_csv_seeds(producer, file_handle):
 
         # PASS C (high-risk)
         print("[runner] Running PASS_C (high-risk patterns)...")
-        results_c, unregistered_c = run_dnstwist(seed_reg, PASS_C_FUZZERS, COMMON_TLDS, registered_only=True)
+        results_c, unregistered_c = run_dnstwist(seed_reg, PASS_C_FUZZERS, COMMON_TLDS, HIGH_RISK_DICT, registered_only=True)
         print(f"[runner] ✓ PASS_C: {len(results_c)} registered, {len(unregistered_c)} unregistered")
 
         # Emit only registered results
