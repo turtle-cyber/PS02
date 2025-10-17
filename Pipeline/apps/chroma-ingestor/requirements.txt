@@ -4,3 +4,4 @@ sentence-transformers==2.2.2
 huggingface_hub<0.25
 ujson==5.10.0
 tldextract==5.1.1
+redis==5.0.1

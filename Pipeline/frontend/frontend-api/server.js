@@ -10,6 +10,7 @@ const urlDetectionRouter = require('./routes/urlDetection/url-detection');
 const monitoringStatsRouter = require('./routes/monitoring/monitoring-stats');
 const dnstwistStatsRouter = require('./routes/dnstwist/dnstwist-stats');
 const fcrawlerStatsRouter = require('./routes/featureCrawler/fcrawler-stats');
+const chromaQueryRouter = require('./routes/chroma/chroma-query');
 
 // ============================================
 // Configuration
@@ -150,6 +151,7 @@ app.use('/api', urlDetectionRouter);
 app.use('/api', monitoringStatsRouter);
 app.use('/api', dnstwistStatsRouter);
 app.use('/api', fcrawlerStatsRouter);
+app.use('/api/chroma', chromaQueryRouter);
 
 /**
  * Health check endpoint
@@ -241,7 +243,8 @@ app.post('/api/submit', async (req, res) => {
                 cse_id: cse_id,
                 notes: notes,
                 original_input: inputUrl,
-                submitter_ip: req.ip
+                submitter_ip: req.ip,
+                is_original_seed: true  // Mark as original seed for ChromaDB routing
             };
             pipelineDescription = 'full (includes DNSTwist variant generation)';
             estimatedTime = '3-5 minutes';
@@ -441,7 +444,8 @@ app.post('/api/submit-bulk', async (req, res) => {
                         notes: notes,
                         original_input: inputUrl,
                         submitter_ip: req.ip,
-                        bulk_batch_index: i
+                        bulk_batch_index: i,
+                        is_original_seed: true  // Mark as original seed for ChromaDB routing
                     };
                 } else {
                     message = {

@@ -849,6 +849,10 @@ def main():
                         # Features
                         feat = build_features(art.get("final_url"), Path(art["html_path"]), art, registrable, cse_id)
 
+                        # ✅ PRESERVE CRITICAL METADATA FOR CHROMA ROUTING
+                        feat["seed_registrable"] = seed_registrable
+                        feat["is_original_seed"] = rec.get("is_original_seed", False)
+
                         # ---- Kafka publish ----
                         producer.send(OUT_TOPIC_RAW, value=art, key=url.encode("utf-8"))
                         producer.send(OUT_TOPIC_FEAT, value=feat, key=url.encode("utf-8"))

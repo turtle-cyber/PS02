@@ -330,7 +330,8 @@ services:
       # ---- Chroma 1.x client settings ----
       - CHROMA_HOST=chroma
       - CHROMA_PORT=8000
-      - CHROMA_COLLECTION=domains  # Unified collection for domains + features
+      - CHROMA_COLLECTION=domains  # Collection for lookalike variants
+      - CHROMA_ORIGINAL_COLLECTION=original_domains  # Collection for original seed domains
       # (optional) multi-tenant/db (Chroma 1.x). Defaults are fine.
       # - CHROMA_TENANT=default_tenant
       # - CHROMA_DATABASE=default_database

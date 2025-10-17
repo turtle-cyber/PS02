@@ -305,7 +305,7 @@ def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
 
     # Bring common metadata if available
     for src in (domain or {}), (http or {}), (feat or {}):
-        for key in ("cse_id","seed_registrable"):
+        for key in ("cse_id","seed_registrable","is_original_seed"):
             if key in src and key not in out:
                 out[key] = src[key]
 
@@ -394,10 +394,11 @@ async def main():
             out_key = (merged.get("registrable") or merged.get("canonical_fqdn") or "").lower()
             await producer.send_and_wait(OUTPUT_TOPIC, json.dumps(merged), key=out_key)
 
-            # Log verdicts for debugging
+            # Log verdicts for debugging (use full FQDN, not registrable)
             verdict = merged.get("verdict", "unknown")
             if verdict in ("parked", "suspicious", "phishing"):
-                print(f"[scorer] {out_key}: {verdict} (monitoring: {merged.get('requires_monitoring', False)})")
+                log_fqdn = merged.get("canonical_fqdn") or merged.get("fqdn") or merged.get("registrable") or "unknown"
+                print(f"[scorer] {log_fqdn}: {verdict} (monitoring: {merged.get('requires_monitoring', False)})")
 
             # Optional JSONL
             if jsonl_fp:

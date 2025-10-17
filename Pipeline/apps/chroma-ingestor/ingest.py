@@ -1,4 +1,4 @@
-import os, glob, time, hashlib, ujson as json
+import os, glob, time, hashlib, ujson as json, redis
 from typing import Dict, Any, Iterable, List
 
 # --- Chroma client (HTTP, server mode) ---
@@ -18,6 +18,7 @@ _tld_extract = tldextract.TLDExtract(suffix_list_urls=None)
 CHROMA_HOST = os.getenv("CHROMA_HOST", "chroma")
 CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
 COLLECTION  = os.getenv("CHROMA_COLLECTION", "domains")
+ORIGINAL_COLLECTION = os.getenv("CHROMA_ORIGINAL_COLLECTION", "original_domains")  # NEW: Collection for original seeds
 MODEL_NAME  = os.getenv("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 BATCH_SIZE  = int(os.getenv("BATCH_SIZE", "128"))
 CHROMA_TENANT = os.getenv("CHROMA_TENANT", DEFAULT_TENANT)
@@ -26,6 +27,47 @@ CHROMA_DATABASE = os.getenv("CHROMA_DATABASE", DEFAULT_DATABASE)
 KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP")
 KAFKA_TOPIC     = os.getenv("KAFKA_TOPIC")
 KAFKA_FEATURES_TOPIC = os.getenv("KAFKA_FEATURES_TOPIC")
+
+# Redis connection for fetching DNSTwist stats
+REDIS_HOST = os.getenv("REDIS_HOST", "redis")
+REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
+
+def get_redis_client():
+    """Create Redis client for DNSTwist stats lookup"""
+    try:
+        r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True, socket_connect_timeout=2)
+        r.ping()
+        print(f"[ingestor] ✓ Connected to Redis at {REDIS_HOST}:{REDIS_PORT}")
+        return r
+    except Exception as e:
+        print(f"[ingestor] ⚠️  Redis connection failed: {e}. DNSTwist stats will not be available.")
+        return None
+
+redis_client = get_redis_client()
+
+def fetch_dnstwist_stats(domain):
+    """Fetch DNSTwist variant statistics from Redis for a domain"""
+    if not redis_client:
+        return None
+
+    try:
+        variants = redis_client.get(f"dnstwist:variants:{domain}")
+        unregistered = redis_client.get(f"dnstwist:unregistered:{domain}")
+        timestamp = redis_client.get(f"dnstwist:timestamp:{domain}")
+
+        if not variants and not timestamp:
+            return None  # Not processed by DNSTwist
+
+        return {
+            "variants_registered": int(variants) if variants else 0,
+            "variants_unregistered": int(unregistered) if unregistered else 0,
+            "total_generated": (int(variants) if variants else 0) + (int(unregistered) if unregistered else 0),
+            "processed_at": int(timestamp) if timestamp else 0
+        }
+    except Exception as e:
+        print(f"[ingestor] ⚠️  Failed to fetch DNSTwist stats for {domain}: {e}")
+        return None
+
 KAFKA_FAILED_TOPIC = os.getenv("KAFKA_FAILED_TOPIC")
 KAFKA_VERDICTS_TOPIC = os.getenv("KAFKA_VERDICTS_TOPIC", "phish.rules.verdicts")  # Verdicts from rule-scorer
 KAFKA_INACTIVE_TOPIC = os.getenv("KAFKA_INACTIVE_TOPIC", "phish.urls.inactive")  # NEW: Inactive/unregistered domains
@@ -35,8 +77,8 @@ FEATURES_JSONL  = os.getenv("FEATURES_JSONL")
 
 # ---------------- helpers ----------------
 
-def get_collection():
-    """Create/get ChromaDB collection with proper settings"""
+def get_collections():
+    """Create/get both ChromaDB collections with proper settings"""
     print(f"[ingestor] Connecting to ChromaDB at {CHROMA_HOST}:{CHROMA_PORT}")
     client: HttpClient = chromadb.HttpClient(
         host=CHROMA_HOST,
@@ -45,11 +87,21 @@ def get_collection():
         tenant=CHROMA_TENANT,
         database=CHROMA_DATABASE,
     )
-    print(f"[ingestor] Getting/creating collection: {COLLECTION}")
-    return client.get_or_create_collection(
+    print(f"[ingestor] Getting/creating collections: {COLLECTION} (variants) and {ORIGINAL_COLLECTION} (original seeds)")
+
+    # Collection for variants/lookalikes
+    variants_col = client.get_or_create_collection(
         name=COLLECTION,
         metadata={"hnsw:space": "cosine"}
     )
+
+    # Collection for original seeds
+    originals_col = client.get_or_create_collection(
+        name=ORIGINAL_COLLECTION,
+        metadata={"hnsw:space": "cosine"}
+    )
+
+    return variants_col, originals_col
 
 def embedder():
     """Load embedding model"""
@@ -374,24 +426,19 @@ def extract_registrable(domain_or_url: str) -> str:
 
 def stable_id(r: Dict[str,Any]) -> str:
     """
-    Upsert key: Use URL hash for unique per-URL tracking.
+    Upsert key: Use URL hash for unique per-URL tracking with FULL FQDN.
     Each unique URL gets its own record, even on the same domain.
     Domain-only records generate a canonical URL to ensure unified IDs.
     """
     # Get URL or generate canonical URL for domain-only records
     url = r.get("url") or r.get("final_url")
 
-    # If no URL but we have domain info, generate canonical URL
+    # If no URL but we have domain info, generate canonical URL using FULL FQDN
     if not (url and isinstance(url, str) and url.strip()):
-        registrable = r.get("registrable")
-        if not registrable:
-            fqdn = r.get("canonical_fqdn") or r.get("fqdn") or r.get("host")
-            if fqdn:
-                registrable = extract_registrable(fqdn)
-
-        if registrable:
-            # Generate canonical URL for domain-only records
-            url = f"https://{registrable}/"
+        fqdn = r.get("canonical_fqdn") or r.get("fqdn") or r.get("host")
+        if fqdn:
+            # Generate canonical URL with FULL FQDN (not registrable)
+            url = f"https://{fqdn}/"
 
     # URL-based ID generation (now handles both explicit URLs and canonical URLs)
     if url and isinstance(url, str) and url.strip():
@@ -400,12 +447,17 @@ def stable_id(r: Dict[str,Any]) -> str:
         # Create stable hash from normalized URL
         url_hash = hashlib.sha1(normalized_url.encode()).hexdigest()[:16]
 
-        # Extract registrable for grouping
-        registrable = extract_registrable(url)
-        if registrable:
-            return f"{registrable}:{url_hash}"
-        else:
-            return f"url-{url_hash}"
+        # Extract FULL hostname (FQDN) for ID prefix, not just registrable
+        from urllib.parse import urlparse
+        try:
+            hostname = urlparse(normalized_url).hostname
+            if hostname:
+                return f"{hostname}:{url_hash}"
+        except:
+            pass
+
+        # Fallback to URL hash only
+        return f"url-{url_hash}"
 
     # Fallback: content hash
     h = hashlib.sha1(json.dumps(r, sort_keys=True).encode()).hexdigest()
@@ -415,13 +467,18 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
     keep = {}
 
     # Common metadata fields
-    for k in ("cse_id","seed_registrable","registrable","reasons","first_seen","stage"):
+    for k in ("cse_id","seed_registrable","registrable","reasons","first_seen","stage","is_original_seed"):
         if k in r:
             val = r[k]
             if isinstance(val, list):
                 keep[k] = ",".join(str(v) for v in val)
             else:
                 keep[k] = val
+
+    # DNSTwist stats (for original seeds only)
+    for k in ("dnstwist_variants_registered", "dnstwist_variants_unregistered", "dnstwist_total_generated", "dnstwist_processed_at"):
+        if k in r:
+            keep[k] = r[k]
 
     # Domain-specific metadata
     if "dns" in r and isinstance(r["dns"], dict):
@@ -617,26 +674,61 @@ def batched(iterable: Iterable, n: int):
 
 # --------------- ingestion functions ---------------
 
-def upsert_docs(col, model, rows: List[Dict[str,Any]]):
-    """Embed and upsert documents into ChromaDB"""
-    docs, metas, ids = [], [], []
-    for r in rows:
-        ids.append(stable_id(r))
-        metas.append(to_metadata(r))
-        docs.append(record_to_text(r))
-    
-    print(f"[ingestor] Encoding {len(docs)} documents...")
-    vecs = model.encode(docs, batch_size=min(64, len(docs)), show_progress_bar=False, normalize_embeddings=True).tolist()
-    
-    try:
-        col.upsert(ids=ids, documents=docs, embeddings=vecs, metadatas=metas)
-        print(f"[ingestor] ✓ Upserted {len(docs)} documents")
-    except Exception as e:
-        print(f"[ingestor] Upsert failed, trying add: {e}")
-        col.add(ids=ids, documents=docs, embeddings=vecs, metadatas=metas)
-        print(f"[ingestor] ✓ Added {len(docs)} documents")
+def upsert_docs(variants_col, originals_col, model, rows: List[Dict[str,Any]]):
+    """Embed and upsert documents into ChromaDB (routing to correct collection)"""
+    # Separate rows into originals and variants
+    original_rows = [r for r in rows if r.get("is_original_seed") is True]
+    variant_rows = [r for r in rows if r.get("is_original_seed") is not True]
 
-def from_kafka(col, model):
+    # Process originals
+    if original_rows:
+        docs, metas, ids = [], [], []
+        for r in original_rows:
+            # Fetch and add DNSTwist stats for original seeds
+            domain = r.get("canonical_fqdn") or r.get("fqdn") or r.get("registrable")
+            if domain:
+                stats = fetch_dnstwist_stats(domain)
+                if stats:
+                    r["dnstwist_variants_registered"] = stats["variants_registered"]
+                    r["dnstwist_variants_unregistered"] = stats["variants_unregistered"]
+                    r["dnstwist_total_generated"] = stats["total_generated"]
+                    r["dnstwist_processed_at"] = stats["processed_at"]
+
+            ids.append(stable_id(r))
+            metas.append(to_metadata(r))
+            docs.append(record_to_text(r))
+
+        print(f"[ingestor] Encoding {len(docs)} original seed documents...")
+        vecs = model.encode(docs, batch_size=min(64, len(docs)), show_progress_bar=False, normalize_embeddings=True).tolist()
+
+        try:
+            originals_col.upsert(ids=ids, documents=docs, embeddings=vecs, metadatas=metas)
+            print(f"[ingestor] ✓ Upserted {len(docs)} documents to '{ORIGINAL_COLLECTION}' collection")
+        except Exception as e:
+            print(f"[ingestor] Upsert failed, trying add: {e}")
+            originals_col.add(ids=ids, documents=docs, embeddings=vecs, metadatas=metas)
+            print(f"[ingestor] ✓ Added {len(docs)} documents to '{ORIGINAL_COLLECTION}' collection")
+
+    # Process variants
+    if variant_rows:
+        docs, metas, ids = [], [], []
+        for r in variant_rows:
+            ids.append(stable_id(r))
+            metas.append(to_metadata(r))
+            docs.append(record_to_text(r))
+
+        print(f"[ingestor] Encoding {len(docs)} variant documents...")
+        vecs = model.encode(docs, batch_size=min(64, len(docs)), show_progress_bar=False, normalize_embeddings=True).tolist()
+
+        try:
+            variants_col.upsert(ids=ids, documents=docs, embeddings=vecs, metadatas=metas)
+            print(f"[ingestor] ✓ Upserted {len(docs)} documents to '{COLLECTION}' collection")
+        except Exception as e:
+            print(f"[ingestor] Upsert failed, trying add: {e}")
+            variants_col.add(ids=ids, documents=docs, embeddings=vecs, metadatas=metas)
+            print(f"[ingestor] ✓ Added {len(docs)} documents to '{COLLECTION}' collection")
+
+def from_kafka(variants_col, originals_col, model):
     """Stream from Kafka and continuously ingest from multiple topics"""
     topics = []
     if KAFKA_TOPIC:
@@ -712,7 +804,7 @@ def from_kafka(col, model):
 
             if len(buffer) >= BATCH_SIZE:
                 print(f"[ingestor] Buffer full ({len(buffer)} docs), upserting...")
-                upsert_docs(col, model, buffer)
+                upsert_docs(variants_col, originals_col, model, buffer)
                 buffer.clear()
 
         # Periodic status update
@@ -721,11 +813,11 @@ def from_kafka(col, model):
 
     if buffer:
         print(f"[ingestor] Flushing remaining {len(buffer)} documents...")
-        upsert_docs(col, model, buffer)
+        upsert_docs(variants_col, originals_col, model, buffer)
     
     print(f"[ingestor] Final statistics: {enrichment_stats}")
 
-def from_jsonl(col, model):
+def from_jsonl(variants_col, originals_col, model):
     """Batch ingest from JSONL files"""
     all_paths = []
 
@@ -773,7 +865,7 @@ def from_jsonl(col, model):
 
                     buffer.append(obj)
                     if len(buffer) >= BATCH_SIZE:
-                        upsert_docs(col, model, buffer)
+                        upsert_docs(variants_col, originals_col, model, buffer)
                         total_records += len(buffer)
                         buffer.clear()
                 except Exception as e:
@@ -781,7 +873,7 @@ def from_jsonl(col, model):
                     continue
 
             if buffer:
-                upsert_docs(col, model, buffer)
+                upsert_docs(variants_col, originals_col, model, buffer)
                 total_records += len(buffer)
 
         print(f"[ingestor] Completed {p}: processed {line_count} lines")
@@ -794,7 +886,7 @@ if __name__ == "__main__":
     print("[ingestor] Starting ChromaDB ingestor...")
 
     try:
-        col = get_collection()
+        variants_col, originals_col = get_collections()
         model = embedder()
 
         # Determine ingestion mode
@@ -814,7 +906,7 @@ if __name__ == "__main__":
             if KAFKA_INACTIVE_TOPIC:
                 topics.append(f"{KAFKA_INACTIVE_TOPIC} (inactive)")  # NEW
             print(f"[ingestor] Streaming mode: consuming from Kafka topics: {', '.join(topics)}")
-            from_kafka(col, model)
+            from_kafka(variants_col, originals_col, model)
         elif has_jsonl:
             sources = []
             if JSONL_DIR:
@@ -822,7 +914,7 @@ if __name__ == "__main__":
             if FEATURES_JSONL:
                 sources.append(f"features: {FEATURES_JSONL}")
             print(f"[ingestor] Batch mode: ingesting from {', '.join(sources)}")
-            from_jsonl(col, model)
+            from_jsonl(variants_col, originals_col, model)
         else:
             raise SystemExit("[ingestor] ERROR: Set KAFKA_* or JSONL_DIR/FEATURES_JSONL for ingestion.")
     except Exception as e:
