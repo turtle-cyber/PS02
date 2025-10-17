@@ -10,6 +10,7 @@ const urlDetectionRouter = require('./routes/urlDetection/url-detection');
 const monitoringStatsRouter = require('./routes/monitoring/monitoring-stats');
 const dnstwistStatsRouter = require('./routes/dnstwist/dnstwist-stats');
 const fcrawlerStatsRouter = require('./routes/featureCrawler/fcrawler-stats');
+const artifactsRouter = require('./routes/artifacts/artifacts');
 
 // ============================================
 // Configuration
@@ -150,6 +151,7 @@ app.use('/api', urlDetectionRouter);
 app.use('/api', monitoringStatsRouter);
 app.use('/api', dnstwistStatsRouter);
 app.use('/api', fcrawlerStatsRouter);
+app.use('/api', artifactsRouter);
 
 /**
  * Health check endpoint

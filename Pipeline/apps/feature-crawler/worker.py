@@ -92,29 +92,41 @@ SPECIALS = set("@&%$!#?=._-/")
 
 def get_safe_filename(cse_id: str, registrable: str, url: str) -> str:
     """
-    Generate filesystem-safe filename from CSE ID + URL hash.
-    This ensures uniqueness even when multiple URLs share the same CSE ID.
-    
-    Format: "{cse_id}_{url_hash_8chars}"
-    Example: "sdbi.co.in_1a6a63f4_a3f29c81" for https://sdbi.co.in/login
-             "sdbi.co.in_1a6a63f4_7b2e4d95" for https://sdbi.co.in/verify
-    
-    Falls back to registrable domain or full URL hash if CSE ID missing.
+    Generate filesystem-safe filename from domain + URL hash.
+    This ensures human-readable filenames while maintaining uniqueness.
+
+    Format: "{sanitized_domain}_{url_hash_8chars}"
+    Example: "sbi.bank.in_a3f29c81" for https://sbi.bank.in/login
+             "login.onlinesbi.co.in_7b2e4d95" for https://login.onlinesbi.co.in/verify
+
+    Falls back to CSE ID or full URL hash if domain extraction fails.
     """
     # Generate short hash from URL for uniqueness
     url_hash = hashlib.sha256(url.encode("utf-8")).hexdigest()[:8]
-    
+
+    # Try to extract full domain from URL (including subdomains)
+    try:
+        parsed = urlparse(url)
+        domain = parsed.netloc or parsed.path.split('/')[0]
+        if domain:
+            # Sanitize domain for filesystem safety (replace unsafe chars with underscores)
+            safe_domain = re.sub(r"[^a-zA-Z0-9.-]", "_", domain)
+            return f"{safe_domain}_{url_hash}"
+    except Exception:
+        pass
+
+    # Fallback 1: use registrable domain if available
+    if registrable:
+        safe_registrable = re.sub(r"[^a-zA-Z0-9.-]", "_", registrable)
+        return f"{safe_registrable}_{url_hash}"
+
+    # Fallback 2: use CSE ID if available
     if cse_id:
-        # Replace colons and slashes with underscores for filesystem safety
         safe_id = cse_id.replace(":", "_").replace("/", "_").replace("\\", "_")
-        # Append URL hash to ensure uniqueness
         return f"{safe_id}_{url_hash}"
-    elif registrable:
-        # Fallback: use registrable + URL hash
-        return f"{registrable}_{url_hash}"
-    else:
-        # Last resort: full URL hash (original behavior)
-        return hashlib.sha256(url.encode("utf-8")).hexdigest()
+
+    # Last resort: full URL hash (original behavior)
+    return hashlib.sha256(url.encode("utf-8")).hexdigest()
 
 def url_struct_features(url: str) -> Dict[str, Any]:
     parts = urlsplit(url)

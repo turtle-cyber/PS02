@@ -18,13 +18,24 @@ async function fetchData() {
             metadata: { "hnsw:space": "cosine" }
         });
 
-        // Query Chroma DB to get all records
+        // Query Chroma DB to get all records (including metadata with file paths)
         const res = await col.get(); // Returns { ids, documents, metadatas }
 
-        // Extract the IDs array (each ID represents one record/URL)
-        const rows = res?.ids || [];
+        // Combine IDs with metadata to return complete records
+        const rows = [];
+        const ids = res?.ids || [];
+        const metadatas = res?.metadatas || [];
+        const documents = res?.documents || [];
 
-        return rows; // Return the array of IDs (each represents one domain/URL)
+        for (let i = 0; i < ids.length; i++) {
+            rows.push({
+                id: ids[i],
+                metadata: metadatas[i] || {},
+                document: documents[i] || ''
+            });
+        }
+
+        return rows; // Return array of complete records with metadata (including file paths)
     } catch (error) {
         console.error("Error fetching data from Chroma DB:", error);
         throw error;

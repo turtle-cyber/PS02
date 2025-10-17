@@ -590,6 +590,19 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
             keep["suspicious_form_count"] = forms["suspicious_form_count"]
             keep["has_suspicious_forms"] = forms["suspicious_form_count"] > 0
 
+    # CRITICAL: Store file paths for HTML/PDF/screenshots from feature-crawler
+    if "html_path" in r:
+        keep["html_path"] = r["html_path"]
+
+    if "pdf_path" in r:
+        keep["pdf_path"] = r["pdf_path"]
+
+    if "screenshot_paths" in r and isinstance(r["screenshot_paths"], list) and len(r["screenshot_paths"]) > 0:
+        # ChromaDB metadata only supports strings, not lists - store as comma-separated
+        keep["screenshot_path"] = r["screenshot_paths"][0]  # Store first screenshot path
+        if len(r["screenshot_paths"]) > 1:
+            keep["screenshot_paths_all"] = ",".join(r["screenshot_paths"])
+
     return keep
 
 def batched(iterable: Iterable, n: int):
