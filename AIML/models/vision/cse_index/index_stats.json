@@ -1,0 +1,8 @@
+{
+  "n_screenshots": 85,
+  "embedding_dim": 512,
+  "model_name": "ViT-B-32",
+  "avg_pairwise_similarity": 0.45337897539138794,
+  "similarity_min": 0.06287640333175659,
+  "similarity_max": 1.0000004768371582
+}

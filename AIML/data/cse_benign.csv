@@ -1,0 +1,208 @@
+url,registrable,url_length,url_entropy,num_subdomains,is_idn,has_repeated_digits,mixed_script,domain_age_days,is_newly_registered,is_very_new,registrar,country,days_until_expiry,is_self_signed,cert_age_days,has_credential_form,form_count,password_fields,email_fields,has_suspicious_forms,suspicious_form_count,keyword_count,html_size,external_links,iframe_count,js_obfuscated,js_keylogger,js_form_manipulation,js_eval_usage,js_risk_score,redirect_count,had_redirects,a_count,mx_count,ns_count,favicon_md5,favicon_sha256
+https://kotakbank.com/,kotakbank.com,22,3.6292,0,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,0,58288,6,0,1,0,0,0,0,4,1,0,0,0,def00c11b1596db4efee6a9fbe64fc27,95c427fa3143b1896faf42a6406686ce7602cb39052081bb32d12b51c9e047e4
+https://bharatpetroleum.in/,bharatpetroleum.in,27,3.9121,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,294,0,0,0,0,0,0,0,0,0,0,0,0,,
+,yonosbi.sbi,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,iciciforexservices.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,onlinesbi.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,yesbank.co.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,viijayabank.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,sbilife.co.in,0,0.0,0,0,0,0,8172,0,0,Endurance Digital Domain Technology Private Limited,IN,1689,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,2,,
+,corpbank.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,syndicatebank.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,.nic.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,pmo.gov.in,0,0.0,0,0,0,0,434,0,0,National Informatics Centre,,295,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,,
+,incometax.gov.in,0,0.0,0,0,0,0,8111,0,0,National Informatics Centre,,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,2,,
+,vi.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,passportindia.gov.in,0,0.0,0,0,0,0,6024,0,0,National Informatics Centre,IN,184,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,3,4,,
+,nseindia.com,0,0.0,0,0,0,0,9920,0,0,BigRock Solutions Ltd,IN,2862,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,8,,
+,coalindia.in,0,0.0,0,0,0,0,6632,0,0,Gandi SAS,,307,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,,
+,isro.gov.in,0,0.0,0,0,0,0,7547,0,0,National Informatics Centre,,122,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,6,,
+https://rbi.org.in/,rbi.org.in,19,3.5766,1,0,0,0,8264,0,0,Sify Digital Services Limited,US,136,0,999,0,1,0,0,0,0,1,199049,365,0,1,1,1,0,35,61,1,2,2,6,7bc1ff0d792e15a4d848badbce1651df,85ad5f29fe93b57944ad8e72f5f915da1969287e431ae5154d0564fa203a83c0
+,upi.org.in,0,0.0,0,0,0,0,489,0,0,HIOX SOFTWARES PRIVATE LIMITED,,240,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,npci.org.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,paytmbank.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,bbps.org.in,0,0.0,0,0,0,0,3767,0,0,Net 4 India Limited,,250,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,india.gov.in,0,0.0,0,0,0,0,7323,0,0,National Informatics Centre,IN,346,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,
+,redbus.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,zomato.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,airindia.co.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,makemytrip.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,goibibo.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,goindigo.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,yatra.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,airvistara.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,denabank.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,starhealth.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,drdo.gov.in,0,0.0,0,0,0,0,7837,0,0,National Informatics Centre,IN,197,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,
+,iitm.ac.in,0,0.0,0,0,0,0,8264,0,0,ERNET India,,501,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,3,,
+,bihar.gov.in,0,0.0,0,0,0,0,6419,0,0,National Informatics Centre,,154,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,,
+,email.gov.in,0,0.0,0,0,0,0,3218,0,0,National Informatics Centre,IN,68,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,3,,
+,manipalhospitals.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,fortishealthcare.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,cg.gov.in,0,0.0,0,0,0,0,7388,0,0,National Informatics Centre,IN,281,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,
+,hp.gov.in,0,0.0,0,0,0,0,7416,0,0,National Informatics Centre,IN,253,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,1,,
+,andaman.gov.in,0,0.0,0,0,0,0,7452,0,0,National Informatics Centre,,217,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+https://ongcindia.com/,ongcindia.com,22,3.7888,0,0,0,0,10291,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,1030,0,999,0,0,0,0,0,0,0,39104,0,0,0,0,0,0,0,0,0,2,1,3,,
+https://nhai.gov.in/#/,nhai.gov.in,22,3.6412,1,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,391025,77,0,0,0,0,0,0,95,1,0,0,0,410361453a2aa56bb4b574e4342c92ef,2d3fab1d9a271a36495981e9e535054378ff5beac5c867a764b45bf6532557ff
+https://gailonline.com/,gailonline.com,23,3.882,0,0,0,0,8041,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,359,0,999,0,2,0,0,0,0,1,102773,248,0,0,0,0,0,0,82,1,1,0,4,3a7d55ad9dde3f4a01ecb94d83ffd885,d420696d9286ba0bc4e643901a4771b031ef4eae278317917527743a219ba0f9
+https://www.wipro.com/,wipro.com,22,3.516,1,0,0,0,9999,0,0,,,0,0,999,0,2,0,1,0,0,1,360462,49,8,1,0,0,0,0,139,1,0,0,0,d343cd8d97bcde522db104f0ebf19044,f4b7fd9b945d0e45a3928a0b4c47103b0577428b3a83aa5450691b86e256ea58
+,aiims.edu,0,0.0,0,0,0,0,10458,0,0,,IN,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,2,,
+https://arunachalpradesh.gov.in/,arunachalpradesh.gov.in,32,4.0778,1,0,0,0,7109,0,0,National Informatics Centre,IN,195,0,999,0,0,0,0,0,0,1,131865,86,0,0,1,0,0,25,79,1,1,0,4,6e7210276bfa604d36b610140ca5d507,5a0aa9242e2cbb5a080006271dc08ed369b583ffda880b42b0339e08cfefda13
+,accounts.mgovcloud.in,0,0.0,0,0,0,0,575,0,0,"MarkMonitor, Inc.",IN,154,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,,
+https://chandigarh.gov.in/,chandigarh.gov.in,26,3.8731,1,0,0,0,7530,0,0,National Informatics Centre,IN,139,0,999,0,1,0,0,0,0,0,94977,53,1,1,0,0,0,0,217,1,1,0,4,7a4659d14ae75420d3e849fcc95bd378,d66eb44a0888a3f736e3a39cb1baa1ffd0c2fba63670458c5866c15a798eb24d
+,ap.gov.in,0,0.0,0,0,0,0,8264,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,5,,
+,aicte-india.org,0,0.0,0,0,0,0,5807,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,2593,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,1,,
+,cbse.gov.in,0,0.0,0,0,0,0,7158,0,0,National Informatics Centre,IN,146,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,
+https://dnh.gov.in/,dnh.gov.in,19,3.5766,1,0,0,0,3690,0,0,National Informatics Centre,IN,327,0,999,0,1,0,0,0,0,0,169734,60,1,1,0,0,0,0,95,1,1,0,4,92ad84f6b8cfafe0bd79051a45fa37ad,7834ca953a4ed77064f85e555cc1cd606fdf472aca6033196db584e2a7e3e40d
+https://delhi.gov.in/,delhi.gov.in,21,3.7849,1,0,0,0,8286,0,0,National Informatics Centre,IN,136,0,999,0,2,0,0,0,0,1,53805,21,1,1,0,0,0,0,47,1,1,3,4,d565261900a248a9b8e2e57df85ea87e,a30309a1fc01baeaf35bf1330f9a5e8c742596b5974086d29686f7a9f22172f3
+,bhimupi.org.in,0,0.0,0,0,0,0,3177,0,0,OVI HOSTING PVT LTD,IN,474,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,6,,
+https://assam.gov.in/,assam.gov.in,21,3.6538,1,0,0,0,7215,0,0,National Informatics Centre,IN,89,0,999,0,0,0,0,0,0,0,34813,1,0,0,0,0,0,0,4,1,1,3,4,4f6da84debf8af3f372aa57c54df0574,9aebb9c0c3b5a5267ea73a432c30380c2fe3b9d14d0e2427c7456ad026d1b4d5
+,csir.res.in,0,0.0,0,0,0,0,8264,0,0,ERNET India,IN,866,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,2,,
+https://cris.org.in/,cris.org.in,20,3.5842,1,0,0,0,8250,0,0,Sree Jain Infotech dba bookandhost.com,IN,515,0,999,0,0,0,0,0,0,4,265725,85,16,1,0,0,0,0,110,1,1,2,3,,
+,gov.in,0,0.0,0,0,0,0,139,0,0,National Internet Exchange of India,,3512,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,,
+,epfindia.gov.in,0,0.0,0,0,0,0,7958,0,0,National Informatics Centre,IN,77,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,
+https://bsnl.co.in/,bsnl.co.in,19,3.5766,1,0,0,0,8233,0,0,MPS Infotecnics Limited,IN,167,0,999,0,0,0,0,0,0,1,51361,29,1,0,0,0,0,0,77,1,1,1,2,4ce93e381c6d17a785db3af5ff5b40c5,6bf580989888cf919774834e4eb53393a3313d22f21df716a8c9ede2626d71cc
+,bseindia.com,0,0.0,0,0,0,0,10512,0,0,"GoDaddy.com, LLC",IN,78,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,6,,
+,finmin.nic.in,0,0.0,0,0,0,0,7599,0,0,National Informatics Centre,,70,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,aai.aero,0,0.0,0,0,0,0,8573,0,0,Tucows Domains Inc.,,192,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,,
+https://fssai.gov.in/,fssai.gov.in,21,3.6538,1,0,0,0,6286,0,0,National Informatics Centre,IN,287,0,999,0,1,0,0,0,0,4,3158830,596,0,0,0,0,0,0,162,1,1,1,2,fa412c773e732d43e146a9303d5924ff,200f11cd2d09ce8f3d14b21ba3ec6299f97c927203f4300dae8a29eb916fc20c
+,goa.gov.in,0,0.0,0,0,0,0,7762,0,0,National Informatics Centre,IN,272,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,
+,dgft.gov.in,0,0.0,0,0,0,0,7526,0,0,National Informatics Centre,IN,143,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,2,,
+https://haryana.gov.in/,haryana.gov.in,23,3.7623,1,0,0,0,7868,0,0,National Informatics Centre,IN,166,0,999,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,1,0,4,,
+,bhel.com,0,0.0,0,0,0,0,10319,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,271,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,3,,
+,esic.nic.in,0,0.0,0,0,0,0,7599,0,0,National Informatics Centre,IN,70,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,0,,
+https://gujarat.gov.in/,gujarat.gov.in,23,3.8492,1,0,0,0,7899,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,309,0,0,0,0,0,0,0,0,0,2,2,3,,
+,icmr.gov.in,0,0.0,0,0,0,0,4857,0,0,National Informatics Centre,IN,255,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,
+,dc.crsorgi.gov.in,0,0.0,0,0,0,0,4253,0,0,National Informatics Centre,IN,129,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,,
+,iitd.ac.in,0,0.0,0,0,0,0,8264,0,0,ERNET India,IN,866,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,2,,
+,idbi.com,0,0.0,0,0,0,0,10023,0,0,"Network Solutions, LLC",IN,933,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,4,,
+,imps.npci.org.in,0,0.0,0,0,0,0,6095,0,0,OVI HOSTING PVT LTD,,1209,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,digilocker.gov.in,0,0.0,0,0,0,0,3893,0,0,National Informatics Centre,IN,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,4,,
+,indianrailways.gov.in,0,0.0,0,0,0,0,8264,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,
+,iitb.ac.in,0,0.0,0,0,0,0,7899,0,0,ERNET India,IN,3058,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,3,,
+https://cert-in.org.in/,cert-in.org.in,23,3.7623,1,0,0,0,8183,0,0,S.G.S. Technologie Pvt Ltd dba Netandhost.com,IN,217,0,999,0,0,0,0,0,0,0,435,0,0,0,0,0,0,0,73,1,3,1,2,a445420727d0661026c63aa36191e243,b24d7bdfaf62a932f2e01777e97c8061010d120af3815752123ec27b8536f2d6
+,gst.gov.in,0,0.0,0,0,0,0,3291,0,0,National Informatics Centre,IN,360,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,
+,meity.gov.in,0,0.0,0,0,0,0,3357,0,0,National Informatics Centre,IN,294,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,
+,hal-india.co.in,0,0.0,0,0,0,0,2785,0,0,DOTCOM SERVICES (INDIA) PVT. LTD - DBA Worldindia.com,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,7,,
+https://irdai.gov.in/,irdai.gov.in,21,3.749,1,0,0,0,3690,0,0,National Informatics Centre,US,327,0,999,0,2,0,0,0,0,2,529631,64,0,1,0,0,0,20,150,1,2,3,4,bb789a0c0bf3438833f601042be4eb54,678f43adcf805acf1d5b4f3ebc2dd29e27ab23612a4482d05918c69afe5e58da
+,ircon.org,0,0.0,0,0,0,0,7277,0,0,"GoDaddy.com, LLC",IN,757,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,2,,
+,ladakh.nic.in,0,0.0,0,0,0,0,7599,0,0,National Informatics Centre,,70,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,kavach.mail.gov.in,0,0.0,0,0,0,0,6602,0,0,National Informatics Centre,IN,337,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,,
+,karnataka.gov.in,0,0.0,0,0,0,0,8080,0,0,National Informatics Centre,IN,320,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,4,,
+,kerala.gov.in,0,0.0,0,0,0,0,7958,0,0,National Informatics Centre,IN,77,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,
+https://manipur.gov.in/,manipur.gov.in,23,3.882,1,0,0,0,5377,0,0,National Informatics Centre,IN,101,0,999,0,1,0,0,0,0,0,73847,29,0,1,0,0,0,0,53,1,1,1,4,c014b9153f4f6ee4896933799837a890,d806e8c82228a9b51a69587b6db6be6c27db040a8a8e82717add6ff25539ea4a
+,jk.gov.in,0,0.0,0,0,0,0,7416,0,0,National Informatics Centre,IN,253,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,
+,irctc.co.in,0,0.0,0,0,0,0,8533,0,0,GoDaddy,IN,597,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,6,,
+,education.gov.in,0,0.0,0,0,0,0,1862,0,0,National Informatics Centre,IN,328,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,
+,indianbank.in,0,0.0,0,0,0,0,7545,0,0,Sify Digital Services Limited,IN,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,
+https://meghalaya.gov.in/,meghalaya.gov.in,25,3.9435,1,0,0,0,7454,0,0,National Informatics Centre,IN,215,0,999,0,1,0,0,0,0,0,64969,28,4,1,0,0,0,0,241,1,1,1,4,00c289ba07be371e939aa92a56cc2b7f,3ba88249aab8986e39c1c18ac44cecb4258bb43afd87dea4adde8880df9ae472
+https://maharashtra.gov.in/,maharashtra.gov.in,27,3.708,1,0,0,0,8390,0,0,National Informatics Centre,IN,10,0,999,0,1,0,0,0,0,1,2174180,14,0,0,0,0,0,0,67,1,1,1,2,0e9ce4a6f37609ff5596a60dbc5eed95,c55783871f373fd978f144b1d9a7d01d4002dde65509a95a04256ec167a5c113
+https://mtnl.net.in/,mtnl.net.in,20,3.3464,1,0,0,0,7899,0,0,#1 Indian Domains dba Mitsu.in,IN,136,0,999,0,1,0,0,0,0,0,67802,126,0,0,0,0,0,0,38,1,1,1,7,,
+,mha.gov.in,0,0.0,0,0,0,0,7145,0,0,National Informatics Centre,IN,159,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,
+https://centralbankofindia.co.in/,centralbankofindia.co.in,33,4.0438,1,0,0,0,8264,0,0,Sify Digital Services Limited,,136,0,999,0,0,0,0,0,0,0,7525,1,0,0,1,0,0,25,1,1,0,3,2,,
+,licindia.in,0,0.0,0,0,0,0,7545,0,0,GoDaddy,US,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,
+,nabard.org,0,0.0,0,0,0,0,9743,0,0,"Network Solutions, LLC",IN,3040,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,
+https://newindia.co.in/,newindia.co.in,23,3.7294,1,0,0,0,7895,0,0,Sify Digital Services Limited,IN,139,0,999,0,0,0,0,0,0,2,4108120,126,1,0,0,0,0,0,72,1,1,5,2,0f32eda3820269d7311212ce99e5a2be,934e59ecad6ee8cd81294812b250b13e3e24a30d53ff65007933541fd1b38ad3
+https://nationalinsurance.nic.co.in/,nic.co.in,36,3.7454,2,0,0,0,8162,0,0,Netlynx Technologies Pvt. Ltd.,IN,603,0,999,0,1,0,0,0,0,0,277444,108,1,1,0,0,0,0,197,1,1,0,0,936002e74e86e53f60c8fe1645b94e9e,4005a0c45d07b7703b8514048c7072bad338e8e060ae0b7d3e815a43ebf9b8e3
+,nhai.gov.in,0,0.0,0,0,0,0,3214,0,0,National Informatics Centre,IN,72,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,
+,nic.in,0,0.0,0,0,0,0,7599,0,0,National Informatics Centre,,70,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,,
+https://mizoram.gov.in/,mizoram.gov.in,23,3.882,1,0,0,0,7806,0,0,National Informatics Centre,US,228,0,999,0,0,0,0,0,0,1,28007,1,0,0,0,0,0,0,46,1,1,1,2,cf3042959cdd1fc3d97ec594eaec8d9f,3b0e96532e6d459427070fd0b28aba35fb3a54a97a6432ba54b8c9a28524391a
+,neft.rbi.org.in,0,0.0,0,0,0,0,8264,0,0,Sify Digital Services Limited,,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,nciipc.gov.in,0,0.0,0,0,0,0,5632,0,0,National Informatics Centre,IN,211,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,
+https://nalcoindia.com/,nalcoindia.com,23,3.7951,0,0,0,0,9358,0,0,"GoDaddy.com, LLC",IN,502,0,999,0,2,0,0,0,0,2,399313,189,0,1,0,0,0,0,102,1,1,0,2,057eeb0acc852ba1da02d5cf5b62669d,60d2ccf0597071e6aa63231f132a8824920907c7da97d3e6cf6dbc23975c470d
+https://nitc.ac.in/,nitc.ac.in,19,3.3264,1,0,0,0,7776,0,0,ERNET India,IN,2815,0,999,0,4,0,0,0,0,2,308623,55,1,0,0,0,0,0,114,1,1,7,5,a3dc3126e8bcebd0deea8605157ae4e4,c52f37b9e0b2d1eee02d732b9f44206e27d21684d22b0ab6e5f4f2c140f72589
+,nsdl.co.in,0,0.0,0,0,0,0,8264,0,0,Endurance Digital Domain Technology Private Limited,IN,1597,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,2,,
+,ntpc.co.in,0,0.0,0,0,0,0,8264,0,0,Netlynx Technologies Pvt. Ltd.,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,
+https://nta.ac.in/,nta.ac.in,18,3.3083,1,0,0,0,2709,0,0,ERNET India,IN,1673,0,999,0,1,0,0,0,0,3,465727,34,1,0,0,0,0,0,55,1,1,1,2,8a32b20ad1495d67a3462a1dd371af90,2d4958e8e642e66ee52cf78c4c339d5adbdecd7c5fa1bd680be9a4040115e36e
+https://orientalinsurance.org.in/,orientalinsurance.org.in,33,3.9226,1,0,0,0,6087,0,0,Sify Digital Services Limited,US,1582,0,999,0,0,0,0,0,0,0,8500,0,1,0,1,0,0,25,42,1,4,0,4,dc192abebacad230030e4af2f9578e44,c404c5936c7e4a92c2ef408d2c163dd6b1b3798b64e038c15c704b2b70fdf285
+https://aiims.edu/index.php/en,aiims.edu,30,3.7647,0,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,0,238878,88,2,0,0,0,0,0,130,1,0,0,0,,
+,nlcindia.com,0,0.0,0,0,0,0,9454,0,0,gooddomainregistry.com,,42,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,,
+,pfrda.gov.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,nic.gov.in,0,0.0,0,0,0,0,292,0,0,National Informatics Centre,IN,437,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,
+,.gov.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+https://www.cbse.gov.in/,cbse.gov.in,24,3.8239,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,291,0,0,0,0,0,0,0,0,0,0,0,0,,
+,zoo.gov.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,urban.gov.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,water.gov.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+https://punjab.gov.in/,punjab.gov.in,22,3.8797,1,0,0,0,7745,0,0,National Informatics Centre,IN,289,0,999,0,5,0,0,0,0,0,308165,55,2,1,0,0,0,20,153,1,1,1,3,f09bff3b01efc9fced4fa807464b53bf,c84c14292b6d7ebece09721817f8588ab4e358394d0725289bf810afe94572fd
+https://recindia.nic.in/,recindia.nic.in,24,3.6054,1,0,0,0,7599,0,0,National Informatics Centre,IN,70,0,999,0,2,0,0,0,0,0,79289,87,0,0,0,0,0,0,79,1,1,0,0,15cb4d0dd1f73ae6d24981103d338812,fbe8ed5679ba8757906c731f8173b352a7149890c5e24b50e352982262602b50
+https://sail.co.in/,sail.co.in,19,3.5766,1,0,0,0,8264,0,0,Infocom Network Private Limited,IN,136,0,999,0,1,0,0,0,0,0,194516,52,4,1,0,0,0,0,166,1,1,1,1,2417924a02a8ced3b59043aadcfd2317,41436c50c1bf64977ee0fcacc1bf756ce7dc28a511dac713d5a130e521309f7e
+,powergrid.in,0,0.0,0,0,0,0,7545,0,0,GoDaddy,IN,854,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,
+https://rajasthan.gov.in/,rajasthan.gov.in,25,3.7533,1,0,0,0,8172,0,0,National Informatics Centre,IN,228,0,999,0,1,0,0,0,0,0,246062,141,1,0,0,0,0,0,204,1,1,4,2,fcd32f6b3c250bd2ca37bebe0edca9f6,65b48d1d833cde168e18a2e716c127bf871e766c7d32738780a6a7c09f327cb5
+,tn.gov.in,0,0.0,0,0,0,0,7899,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,
+,railtelindia.com,0,0.0,0,0,0,0,8675,0,0,"ENOM, INC.",IN,90,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,
+,sebi.gov.in,0,0.0,0,0,0,0,8264,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,,
+https://jharkhand.gov.in/,jharkhand.gov.in,25,3.9435,1,0,0,0,7717,0,0,National Informatics Centre,IN,317,0,999,0,3,0,2,0,0,2,276916,153,3,0,0,1,0,10,118,1,1,1,4,,
+https://mp.gov.in/,mp.gov.in,18,3.5724,1,0,0,0,7416,0,0,National Informatics Centre,IN,253,0,999,0,1,0,0,0,0,0,38884,57,0,0,0,0,0,0,86,1,1,1,4,0a87ebdd057a58066f457b031a217c5d,ca7ff996240d8a0fb4324737c5d5b41f1884616ee172d04823b2326d6e5f8df5
+,odisha.gov.in,0,0.0,0,0,0,0,5058,0,0,National Informatics Centre,IN,55,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,4,,
+https://nagaland.gov.in/,nagaland.gov.in,24,3.7406,1,0,0,0,6761,0,0,National Informatics Centre,IN,178,0,999,0,0,0,0,0,0,0,52978,32,0,0,0,0,0,0,13,1,1,1,2,29d5fb005668d8b824d7083786252fd9,e7e9a528900b73ff82f9f8a95ea502b26afb9142c416fa2c85af0694dfd6799c
+,sikkim.gov.in,0,0.0,0,0,0,0,7745,0,0,National Informatics Centre,IN,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,
+https://py.gov.in/,py.gov.in,18,3.5724,1,0,0,0,7416,0,0,National Informatics Centre,IN,253,0,999,0,1,0,0,0,0,1,121736,44,0,1,0,1,0,10,137,1,1,1,3,00c46d96684f80bba586f92a4e91255e,e627f85931ed1a8ab2a8a3c7d485f8a49714f6740a3ed91b1f59b2f64cd09859
+,telangana.gov.in,0,0.0,0,0,0,0,4184,0,0,National Informatics Centre,IN,198,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,
+https://tripura.gov.in/,tripura.gov.in,23,3.7623,1,0,0,0,7556,0,0,National Informatics Centre,IN,113,0,999,0,0,0,0,0,0,0,257088,70,1,1,0,0,0,0,198,1,1,1,4,155d25997edcb83aca9b9c158916d832,db55cf907a70ea06553457fd9c9b9945010f0ba527d8bef9327e5fd2335a40b4
+,wb.gov.in,0,0.0,0,0,0,0,8271,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,4,,
+,up.gov.in,0,0.0,0,0,0,0,7416,0,0,National Informatics Centre,IN,253,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,
+,parivahan.gov.in,0,0.0,0,0,0,0,5205,0,0,National Informatics Centre,IN,273,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,
+https://uidai.gov.in/,uidai.gov.in,21,3.749,1,0,0,0,5951,0,0,National Informatics Centre,IN,257,0,999,0,0,0,0,0,0,0,5152,0,0,0,0,0,0,0,5,1,2,1,4,,
+,uk.gov.in,0,0.0,0,0,0,0,6121,0,0,National Informatics Centre,IN,87,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,
+,tcs.com,0,0.0,0,0,0,0,10185,0,0,"Network Solutions, LLC",IN,2231,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,14,5,,
+https://www.bhimupi.org.in/,bhimupi.org.in,27,3.8282,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,2,52503,33,3,1,0,0,0,0,69,1,0,0,0,fb73d19d9b99fd10761c01385dbc15d9,d7c5a6b0e4491e558352e046b3c34ddf99734aa66ff974675f61a955c2a4be57
+https://aicte.gov.in/,aicte-india.org,21,3.749,1,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,3,234589,64,6,1,0,0,0,0,138,1,0,0,0,e38879390071049592c7aeb6d7fa4e76,e6831b2c38f61a6eab3ab17e7dfa783b005e3b59d99fb5634d24798484e4e810
+https://www.bseindia.com/,bseindia.com,25,3.9435,1,0,0,0,9999,0,0,,,0,0,999,0,2,0,0,0,0,2,435347,95,3,0,0,0,0,0,128,1,0,0,0,4584b85b70e3927c001bbf719205a51d,3d7a879469a93c0f151c1e718ea682a1ec0eaf664fa3f356068a89938d0bd25c
+https://www.epfindia.gov.in/site_en/index.php,epfindia.gov.in,45,4.0003,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,4,397607,475,0,1,1,0,0,25,42,1,0,0,0,240211bf7cb5c0af305185d1d53498db,b8f75849575c0396e5ccc4de45a0735a3ff83459784ee000b7acf7b6d9876c1c
+https://www.dgft.gov.in/CP/,dgft.gov.in,27,3.8562,2,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,4,188507,221,5,1,0,1,0,20,93,1,0,0,0,4f6da84debf8af3f372aa57c54df0574,9aebb9c0c3b5a5267ea73a432c30380c2fe3b9d14d0e2427c7456ad026d1b4d5
+https://www.goa.gov.in/,goa.gov.in,23,3.6425,2,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,1,136760,31,1,0,1,0,0,25,105,1,0,0,0,c5bc9f3eca4c6372c68fa71543e7c264,0ba8c69a4bffd500ddf5537a61541e1e78b184beee9429aef48833b5729be900
+https://esic.gov.in/,esic.nic.in,20,3.6842,1,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,2,85836,64,0,0,0,0,0,0,69,1,0,0,0,f602eb72fe8c8cae67c3944580bc8c08,b35a249801b48fa6bb4af098e7ce0d0254e37be349d845cd28541b6e586dde9a
+https://home.iitd.ac.in/,iitd.ac.in,24,3.7091,2,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,0,295663,511,0,1,0,0,0,0,144,1,0,0,0,628e012a5e771720a057adc0c406f5f9,44cd0aeb3e43a77a4ac048e5b9db4ffa0f7e39cb8f32c9454eee4a661ff352bb
+https://www.gst.gov.in/,gst.gov.in,23,3.5227,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,3,333604,15,3,0,0,0,0,0,74,1,0,0,0,c0d60d28cb9ef691ceb188b69003d7eb,e4c6bb2bc32eba1cffe8732461655277cfa66c15b7b2be8493771c8c160543fe
+https://www.digilocker.gov.in/,digilocker.gov.in,30,4.0729,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,3,84395,13,0,0,0,0,0,0,5,1,0,0,0,,
+https://dc.crsorgi.gov.in/crs/,crsorgi.gov.in,30,3.7396,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,1,115178,5,0,0,0,0,0,0,44,1,0,0,0,8822e5658cbce6f26b84fd646ef99fe4,fb1afd27f65def3a5729d991ec0e15fee1e94b23bc33d302ff234dda6f76763a
+https://hal-india.co.in/home,hal-india.co.in,28,3.9408,1,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,1,192286,172,4,0,0,0,0,0,132,1,0,0,0,d72a7714ea5666ffa61401ba0a506e2d,197bea4c4e175b47bff08512d9c969512a3883795acbeebeddd30f19456e16dd
+https://www.meity.gov.in/,meity.gov.in,25,3.8031,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,294,0,0,0,0,0,0,0,0,0,0,0,0,,
+https://www.iitb.ac.in/,iitb.ac.in,23,3.4899,2,0,0,0,9999,0,0,,,0,0,999,0,2,0,0,0,0,1,432467,92,0,1,0,0,0,0,55,1,0,0,0,ab8f86ed81462ae45abeeccfd59d6dc6,994781896f3c2630d1d911f3f7655357655f46890d13879c054eab0ad7266ed2
+https://www.indianbank.in/,indianbank.in,26,3.6133,1,0,0,0,9999,0,0,,,0,0,999,0,3,0,0,0,0,2,259037,101,1,1,0,0,0,0,74,1,0,0,0,2fe63c942d89a28c684291347ea3731d,80c63c4567da533777df811d5cd413d74f1b4843d747b691bec770748506e81b
+http://www.education.gov.in/,education.gov.in,28,3.9138,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,296,0,0,0,0,0,0,0,0,0,0,0,0,,
+https://www.idbi.bank.in/,idbi.com,25,3.6431,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,3,174526,367,0,0,0,0,0,0,85,1,0,0,0,24f8a597e80870fc7b012a211e92c7bc,7574656a9d32fe465a5801645e9a5ff547da76018ae49cc8050bdbab67cae501
+https://validate.perfdrive.com/?ssa=aa65afc4-5226-4480-b5fb-a1d39d7b0a23&ssb=29105227192&ssc=https%3A%2F%2Fntpc.co.in%2F&ssi=221ce59d-cs5n-4b36-b3ca-2c66d350b38a&ssk=botmanager_support@radware.com&ssm=44559758292098665103437416077107&ssn=cfa868bad9910c9c4cf2210d5c1d8d2c26794c10434b-5307-49c3-9c3316&sso=c06ae48b-73b3d53245266f5843e0cf8dd969e4a1ff1accd36c87235e&ssp=13717539771760477077176046238260380&ssq=46792325297871368799052978548368989233665&ssr=MTM2LjIzMi4xNTUuMTc4&sst=IC05-Prober/1.0%20(+https://example)&ssu=&ssv=&ssw=&ssx=eyJfX3V6bWYiOiI3ZjkwMDA0YzEwNDM0Yi01MzA3LTQ5YzMtOTQ4Yi03M2IzZDUzMjQ1MjYxLTE3NjA0NTI5Nzg4NDMwLTAwMWI1YmQyYWE4NTU5NmExMzkxMCIsInV6bXgiOiI3ZjkwMDA4NWYxYzYwYy02ZThiLTQwNmMtYjFiZC1kNTUwMzUzNzE1MDQxLTE3NjA0NTI5Nzg4NDMwLWQ0NzE1N2FlMjY0Y2JjMDUxMCIsInJkIjoibnRwYy5jby5pbiJ9,ntpc.co.in,797,5.6274,1,0,1,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,0,17901,0,2,1,0,0,0,0,13,1,0,0,0,4b79b212df634bbbcffd46231c4131ab,2ce57bac519aa467d82275e83255b816ccb4a109e3e2a7cae799ba8cb7a388cf
+https://www.nic.gov.in/,nic.gov.in,23,3.6425,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,292,0,0,0,0,0,0,0,0,0,0,0,0,,
+https://www.powergrid.in/,powergrid.in,25,3.7337,1,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,177,0,0,0,0,0,0,0,0,0,0,0,0,,
+https://www.railtel.in/hi/,railtelindia.com,26,3.6133,1,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,69749,45,0,0,0,0,0,0,65,1,0,0,0,94aab00ff05daca6f7342c2e77976fc0,99010d26167b46431be516f3ce16d4c25d64a24ff32fdb345ce91d773041c949
+https://www.tn.gov.in/,tn.gov.in,22,3.504,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,1,264149,110,4,0,0,0,0,0,144,1,0,0,0,927c2d2fddf95b5fc0c0a638529ea22e,a611a90fa3ab2fbaabdca527cebb774f3e85020d18e63ff81baeac610ec676c1
+https://www.sebi.gov.in/,sebi.gov.in,24,3.7406,2,0,0,0,9999,0,0,,,0,0,999,0,1,1,0,0,0,3,189565,154,0,0,1,0,0,25,72,1,0,0,0,68bb092391204108a07854e818b1366b,0540b138570ec5567c6eb3d3901e6593619742d3bfe0c29e5306400fdf529b21
+https://www.sikkim.gov.in/,sikkim.gov.in,26,3.7381,2,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,1,104708,32,2,0,0,0,0,0,76,1,0,0,0,59aa94642408f3628f65424eec945b4a,533ac2d174aadd8ac03493cf811e99f460258bd58b33cbc01697f7295b231048
+,icicicareers.com,0,0.0,0,0,0,0,9311,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,,184,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,,
+,hdfc.com,0,0.0,0,0,0,0,9865,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,,360,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,2,,
+,yonobusiness.sbi,0,0.0,0,0,0,0,2566,0,0,Synergy Wholesale Accreditations Pty Ltd,IN,355,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6,,
+,hdfcbank.com,0,0.0,0,0,0,0,10414,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,,543,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,2,,
+,sbi.co.in,0,0.0,0,0,0,0,8385,0,0,Sify Digital Services Limited,IN,1111,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,
+,icicidirect.com,0,0.0,0,0,0,0,9503,0,0,"Network Solutions, LLC",IN,358,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,8,,
+,icicilombard.com,0,0.0,0,0,0,0,8862,0,0,"Network Solutions, LLC",IN,999,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,10,,
+,pnbindia.in,0,0.0,0,0,0,0,7545,0,0,MPS Infotecnics Limited,IN,1950,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,
+,iciciprulicfe.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,
+,airtel.in,0,0.0,0,0,0,0,7587,0,0,GoDaddy,IN,3004,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,15,2,,
+https://netpnb.com/,netpnb.com,19,3.5369,0,0,0,0,8824,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,2132,0,999,0,0,0,0,0,0,0,1801,1,0,0,0,0,0,0,1,1,1,1,4,d19dbdd7121c97de378c30b401833361,ad65a56c9eed9f87017a91c1951a47bf9c6ee6aa9e0808f33c6cba707d60dca6
+,icicibank.com,0,0.0,0,0,0,0,10682,0,0,"Network Solutions, LLC",IN,273,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,9,,
+,sbicard.com,0,0.0,0,0,0,0,9660,0,0,"CSC Corporate Domains, Inc.",IN,1662,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,6,,
+,airtel.com,0,0.0,0,0,0,0,5722,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,121,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,13,4,,
+https://iocl.com/,iocl.com,17,3.4548,0,0,0,0,10662,0,0,"Network Solutions, LLC",US,658,0,999,0,1,0,0,0,0,1,227419,82,2,0,0,0,0,0,164,1,1,1,2,03eb9a65cbfd69b21b4c34ce81cfc9d4,29f9368ee3eb44f85df2ef8da53ea332df40a351f254079eabb97283818858dd
+,hdfcergo.com,0,0.0,0,0,0,0,6655,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,1745,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,6,,
+https://irctc.com/,irctc.com,18,3.3774,0,0,0,0,8541,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,589,0,999,0,2,0,0,0,0,3,205984,135,2,0,0,0,0,0,183,1,1,1,2,86aac2c81e17e40a04ec62c7930e2b8b,f82398f8d02486e74958f58feb3d66aa0a9403436ccf853131c17fc3124fde2d
+,hdfclife.com,0,0.0,0,0,0,0,9442,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,SG,54,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,6,,
+,sbiepay.sbi,0,0.0,0,0,0,0,1993,0,0,Synergy Wholesale Accreditations Pty Ltd,IN,197,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6,,
+,bobibanking.com,0,0.0,0,0,0,0,9147,0,0,Terranet (India) Private Limited,IN,1809,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,
+https://www.hdfcbank.com/,hdfcbank.com,25,3.9435,1,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,3,982741,268,3,1,0,1,0,30,282,1,0,0,0,ecce88e44ba8f8cef798c2d6275b72db,fd8e3ccb48c1848ef22b6a21e2676102388e0e038bae65c96463e243a651ea05
+https://bankofbaroda.in/,bankofbaroda.in,24,3.8554,0,0,0,0,7544,0,0,Terranet (India) Private Limited,IN,1951,0,999,0,0,0,0,0,0,0,5258,1,0,0,0,0,0,0,1,1,1,0,2,,
+https://yonobusiness.sbi.bank.in/,yonobusiness.sbi,33,3.7526,2,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,4,488534,136,0,0,0,0,0,0,68,1,0,0,0,80be62cfbc68f6b69b88d976561e618f,014856b93a0a6979335689a62db1807cb58ba8fa36d7577e93be884d92d92727
+https://kavach.mail.gov.in/mfid/secureLogin_showSecureLogin.action#!,mail.gov.in,68,4.556,2,0,0,0,9999,0,0,,,0,0,999,0,3,1,0,0,0,3,19400,2,0,0,0,0,0,0,20,1,0,0,0,28d19c17047b8cff14081cded0b0e30b,7bc0c5ee21d19dbe7a2b8e95f2056c7e46ae89049b7fe8ca85a14bf2d14c66a7
+https://accounts.mgovcloud.in/signin?servicename=AaaServer&serviceurl=https%3A%2F%2Faccounts.mgovcloud.in%2Fhome,mgovcloud.in,112,4.6204,1,0,0,0,9999,0,0,,,0,0,999,0,7,2,0,0,0,4,107793,14,0,0,0,1,0,10,57,1,0,0,0,7509906d12d99604850a7a18f0683380,d409aa1654cf67e8bf1f93bd91cb31034a1d84ed19e5877067ed019ba04cb5e1
+https://sbi.co.in/redirect/,sbi.co.in,27,3.736,1,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,1,4102,1,0,0,0,0,0,0,1,1,0,0,0,,
+https://icicidirect.com/login.aspx?ReturnUrl=%2f,icicidirect.com,48,4.52,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,3,95557,47,0,0,0,0,0,0,25,1,0,0,0,1cc13d8dfd549d79a1855cbf658bc191,763307067e5234e413caeeeeae42948eb5fa143cf6434e6270ffd5df015525b6
+https://pnb.bank.in/hi/,pnbindia.in,23,3.4473,1,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,0,429889,779,1,0,1,1,0,35,227,1,0,0,0,f71de71b16ddbe3256f66ac949a061fa,12bc9a0859f86f13aa0321cffa5ab340544fc57bb6f1cfb35fc57a5394a10596
+https://www.airtel.in/,airtel.in,22,3.6292,1,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,2,619340,14,0,0,0,0,0,0,50,1,0,0,0,2bd550c45568766f5493dc1093cb2ad4,b9fbbf1d1869548c32bbd9251ff3c63ce660a596b0f878b184dd0b77709ec7b5
+https://www.icicibank.com/,icicibank.com,26,3.8151,1,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,2,1364500,92,0,1,0,1,1,55,97,1,0,0,0,e9e70d85e7ad4f6a4d47c6476307c643,0180fc0dd9fbe2641f50cd9e3eab4cc825ea3107c0826db5e976e61197d87658
+https://www.airtel.com/,airtel.com,23,3.8164,1,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,6209,12,1,0,0,0,0,0,10,1,0,0,0,6f9b1e4969dddd01f71a3faf24c4b3e8,467843f364d4f3f21c75b6a5272682e12e2f346b39977d6f95d4ce0878a99306
+https://www.sbicard.com/,sbicard.com,24,3.8554,1,0,0,0,9999,0,0,,,0,0,999,0,4,0,0,0,0,5,1590412,20,2,1,0,0,0,20,134,1,0,0,0,ffbf2e923a81201cba8338fc49a8acef,aa76958fc181b632caf9ce7147c7034d84ed726fac6cd6e23f57b1401bac4831
+https://epay.sbi.bank.in/secure/home,sbiepay.sbi,36,4.0724,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,5,279247,5,0,1,0,0,0,0,77,1,0,0,0,7b8828c49b40257f80b3b6539a2c9813,da3c823e069dc5bf6c6457d0972d4b6f7af559d3c582ed24de39889b10b64554
+https://www.hdfcergo.com/,hdfcergo.com,25,3.8635,1,0,0,0,9999,0,0,,,0,0,999,0,5,0,0,0,0,4,825063,139,3,1,0,1,0,30,112,1,0,0,0,d6a4c3c37777ca43212bb93cfde6bb40,b4bbd70dbeacbe44b618e99c9dcf8c10a66c165de294b0759182a49f248a104d
+https://feba.bobibanking.com/default.htm,bobibanking.com,40,4.2153,1,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,4,254232,698,0,0,0,0,0,0,24,1,0,0,0,3aa9106890a152e3d3c07d513f995bac,11d149dace6b15dbf5d71a73f89ca802402ac410641d6326952b18c303def406
+https://www.hdfclife.com/,hdfclife.com,25,3.8635,1,0,0,0,9999,0,0,,,0,0,999,0,21,0,6,0,0,4,1549348,104,5,1,0,1,0,30,202,1,0,0,0,2377e7cc2d8a342365ee174b2021fc58,99577e6bd0b830a3c0ec4b2144a8bf953101d5acf245ce362da5e03fbc460b39

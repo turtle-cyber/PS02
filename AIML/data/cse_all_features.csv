@@ -1,0 +1,5047 @@
+url,registrable,url_length,url_entropy,num_subdomains,is_idn,has_repeated_digits,mixed_script,domain_age_days,is_newly_registered,is_very_new,registrar,country,days_until_expiry,is_self_signed,cert_age_days,has_credential_form,form_count,password_fields,email_fields,has_suspicious_forms,suspicious_form_count,keyword_count,html_size,external_links,iframe_count,js_obfuscated,js_keylogger,js_form_manipulation,js_eval_usage,js_risk_score,redirect_count,had_redirects,a_count,mx_count,ns_count,favicon_md5,favicon_sha256,document_text,doc_has_verdict,doc_verdict,doc_risk_score,doc_form_count,doc_submit_buttons,doc_has_login_keywords,doc_has_verify_keywords,doc_has_password_keywords,doc_has_credential_keywords,doc_length,screenshot_phash,ocr_text,ocr_length,ocr_has_login_keywords,ocr_has_verify_keywords
+https://kotakbank.com/,kotakbank.com,22,3.6292,0,0,0,0,9999,0,0,,,0,0,999,0,1,0,0,0,0,0,58288,6,0,1,0,0,0,0,4,1,0,0,0,def00c11b1596db4efee6a9fbe64fc27,95c427fa3143b1896faf42a6406686ce7602cb39052081bb32d12b51c9e047e4,"https://kotakbank.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: kotakbank.com
+URL: https://kotakbank.com/
+Registrable Domain: kotakbank.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 22 chars, Entropy: 3.63
+      Subdomains: 0, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Search
+
+   📄 Page Content:
+      External Links: 6
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfuscated Co",1,benign,0,1,Search,0,0,0,0,595,,,,,
+https://bharatpetroleum.in/,bharatpetroleum.in,27,3.9121,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,294,0,0,0,0,0,0,0,0,0,0,0,0,,,"https://bharatpetroleum.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: bharatpetroleum.in
+URL: https://bharatpetroleum.in/
+Registrable Domain: bharatpetroleum.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 27 chars, Entropy: 3.91
+      Subdomains: 0, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:40:30.009370+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,386,8f0f0f0303e3e3e3,,0.0,0.0,0.0
+,yonosbi.sbi,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: yonosbi.sbi
+Registrable Domain: yonosbi.sbi
+
+📊 Metadata:
+   First Seen: 1760452828441",0,,0,0,,0,0,0,0,93,,,,,
+,iciciforexservices.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: iciciforexservices.com
+Registrable Domain: iciciforexservices.com
+
+📊 Metadata:
+   First Seen: 1760452828442",0,,0,0,,0,0,0,0,115,,,,,
+,onlinesbi.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: corp.onlinesbi.com
+Registrable Domain: onlinesbi.com
+
+📊 Metadata:
+   First Seen: 1760452828442",0,,0,0,,0,0,0,0,102,,,,,
+,yesbank.co.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: netbanking.yesbank.co.in
+Registrable Domain: yesbank.co.in
+
+📊 Metadata:
+   First Seen: 1760452828442",0,,0,0,,0,0,0,0,108,,,,,
+,viijayabank.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: viijayabank.com
+Registrable Domain: viijayabank.com
+
+📊 Metadata:
+   First Seen: 1760452828444",0,,0,0,,0,0,0,0,101,,,,,
+,sbilife.co.in,0,0.0,0,0,0,0,8172,0,0,Endurance Digital Domain Technology Private Limited,IN,1689,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sbilife.co.in
+Registrable Domain: sbilife.co.in
+
+📡 DNS Records:
+   A (IPv4): 124.124.101.48, 121.240.9.63
+   MX (Mail): mx-sliport02.logix.in, mx-sliport01.logix.in, mx-sliport03.logix.in
+   NS (Nameservers): dolly.ns.cloudflare.com, drew.ns.cloudflare.com
+
+📋 WHOIS Information:
+   Registrar: Endurance Digital Domain Technology Private Limited
+   Domain Age: 8172 days
+   Days Until Expiry: 1689
+
+🌍 Network & Location:
+   ASN: 18101
+   Country: ",1,benign,0,0,,0,0,0,0,608,,,,,
+,corpbank.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: corpbank.com
+Registrable Domain: corpbank.com
+
+📊 Metadata:
+   First Seen: 1760452828445",0,,0,0,,0,0,0,0,95,,,,,
+,syndicatebank.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: syndicatebank.in
+Registrable Domain: syndicatebank.in
+
+📊 Metadata:
+   First Seen: 1760452828445",0,,0,0,,0,0,0,0,103,,,,,
+,.nic.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: nic.in
+Registrable Domain: .nic.in
+
+📊 Metadata:
+   First Seen: 1760452977696",0,,0,0,,0,0,0,0,84,,,,,
+,pmo.gov.in,0,0.0,0,0,0,0,434,0,0,National Informatics Centre,,295,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: pmo.gov.in
+Registrable Domain: pmo.gov.in
+
+📡 DNS Records:
+   MX (Mail): mx.mailcloud.in, mx3.mailcloud.in, mx2.mailcloud.in
+   NS (Nameservers): ns10.nic.in, ns1.nic.in, ns7.nic.in, ns2.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 434 days
+   Days Until Expiry: 295
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:01.895365+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,466,,,,,
+,incometax.gov.in,0,0.0,0,0,0,0,8111,0,0,National Informatics Centre,,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,2,,," Domain: incometax.gov.in
+Registrable Domain: incometax.gov.in
+
+📊 Metadata:
+   First Seen: 1760452966638",0,,0,0,,0,0,0,0,103,,,,,
+,vi.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: vi.in
+Registrable Domain: vi.in
+
+📊 Metadata:
+   First Seen: 1760452828447",0,,0,0,,0,0,0,0,81,,,,,
+,passportindia.gov.in,0,0.0,0,0,0,0,6024,0,0,National Informatics Centre,IN,184,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,3,4,,," Domain: passportindia.gov.in
+Registrable Domain: passportindia.gov.in
+
+📊 Metadata:
+   First Seen: 1760452979686",0,,0,0,,0,0,0,0,111,,,,,
+,nseindia.com,0,0.0,0,0,0,0,9920,0,0,BigRock Solutions Ltd,IN,2862,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,8,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: nseindia.com
+Registrable Domain: nseindia.com
+
+📡 DNS Records:
+   A (IPv4): 23.55.244.169, 23.55.244.163
+   NS (Nameservers): asia3.akam.net, ns1-120.akam.net, ns1-205.akam.net, eur2.akam.net, eur5.akam.net, use1.akam.net, use9.akam.net, usw4.akam.net
+
+📋 WHOIS Information:
+   Registrar: BigRock Solutions Ltd
+   Domain Age: 9920 days
+   Days Until Expiry: 2862
+
+🌍 Network & Location:
+   ASN: 20940
+   Country: IN, Mumbai
+
+📊 Metadata:
+   First See",1,benign,0,0,,0,0,0,0,580,,,,,
+,coalindia.in,0,0.0,0,0,0,0,6632,0,0,Gandi SAS,,307,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,,," Domain: coalindia.in
+Registrable Domain: coalindia.in
+
+📊 Metadata:
+   First Seen: 1760452931940",0,,0,0,,0,0,0,0,95,,,,,
+,isro.gov.in,0,0.0,0,0,0,0,7547,0,0,National Informatics Centre,,122,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,6,,," Domain: isro.gov.in
+Registrable Domain: isro.gov.in
+
+📊 Metadata:
+   First Seen: 1760452959960",0,,0,0,,0,0,0,0,93,,,,,
+https://rbi.org.in/,rbi.org.in,19,3.5766,1,0,0,0,8264,0,0,Sify Digital Services Limited,US,136,0,999,0,1,0,0,0,0,1,199049,365,0,1,1,1,0,35,61,1,2,2,6,7bc1ff0d792e15a4d848badbce1651df,85ad5f29fe93b57944ad8e72f5f915da1969287e431ae5154d0564fa203a83c0,"https://rbi.org.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: rbi.org.in
+URL: https://rbi.org.in/
+Registrable Domain: rbi.org.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 19 chars, Entropy: 3.58
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 365
+
+   🚩 Phishing Keywords Detected: account
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfuscated",1,benign,0,1,,0,0,0,0,701,fa6a62b5859dc8c8,,0.0,0.0,0.0
+,upi.org.in,0,0.0,0,0,0,0,489,0,0,HIOX SOFTWARES PRIVATE LIMITED,,240,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: upi.org.in
+Registrable Domain: upi.org.in
+
+📡 DNS Records:
+
+📋 WHOIS Information:
+   Registrar: HIOX SOFTWARES PRIVATE LIMITED
+   Domain Age: 489 days
+   Days Until Expiry: 240
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:21.500509+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,334,,,,,
+,npci.org.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: imps.npci.org.in
+Registrable Domain: npci.org.in
+
+📊 Metadata:
+   First Seen: 1760452959057",0,,0,0,,0,0,0,0,98,,,,,
+,paytmbank.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: paytmbank.com
+Registrable Domain: paytmbank.com
+
+📊 Metadata:
+   First Seen: 1760452828452",0,,0,0,,0,0,0,0,97,,,,,
+,bbps.org.in,0,0.0,0,0,0,0,3767,0,0,Net 4 India Limited,,250,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: bbps.org.in
+Registrable Domain: bbps.org.in
+
+📊 Metadata:
+   First Seen: 1760452978441",0,,0,0,,0,0,0,0,93,,,,,
+,india.gov.in,0,0.0,0,0,0,0,7323,0,0,National Informatics Centre,IN,346,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: india.gov.in
+Registrable Domain: india.gov.in
+
+📊 Metadata:
+   First Seen: 1760452972967",0,,0,0,,0,0,0,0,95,,,,,
+,redbus.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: redbus.in
+Registrable Domain: redbus.in
+
+📊 Metadata:
+   First Seen: 1760452828453",0,,0,0,,0,0,0,0,89,,,,,
+,zomato.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: zomato.com
+Registrable Domain: zomato.com
+
+📊 Metadata:
+   First Seen: 1760452828453",0,,0,0,,0,0,0,0,91,,,,,
+,airindia.co.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: airindia.co.in
+Registrable Domain: airindia.co.in
+
+📊 Metadata:
+   First Seen: 1760452828453",0,,0,0,,0,0,0,0,99,,,,,
+,makemytrip.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: makemytrip.com
+Registrable Domain: makemytrip.com
+
+📊 Metadata:
+   First Seen: 1760452828453",0,,0,0,,0,0,0,0,99,,,,,
+,goibibo.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: goibibo.com
+Registrable Domain: goibibo.com
+
+📊 Metadata:
+   First Seen: 1760452828453",0,,0,0,,0,0,0,0,93,,,,,
+,goindigo.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: goindigo.in
+Registrable Domain: goindigo.in
+
+📊 Metadata:
+   First Seen: 1760452828453",0,,0,0,,0,0,0,0,93,,,,,
+,yatra.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: yatra.com
+Registrable Domain: yatra.com
+
+📊 Metadata:
+   First Seen: 1760452828453",0,,0,0,,0,0,0,0,89,,,,,
+,airvistara.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: airvistara.com
+Registrable Domain: airvistara.com
+
+📊 Metadata:
+   First Seen: 1760452828454",0,,0,0,,0,0,0,0,99,,,,,
+,denabank.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: denabank.com
+Registrable Domain: denabank.com
+
+📊 Metadata:
+   First Seen: 1760452828454",0,,0,0,,0,0,0,0,95,,,,,
+,starhealth.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: starhealth.in
+Registrable Domain: starhealth.in
+
+📊 Metadata:
+   First Seen: 1760452828454",0,,0,0,,0,0,0,0,97,,,,,
+,drdo.gov.in,0,0.0,0,0,0,0,7837,0,0,National Informatics Centre,IN,197,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,," Domain: drdo.gov.in
+Registrable Domain: drdo.gov.in
+
+📊 Metadata:
+   First Seen: 1760452966638",0,,0,0,,0,0,0,0,93,,,,,
+,iitm.ac.in,0,0.0,0,0,0,0,8264,0,0,ERNET India,,501,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,3,,," Domain: iitm.ac.in
+Registrable Domain: iitm.ac.in
+
+📊 Metadata:
+   First Seen: 1760452956358",0,,0,0,,0,0,0,0,91,,,,,
+,bihar.gov.in,0,0.0,0,0,0,0,6419,0,0,National Informatics Centre,,154,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: bihar.gov.in
+Registrable Domain: bihar.gov.in
+
+📡 DNS Records:
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): dns3.bihar.gov.in, dns2.bihar.gov.in, dns4.bihar.gov.in, dns1.bihar.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 6419 days
+   Days Until Expiry: 154
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:05.298878+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,460,,,,,
+,email.gov.in,0,0.0,0,0,0,0,3218,0,0,National Informatics Centre,IN,68,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,3,,," Domain: email.gov.in
+Registrable Domain: email.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.15.5
+   NS (Nameservers): ns7.nic.in, ns2.nic.in, ns1.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 3218 days
+   Days Until Expiry: 68
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN, Delhi
+
+📊 Metadata:
+   First Seen: 1760500622.4914806
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,400,,,,,
+,manipalhospitals.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: manipalhospitals.com
+Registrable Domain: manipalhospitals.com
+
+📊 Metadata:
+   First Seen: 1760452828460",0,,0,0,,0,0,0,0,111,,,,,
+,fortishealthcare.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: fortishealthcare.com
+Registrable Domain: fortishealthcare.com
+
+📊 Metadata:
+   First Seen: 1760452828460",0,,0,0,,0,0,0,0,111,,,,,
+,cg.gov.in,0,0.0,0,0,0,0,7388,0,0,National Informatics Centre,IN,281,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: cg.gov.in
+Registrable Domain: cg.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.150.66
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): ns7.nic.in, ns2.nic.in, ns1.nic.in, ns10.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7388 days
+   Days Until Expiry: 281
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN, Jaipur
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:44.565274+00:00
+   Processing Stage: rules:ben",1,benign,0,0,,0,0,0,0,514,,,,,
+,hp.gov.in,0,0.0,0,0,0,0,7416,0,0,National Informatics Centre,IN,253,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,1,,," Domain: hp.gov.in
+Registrable Domain: hp.gov.in
+
+📊 Metadata:
+   First Seen: 1760453019133",0,,0,0,,0,0,0,0,89,,,,,
+,andaman.gov.in,0,0.0,0,0,0,0,7452,0,0,National Informatics Centre,,217,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: andaman.gov.in
+Registrable Domain: andaman.gov.in
+
+📡 DNS Records:
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7452 days
+   Days Until Expiry: 217
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:23.730243+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,340,,,,,
+https://ongcindia.com/,ongcindia.com,22,3.7888,0,0,0,0,10291,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,1030,0,999,0,0,0,0,0,0,0,39104,0,0,0,0,0,0,0,0,0,2,1,3,,,"https://ongcindia.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: ongcindia.com
+URL: https://ongcindia.com/
+Registrable Domain: ongcindia.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 22 chars, Entropy: 3.79
+      Subdomains: 0, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:49:00.192115+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,371,9e0e6070797f7701,,0.0,0.0,0.0
+https://nhai.gov.in/#/,nhai.gov.in,22,3.6412,1,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,391025,77,0,0,0,0,0,0,95,1,0,0,0,410361453a2aa56bb4b574e4342c92ef,2d3fab1d9a271a36495981e9e535054378ff5beac5c867a764b45bf6532557ff,"https://nhai.gov.in/#/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: nhai.gov.in
+URL: https://nhai.gov.in/#/
+Registrable Domain: nhai.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 22 chars, Entropy: 3.64
+      Subdomains: 1, Hyphens: 0, Special Chars: 1
+
+   📄 Page Content:
+      External Links: 77
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:47:45.617558+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,440,844c6ada1c35e3eb,,0.0,0.0,0.0
+https://nhai.gov.in/#/,nhai.gov.in,22,3.6412,1,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,391025,77,0,0,0,0,0,0,95,1,0,0,0,410361453a2aa56bb4b574e4342c92ef,2d3fab1d9a271a36495981e9e535054378ff5beac5c867a764b45bf6532557ff,"https://nhai.gov.in/#/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: nhai.gov.in
+URL: https://nhai.gov.in/#/
+Registrable Domain: nhai.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 22 chars, Entropy: 3.64
+      Subdomains: 1, Hyphens: 0, Special Chars: 1
+
+   📄 Page Content:
+      External Links: 77
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:47:45.617558+00:00
+   Processing Stage: rules:benign",0,,0,0,,0,0,0,0,435,844c6ada1c35e3eb,,0.0,0.0,0.0
+https://nhai.gov.in/#/,nhai.gov.in,22,3.6412,1,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,391025,77,0,0,0,0,0,0,95,1,0,0,0,410361453a2aa56bb4b574e4342c92ef,2d3fab1d9a271a36495981e9e535054378ff5beac5c867a764b45bf6532557ff," Domain: nhai.gov.in
+Registrable Domain: nhai.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.166.116
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): ns1.nic.in, ns7.nic.in, ns10.nic.in, ns2.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 3214 days
+   Days Until Expiry: 72
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452971.2812533
+   Processing Stage: resolved",1,benign,0,0,,0,0,0,0,440,844c6ada1c35e3eb,,0.0,0.0,0.0
+https://nhai.gov.in/#/,nhai.gov.in,22,3.6412,1,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,391025,77,0,0,0,0,0,0,95,1,0,0,0,410361453a2aa56bb4b574e4342c92ef,2d3fab1d9a271a36495981e9e535054378ff5beac5c867a764b45bf6532557ff," Domain: nhai.gov.in
+Registrable Domain: nhai.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.166.116
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): ns1.nic.in, ns7.nic.in, ns10.nic.in, ns2.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 3214 days
+   Days Until Expiry: 72
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452971.2812533
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,435,844c6ada1c35e3eb,,0.0,0.0,0.0
+https://gailonline.com/,gailonline.com,23,3.882,0,0,0,0,8041,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,359,0,999,0,2,0,0,0,0,1,102773,248,0,0,0,0,0,0,82,1,1,0,4,3a7d55ad9dde3f4a01ecb94d83ffd885,d420696d9286ba0bc4e643901a4771b031ef4eae278317917527743a219ba0f9,"https://gailonline.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: gailonline.com
+URL: https://gailonline.com/
+Registrable Domain: gailonline.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.88
+      Subdomains: 0, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 2
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 248
+
+   🚩 Phishing Keywords Detected: account
+
+   ⚠️ JavaScript Behavior:
+
+📊",1,benign,0,2,,0,0,0,0,580,bf9f14ca40cac98b,,0.0,0.0,0.0
+https://www.wipro.com/,wipro.com,22,3.516,1,0,0,0,9999,0,0,,,0,0,999,0,2,0,1,0,0,1,360462,49,8,1,0,0,0,0,139,1,0,0,0,d343cd8d97bcde522db104f0ebf19044,f4b7fd9b945d0e45a3928a0b4c47103b0577428b3a83aa5450691b86e256ea58,"https://www.wipro.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.wipro.com
+URL: https://www.wipro.com/
+Registrable Domain: wipro.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 22 chars, Entropy: 3.52
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 2
+      Password Fields: 0
+      Email Fields: 1
+      Submit Buttons: Submit
+
+   📄 Page Content:
+      External Links: 49
+
+   🚩 Phishing Keywords Detected: secure
+
+   ⚠️ Java",1,benign,0,2,Submit,0,0,0,0,633,aa19d0cceae887c7,,0.0,0.0,0.0
+,aiims.edu,0,0.0,0,0,0,0,10458,0,0,,IN,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,2,,," Domain: aiims.edu
+Registrable Domain: aiims.edu
+
+📡 DNS Records:
+   A (IPv4): 203.115.96.82
+   MX (Mail): ALT3.ASPMX.L.GOOGLE.COM, ALT1.ASPMX.L.GOOGLE.COM, ALT4.ASPMX.L.GOOGLE.COM, ALT2.ASPMX.L.GOOGLE.COM, ASPMX.L.GOOGLE.COM
+   NS (Nameservers): ns.pugmarks.com, ns1.pugmarks.com
+
+📋 WHOIS Information:
+   Domain Age: 10458 days
+   Days Until Expiry: 289
+
+🌍 Network & Location:
+   ASN: 17426
+   Country: IN, Mumbai
+
+📊 Metadata:
+   First Seen: 1760452919.1980977
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,489,86c140a7c1fabb73,,0.0,0.0,0.0
+,aiims.edu,0,0.0,0,0,0,0,10458,0,0,,IN,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,2,,," Domain: aiims.edu
+Registrable Domain: aiims.edu
+
+📡 DNS Records:
+   A (IPv4): 203.115.96.82
+   MX (Mail): ALT3.ASPMX.L.GOOGLE.COM, ALT1.ASPMX.L.GOOGLE.COM, ALT4.ASPMX.L.GOOGLE.COM, ALT2.ASPMX.L.GOOGLE.COM, ASPMX.L.GOOGLE.COM
+   NS (Nameservers): ns.pugmarks.com, ns1.pugmarks.com
+
+📋 WHOIS Information:
+   Domain Age: 10458 days
+   Days Until Expiry: 289
+
+🌍 Network & Location:
+   ASN: 17426
+   Country: IN, Mumbai
+
+📊 Metadata:
+   First Seen: 1760452919.1980977
+   Processing Stage: resolved",0,,0,1,,0,0,0,0,504,86c140a7c1fabb73,,0.0,0.0,0.0
+,aiims.edu,0,0.0,0,0,0,0,10458,0,0,,IN,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,2,,,"https://aiims.edu/index.php/en Domain: aiims.edu
+URL: https://aiims.edu/index.php/en
+Registrable Domain: aiims.edu
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 30 chars, Entropy: 3.76
+      Subdomains: 0, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      HTML Size: 238,878 bytes
+      Internal Links: 168
+      External Links: 88
+      Images: 50
+      ⚠️ IFrames: 2
+      External Scripts: 21
+
+   ⚠",0,,0,0,,0,0,0,0,489,86c140a7c1fabb73,,0.0,0.0,0.0
+,aiims.edu,0,0.0,0,0,0,0,10458,0,0,,IN,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,2,,,"https://aiims.edu/index.php/en Domain: aiims.edu
+URL: https://aiims.edu/index.php/en
+Registrable Domain: aiims.edu
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 30 chars, Entropy: 3.76
+      Subdomains: 0, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      HTML Size: 238,878 bytes
+      Internal Links: 168
+      External Links: 88
+      Images: 50
+      ⚠️ IFrames: 2
+      External Scripts: 21
+
+   ⚠",0,,0,1,,0,0,0,0,504,86c140a7c1fabb73,,0.0,0.0,0.0
+https://arunachalpradesh.gov.in/,arunachalpradesh.gov.in,32,4.0778,1,0,0,0,7109,0,0,National Informatics Centre,IN,195,0,999,0,0,0,0,0,0,1,131865,86,0,0,1,0,0,25,79,1,1,0,4,6e7210276bfa604d36b610140ca5d507,5a0aa9242e2cbb5a080006271dc08ed369b583ffda880b42b0339e08cfefda13,"https://arunachalpradesh.gov.in/ Domain: arunachalpradesh.gov.in
+Registrable Domain: arunachalpradesh.gov.in
+
+📡 DNS Records:
+   A (IPv4): 160.30.140.24
+   NS (Nameservers): ns1.nic.in, ns2.nic.in, ns7.nic.in, ns10.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7109 days
+   Days Until Expiry: 195
+
+🌍 Network & Location:
+   ASN: 153213
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452920.775456
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,431,dcd41dda45aa43a3,,0.0,0.0,0.0
+,accounts.mgovcloud.in,0,0.0,0,0,0,0,575,0,0,"MarkMonitor, Inc.",IN,154,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: accounts.mgovcloud.in
+Registrable Domain: accounts.mgovcloud.in
+
+📡 DNS Records:
+   A (IPv4): 169.148.142.41
+   CNAME: zs-in2nic-lc1.mgovcloud.in
+
+📋 WHOIS Information:
+   Registrar: MarkMonitor, Inc.
+   Domain Age: 575 days
+   Days Until Expiry: 154
+
+🌍 Network & Location:
+   ASN: 56201
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:57:04.826129+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,460,,,,,
+https://chandigarh.gov.in/,chandigarh.gov.in,26,3.8731,1,0,0,0,7530,0,0,National Informatics Centre,IN,139,0,999,0,1,0,0,0,0,0,94977,53,1,1,0,0,0,0,217,1,1,0,4,7a4659d14ae75420d3e849fcc95bd378,d66eb44a0888a3f736e3a39cb1baa1ffd0c2fba63670458c5866c15a798eb24d,"https://chandigarh.gov.in/ Domain: chandigarh.gov.in
+Registrable Domain: chandigarh.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.166.106
+   NS (Nameservers): ns2.nic.in, ns10.nic.in, ns7.nic.in, ns1.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7530 days
+   Days Until Expiry: 139
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452923.306061
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,419,e6459115155fccce,,0.0,0.0,0.0
+,ap.gov.in,0,0.0,0,0,0,0,8264,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,5,,," Domain: ap.gov.in
+Registrable Domain: ap.gov.in
+
+📡 DNS Records:
+   A (IPv4): 103.129.75.39
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): dns4.ap.gov.in, dns1.ap.gov.in, dns2.ap.gov.in, dns5.ap.gov.in, dns3.ap.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 8264 days
+   Days Until Expiry: 136
+
+🌍 Network & Location:
+   ASN: 137671
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452928.995967
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,462,,,,,
+,aicte-india.org,0,0.0,0,0,0,0,5807,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,2593,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,1,,," Domain: aicte-india.org
+Registrable Domain: aicte-india.org
+
+📡 DNS Records:
+   A (IPv4): 125.17.136.10
+   MX (Mail): alt4.aspmx.l.google.com, aspmx.l.google.com, alt1.aspmx.l.google.com, alt3.aspmx.l.google.com, alt2.aspmx.l.google.com
+   NS (Nameservers): llb.aicte-india.org
+
+📋 WHOIS Information:
+   Registrar: PDR Ltd. d/b/a PublicDomainRegistry.com
+   Domain Age: 5807 days
+   Days Until Expiry: 2593
+
+🌍 Network & Location:
+   ASN: 9498
+   Country: IN, Mumbai
+
+📊 Metadata:
+   First Seen: 1760452929.0120494
+",0,,0,0,,0,0,0,0,540,eac1159760be1d8d,,0.0,0.0,0.0
+,aicte-india.org,0,0.0,0,0,0,0,5807,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,2593,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,1,,," Domain: aicte-india.org
+Registrable Domain: aicte-india.org
+
+📡 DNS Records:
+   A (IPv4): 125.17.136.10
+   MX (Mail): alt4.aspmx.l.google.com, aspmx.l.google.com, alt1.aspmx.l.google.com, alt3.aspmx.l.google.com, alt2.aspmx.l.google.com
+   NS (Nameservers): llb.aicte-india.org
+
+📋 WHOIS Information:
+   Registrar: PDR Ltd. d/b/a PublicDomainRegistry.com
+   Domain Age: 5807 days
+   Days Until Expiry: 2593
+
+🌍 Network & Location:
+   ASN: 9498
+   Country: IN, Mumbai
+
+📊 Metadata:
+   First Seen: 1760452929.0120494
+",1,benign,0,1,Search,1,1,0,0,653,eac1159760be1d8d,,0.0,0.0,0.0
+,aicte-india.org,0,0.0,0,0,0,0,5807,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,2593,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,1,,,"https://aicte.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: aicte.gov.in
+URL: https://aicte.gov.in/
+Registrable Domain: aicte-india.org
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 21 chars, Entropy: 3.75
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Search
+
+   📄 Page Content:
+      External Links: 64
+
+   🚩 Phishing Keywords Detected: account, login,",0,,0,0,,0,0,0,0,540,eac1159760be1d8d,,0.0,0.0,0.0
+,aicte-india.org,0,0.0,0,0,0,0,5807,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,2593,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,1,,,"https://aicte.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: aicte.gov.in
+URL: https://aicte.gov.in/
+Registrable Domain: aicte-india.org
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 21 chars, Entropy: 3.75
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Search
+
+   📄 Page Content:
+      External Links: 64
+
+   🚩 Phishing Keywords Detected: account, login,",1,benign,0,1,Search,1,1,0,0,653,eac1159760be1d8d,,0.0,0.0,0.0
+,cbse.gov.in,0,0.0,0,0,0,0,7158,0,0,National Informatics Centre,IN,146,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: cbse.gov.in
+Registrable Domain: cbse.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.187.100
+   MX (Mail): mx3.mgovcloud.in, mx.mgovcloud.in, mx2.mgovcloud.in
+   NS (Nameservers): ns1.nic.in, ns7.nic.in, ns10.nic.in, ns2.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7158 days
+   Days Until Expiry: 146
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452929.0183551
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,474,8f0f070703e3e3e3,,0.0,0.0,0.0
+,cbse.gov.in,0,0.0,0,0,0,0,7158,0,0,National Informatics Centre,IN,146,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: cbse.gov.in
+Registrable Domain: cbse.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.187.100
+   MX (Mail): mx3.mgovcloud.in, mx.mgovcloud.in, mx2.mgovcloud.in
+   NS (Nameservers): ns1.nic.in, ns7.nic.in, ns10.nic.in, ns2.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7158 days
+   Days Until Expiry: 146
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452929.0183551
+   Processing Stage: resolved",1,benign,0,0,,0,0,0,0,373,8f0f070703e3e3e3,,0.0,0.0,0.0
+,cbse.gov.in,0,0.0,0,0,0,0,7158,0,0,National Informatics Centre,IN,146,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,,"https://www.cbse.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.cbse.gov.in
+URL: https://www.cbse.gov.in/
+Registrable Domain: cbse.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 24 chars, Entropy: 3.82
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:22.530967+00:00
+   Processing Stage: rules:benign",0,,0,0,,0,0,0,0,474,8f0f070703e3e3e3,,0.0,0.0,0.0
+,cbse.gov.in,0,0.0,0,0,0,0,7158,0,0,National Informatics Centre,IN,146,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,,"https://www.cbse.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.cbse.gov.in
+URL: https://www.cbse.gov.in/
+Registrable Domain: cbse.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 24 chars, Entropy: 3.82
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:22.530967+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,373,8f0f070703e3e3e3,,0.0,0.0,0.0
+https://dnh.gov.in/,dnh.gov.in,19,3.5766,1,0,0,0,3690,0,0,National Informatics Centre,IN,327,0,999,0,1,0,0,0,0,0,169734,60,1,1,0,0,0,0,95,1,1,0,4,92ad84f6b8cfafe0bd79051a45fa37ad,7834ca953a4ed77064f85e555cc1cd606fdf472aca6033196db584e2a7e3e40d,"https://dnh.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: dnh.gov.in
+URL: https://dnh.gov.in/
+Registrable Domain: dnh.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 19 chars, Entropy: 3.58
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Search
+
+   📄 Page Content:
+      External Links: 60
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfuscated Code Detected",1,benign,0,1,Search,0,0,0,0,587,c9b5155c64c28fa7,,0.0,0.0,0.0
+https://delhi.gov.in/,delhi.gov.in,21,3.7849,1,0,0,0,8286,0,0,National Informatics Centre,IN,136,0,999,0,2,0,0,0,0,1,53805,21,1,1,0,0,0,0,47,1,1,3,4,d565261900a248a9b8e2e57df85ea87e,a30309a1fc01baeaf35bf1330f9a5e8c742596b5974086d29686f7a9f22172f3,"https://delhi.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: delhi.gov.in
+URL: https://delhi.gov.in/
+Registrable Domain: delhi.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 21 chars, Entropy: 3.78
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 2
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 21
+
+   🚩 Phishing Keywords Detected: login
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfus",1,benign,0,2,,1,0,0,0,604,cd8100bfa99d7f42,,0.0,0.0,0.0
+,bhimupi.org.in,0,0.0,0,0,0,0,3177,0,0,OVI HOSTING PVT LTD,IN,474,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,6,,," Domain: bhimupi.org.in
+Registrable Domain: bhimupi.org.in
+
+📡 DNS Records:
+   A (IPv4): 184.86.112.19, 184.86.112.33
+   AAAA (IPv6): 2600:140f:5::17c3:6992, 2600:140f:5::17c3:699a
+   NS (Nameservers): a11-67.akam.net, a10-65.akam.net, a16-66.akam.net, a2-66.akam.net, a13-64.akam.net, a1-177.akam.net
+
+📋 WHOIS Information:
+   Registrar: OVI HOSTING PVT LTD
+   Domain Age: 3177 days
+   Days Until Expiry: 474
+
+🌍 Network & Location:
+   ASN: 20940
+   Country: IN, New Delhi
+
+📊 Metadata:
+   First Seen: 1760452929.90",0,,0,0,,0,0,0,0,546,8e4d42c744b6b6b6,,0.0,0.0,0.0
+,bhimupi.org.in,0,0.0,0,0,0,0,3177,0,0,OVI HOSTING PVT LTD,IN,474,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,6,,," Domain: bhimupi.org.in
+Registrable Domain: bhimupi.org.in
+
+📡 DNS Records:
+   A (IPv4): 184.86.112.19, 184.86.112.33
+   AAAA (IPv6): 2600:140f:5::17c3:6992, 2600:140f:5::17c3:699a
+   NS (Nameservers): a11-67.akam.net, a10-65.akam.net, a16-66.akam.net, a2-66.akam.net, a13-64.akam.net, a1-177.akam.net
+
+📋 WHOIS Information:
+   Registrar: OVI HOSTING PVT LTD
+   Domain Age: 3177 days
+   Days Until Expiry: 474
+
+🌍 Network & Location:
+   ASN: 20940
+   Country: IN, New Delhi
+
+📊 Metadata:
+   First Seen: 1760452929.90",0,,0,0,,0,0,0,0,529,8e4d42c744b6b6b6,,0.0,0.0,0.0
+,bhimupi.org.in,0,0.0,0,0,0,0,3177,0,0,OVI HOSTING PVT LTD,IN,474,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,6,,,"https://www.bhimupi.org.in/ Domain: www.bhimupi.org.in
+URL: https://www.bhimupi.org.in/
+Registrable Domain: bhimupi.org.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 27 chars, Entropy: 3.83
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      HTML Size: 52,503 bytes
+      Internal Links: 29
+      External Links: 33
+      Images: 43
+      ⚠️ IFrames: 3
+      External Scripts: 17
+      Favicon: Present
+
+   🚩 Phishing Keywords Detected: account, secure
+
+   ⚠️ JavaScrip",0,,0,0,,0,0,0,0,546,8e4d42c744b6b6b6,,0.0,0.0,0.0
+,bhimupi.org.in,0,0.0,0,0,0,0,3177,0,0,OVI HOSTING PVT LTD,IN,474,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,6,,,"https://www.bhimupi.org.in/ Domain: www.bhimupi.org.in
+URL: https://www.bhimupi.org.in/
+Registrable Domain: bhimupi.org.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 27 chars, Entropy: 3.83
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      HTML Size: 52,503 bytes
+      Internal Links: 29
+      External Links: 33
+      Images: 43
+      ⚠️ IFrames: 3
+      External Scripts: 17
+      Favicon: Present
+
+   🚩 Phishing Keywords Detected: account, secure
+
+   ⚠️ JavaScrip",0,,0,0,,0,0,0,0,529,8e4d42c744b6b6b6,,0.0,0.0,0.0
+https://assam.gov.in/,assam.gov.in,21,3.6538,1,0,0,0,7215,0,0,National Informatics Centre,IN,89,0,999,0,0,0,0,0,0,0,34813,1,0,0,0,0,0,0,4,1,1,3,4,4f6da84debf8af3f372aa57c54df0574,9aebb9c0c3b5a5267ea73a432c30380c2fe3b9d14d0e2427c7456ad026d1b4d5,"https://assam.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: assam.gov.in
+URL: https://assam.gov.in/
+Registrable Domain: assam.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 21 chars, Entropy: 3.65
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 1
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:49:55.058216+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,440,c57f3a20813f6a71,,0.0,0.0,0.0
+,csir.res.in,0,0.0,0,0,0,0,8264,0,0,ERNET India,IN,866,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,2,,," Domain: csir.res.in
+Registrable Domain: csir.res.in
+
+📊 Metadata:
+   First Seen: 1760452966638",0,,0,0,,0,0,0,0,93,,,,,
+https://cris.org.in/,cris.org.in,20,3.5842,1,0,0,0,8250,0,0,Sree Jain Infotech dba bookandhost.com,IN,515,0,999,0,0,0,0,0,0,4,265725,85,16,1,0,0,0,0,110,1,1,2,3,,,"https://cris.org.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: cris.org.in
+URL: https://cris.org.in/
+Registrable Domain: cris.org.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 20 chars, Entropy: 3.58
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 85
+
+   🚩 Phishing Keywords Detected: account, secure, verify, urgent
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfuscated Code Detected
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:44:06.",1,benign,0,0,,0,1,0,0,537,d195551555535557,,0.0,0.0,0.0
+,gov.in,0,0.0,0,0,0,0,139,0,0,National Internet Exchange of India,,3512,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,,," Domain: gov.in
+Registrable Domain: gov.in
+
+📡 DNS Records:
+   MX (Mail): mx2.mgovcloud.in, mx3.mgovcloud.in, mx.mgovcloud.in
+   NS (Nameservers): ns10.trs-dns.info, ns01.trs-dns.com, ns01.trs-dns.net, ns10.trs-dns.org
+
+📋 WHOIS Information:
+   Registrar: National Internet Exchange of India
+   Domain Age: 139 days
+   Days Until Expiry: 3512
+
+📊 Metadata:
+   First Seen: 1760452931.993091
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,415,,,,,
+,epfindia.gov.in,0,0.0,0,0,0,0,7958,0,0,National Informatics Centre,IN,77,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: epfindia.gov.in
+Registrable Domain: epfindia.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.160.96
+   MX (Mail): mx2.mgovcloud.in, mx.mgovcloud.in, mx3.mgovcloud.in
+   NS (Nameservers): ns2.nic.in, ns7.nic.in, ns10.nic.in, ns1.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7958 days
+   Days Until Expiry: 77
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452932.1105375
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,480,ee3f30c0c194353f,,0.0,0.0,0.0
+,epfindia.gov.in,0,0.0,0,0,0,0,7958,0,0,National Informatics Centre,IN,77,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: epfindia.gov.in
+Registrable Domain: epfindia.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.160.96
+   MX (Mail): mx2.mgovcloud.in, mx.mgovcloud.in, mx3.mgovcloud.in
+   NS (Nameservers): ns2.nic.in, ns7.nic.in, ns10.nic.in, ns1.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7958 days
+   Days Until Expiry: 77
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452932.1105375
+   Processing Stage: resolved",1,benign,10,0,,1,0,0,0,682,ee3f30c0c194353f,,0.0,0.0,0.0
+,epfindia.gov.in,0,0.0,0,0,0,0,7958,0,0,National Informatics Centre,IN,77,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,,"https://www.epfindia.gov.in/site_en/index.php 🚨 VERDICT: BENIGN (Risk Score: 10/100, Confidence: 0.50)
+   Risk Indicators: Elevated URL entropy
+
+Domain: www.epfindia.gov.in
+URL: https://www.epfindia.gov.in/site_en/index.php
+Registrable Domain: epfindia.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 45 chars, Entropy: 4.00
+      Subdomains: 2, Hyphens: 0, Special Chars: 1
+
+   📄 Page Content:
+      External Links: 475
+
+   🚩 Phishing Keywords Detected: password, account, login, secure
+
+  ",0,,0,0,,0,0,0,0,480,ee3f30c0c194353f,,0.0,0.0,0.0
+,epfindia.gov.in,0,0.0,0,0,0,0,7958,0,0,National Informatics Centre,IN,77,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,,"https://www.epfindia.gov.in/site_en/index.php 🚨 VERDICT: BENIGN (Risk Score: 10/100, Confidence: 0.50)
+   Risk Indicators: Elevated URL entropy
+
+Domain: www.epfindia.gov.in
+URL: https://www.epfindia.gov.in/site_en/index.php
+Registrable Domain: epfindia.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 45 chars, Entropy: 4.00
+      Subdomains: 2, Hyphens: 0, Special Chars: 1
+
+   📄 Page Content:
+      External Links: 475
+
+   🚩 Phishing Keywords Detected: password, account, login, secure
+
+  ",1,benign,10,0,,1,0,0,0,682,ee3f30c0c194353f,,0.0,0.0,0.0
+https://bsnl.co.in/,bsnl.co.in,19,3.5766,1,0,0,0,8233,0,0,MPS Infotecnics Limited,IN,167,0,999,0,0,0,0,0,0,1,51361,29,1,0,0,0,0,0,77,1,1,1,2,4ce93e381c6d17a785db3af5ff5b40c5,6bf580989888cf919774834e4eb53393a3313d22f21df716a8c9ede2626d71cc,"https://bsnl.co.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: bsnl.co.in
+URL: https://bsnl.co.in/
+Registrable Domain: bsnl.co.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 19 chars, Entropy: 3.58
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 29
+
+   🚩 Phishing Keywords Detected: secure
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:50.338837+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,476,afc4e0c06eb53ec2,,0.0,0.0,0.0
+,bseindia.com,0,0.0,0,0,0,0,10512,0,0,"GoDaddy.com, LLC",IN,78,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,6,,," Domain: bseindia.com
+Registrable Domain: bseindia.com
+
+📡 DNS Records:
+   A (IPv4): 184.86.112.83, 184.86.112.56
+   AAAA (IPv6): 2600:140f:5::17c3:6918, 2600:140f:5::17c3:6919
+   MX (Mail): bseindia-com.mail.protection.outlook.com
+   NS (Nameservers): a1-223.akam.net, a14-66.akam.net, a20-67.akam.net, a3-66.akam.net, a4-65.akam.net, a7-64.akam.net
+
+📋 WHOIS Information:
+   Registrar: GoDaddy.com, LLC
+   Domain Age: 10512 days
+   Days Until Expiry: 78
+
+🌍 Network & Location:
+   ASN: 20940
+   Country: IN, New D",0,,0,0,,0,0,0,0,591,92c7479a41ce1cf9,,0.0,0.0,0.0
+,bseindia.com,0,0.0,0,0,0,0,10512,0,0,"GoDaddy.com, LLC",IN,78,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,6,,," Domain: bseindia.com
+Registrable Domain: bseindia.com
+
+📡 DNS Records:
+   A (IPv4): 184.86.112.83, 184.86.112.56
+   AAAA (IPv6): 2600:140f:5::17c3:6918, 2600:140f:5::17c3:6919
+   MX (Mail): bseindia-com.mail.protection.outlook.com
+   NS (Nameservers): a1-223.akam.net, a14-66.akam.net, a20-67.akam.net, a3-66.akam.net, a4-65.akam.net, a7-64.akam.net
+
+📋 WHOIS Information:
+   Registrar: GoDaddy.com, LLC
+   Domain Age: 10512 days
+   Days Until Expiry: 78
+
+🌍 Network & Location:
+   ASN: 20940
+   Country: IN, New D",1,benign,0,2,,1,0,0,0,590,92c7479a41ce1cf9,,0.0,0.0,0.0
+,bseindia.com,0,0.0,0,0,0,0,10512,0,0,"GoDaddy.com, LLC",IN,78,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,6,,,"https://www.bseindia.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.bseindia.com
+URL: https://www.bseindia.com/
+Registrable Domain: bseindia.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.94
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 2
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 95
+
+   🚩 Phishing Keywords Detected: login, suspended
+
+   ⚠️ JavaScript ",0,,0,0,,0,0,0,0,591,92c7479a41ce1cf9,,0.0,0.0,0.0
+,bseindia.com,0,0.0,0,0,0,0,10512,0,0,"GoDaddy.com, LLC",IN,78,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,6,,,"https://www.bseindia.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.bseindia.com
+URL: https://www.bseindia.com/
+Registrable Domain: bseindia.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.94
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 2
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 95
+
+   🚩 Phishing Keywords Detected: login, suspended
+
+   ⚠️ JavaScript ",1,benign,0,2,,1,0,0,0,590,92c7479a41ce1cf9,,0.0,0.0,0.0
+,finmin.nic.in,0,0.0,0,0,0,0,7599,0,0,National Informatics Centre,,70,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: finmin.nic.in
+Registrable Domain: finmin.nic.in
+
+📊 Metadata:
+   First Seen: 1760452943710",0,,0,0,,0,0,0,0,97,,,,,
+,aai.aero,0,0.0,0,0,0,0,8573,0,0,Tucows Domains Inc.,,192,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,,," Domain: aai.aero
+Registrable Domain: aai.aero
+
+📡 DNS Records:
+   A (IPv4): 104.21.72.58, 172.67.175.240
+   AAAA (IPv6): 2606:4700:3034::ac43:aff0, 2606:4700:3034::6815:483a
+   MX (Mail): mail1.aai.aero, mail.aai.aero
+   NS (Nameservers): dale.ns.cloudflare.com, elma.ns.cloudflare.com
+
+📋 WHOIS Information:
+   Registrar: Tucows Domains Inc.
+   Domain Age: 8573 days
+   Days Until Expiry: 192
+
+🌍 Network & Location:
+   ASN: 13335
+
+📊 Metadata:
+   First Seen: 1760452937.7999337
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,505,,,,,
+https://fssai.gov.in/,fssai.gov.in,21,3.6538,1,0,0,0,6286,0,0,National Informatics Centre,IN,287,0,999,0,1,0,0,0,0,4,3158830,596,0,0,0,0,0,0,162,1,1,1,2,fa412c773e732d43e146a9303d5924ff,200f11cd2d09ce8f3d14b21ba3ec6299f97c927203f4300dae8a29eb916fc20c,"https://fssai.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: fssai.gov.in
+URL: https://fssai.gov.in/
+Registrable Domain: fssai.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 21 chars, Entropy: 3.65
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 596
+
+   🚩 Phishing Keywords Detected: account, secure, verify, urgent
+
+   ⚠️ JavaScr",1,benign,0,1,,0,1,0,0,598,8b80707a97157b6b,,0.0,0.0,0.0
+,goa.gov.in,0,0.0,0,0,0,0,7762,0,0,National Informatics Centre,IN,272,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: goa.gov.in
+Registrable Domain: goa.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.183.9
+   MX (Mail): mx3.mgovcloud.in, mx2.mgovcloud.in, mx.mgovcloud.in
+   NS (Nameservers): ns2.nic.in, ns7.nic.in, ns10.nic.in, ns1.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7762 days
+   Days Until Expiry: 272
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452940.9072578
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,470,b4ab3d9450fcca16,,0.0,0.0,0.0
+,goa.gov.in,0,0.0,0,0,0,0,7762,0,0,National Informatics Centre,IN,272,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: goa.gov.in
+Registrable Domain: goa.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.183.9
+   MX (Mail): mx3.mgovcloud.in, mx2.mgovcloud.in, mx.mgovcloud.in
+   NS (Nameservers): ns2.nic.in, ns7.nic.in, ns10.nic.in, ns1.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7762 days
+   Days Until Expiry: 272
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452940.9072578
+   Processing Stage: resolved",1,benign,0,1,,0,0,0,0,639,b4ab3d9450fcca16,,0.0,0.0,0.0
+,goa.gov.in,0,0.0,0,0,0,0,7762,0,0,National Informatics Centre,IN,272,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,,"https://www.goa.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.goa.gov.in
+URL: https://www.goa.gov.in/
+Registrable Domain: goa.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.64
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 31
+
+   🚩 Phishing Keywords Detected: account
+
+   ⚠️ JavaScript Behavior:
+      🚨",0,,0,0,,0,0,0,0,470,b4ab3d9450fcca16,,0.0,0.0,0.0
+,goa.gov.in,0,0.0,0,0,0,0,7762,0,0,National Informatics Centre,IN,272,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,,"https://www.goa.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.goa.gov.in
+URL: https://www.goa.gov.in/
+Registrable Domain: goa.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.64
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 31
+
+   🚩 Phishing Keywords Detected: account
+
+   ⚠️ JavaScript Behavior:
+      🚨",1,benign,0,1,,0,0,0,0,639,b4ab3d9450fcca16,,0.0,0.0,0.0
+,dgft.gov.in,0,0.0,0,0,0,0,7526,0,0,National Informatics Centre,IN,143,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,2,,," Domain: dgft.gov.in
+Registrable Domain: dgft.gov.in
+
+📡 DNS Records:
+   A (IPv4): 15.206.136.226, 15.206.119.170
+   NS (Nameservers): ns1.dgft.gov.in, ns2.dgft.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7526 days
+   Days Until Expiry: 143
+
+🌍 Network & Location:
+   ASN: 16509
+   Country: IN, Mumbai
+
+📊 Metadata:
+   First Seen: 1760452941.0666153
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,417,99993f374dc442c6,,0.0,0.0,0.0
+,dgft.gov.in,0,0.0,0,0,0,0,7526,0,0,National Informatics Centre,IN,143,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,2,,," Domain: dgft.gov.in
+Registrable Domain: dgft.gov.in
+
+📡 DNS Records:
+   A (IPv4): 15.206.136.226, 15.206.119.170
+   NS (Nameservers): ns1.dgft.gov.in, ns2.dgft.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7526 days
+   Days Until Expiry: 143
+
+🌍 Network & Location:
+   ASN: 16509
+   Country: IN, Mumbai
+
+📊 Metadata:
+   First Seen: 1760452941.0666153
+   Processing Stage: resolved",1,benign,0,1,,1,1,0,0,702,99993f374dc442c6,,0.0,0.0,0.0
+,dgft.gov.in,0,0.0,0,0,0,0,7526,0,0,National Informatics Centre,IN,143,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,2,,,"https://www.dgft.gov.in/CP/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.dgft.gov.in
+URL: https://www.dgft.gov.in/CP/
+Registrable Domain: dgft.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 27 chars, Entropy: 3.86
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 221
+
+   🚩 Phishing Keywords Detected: account, login, secure, verify
+
+",0,,0,0,,0,0,0,0,417,99993f374dc442c6,,0.0,0.0,0.0
+,dgft.gov.in,0,0.0,0,0,0,0,7526,0,0,National Informatics Centre,IN,143,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,2,,,"https://www.dgft.gov.in/CP/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.dgft.gov.in
+URL: https://www.dgft.gov.in/CP/
+Registrable Domain: dgft.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 27 chars, Entropy: 3.86
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 221
+
+   🚩 Phishing Keywords Detected: account, login, secure, verify
+
+",1,benign,0,1,,1,1,0,0,702,99993f374dc442c6,,0.0,0.0,0.0
+https://haryana.gov.in/,haryana.gov.in,23,3.7623,1,0,0,0,7868,0,0,National Informatics Centre,IN,166,0,999,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,1,0,4,,,"https://haryana.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: haryana.gov.in
+URL: https://haryana.gov.in/
+Registrable Domain: haryana.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.76
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:50:18.658788+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,374,b333233333333333,,0.0,0.0,0.0
+,bhel.com,0,0.0,0,0,0,0,10319,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,271,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,3,,," Domain: bhel.com
+Registrable Domain: bhel.com
+
+📡 DNS Records:
+   A (IPv4): 111.118.189.167
+   NS (Nameservers): mailgw3.bhel.in, corpdrns1.bhel.in, corpns1.bhel.in
+
+📋 WHOIS Information:
+   Registrar: PDR Ltd. d/b/a PublicDomainRegistry.com
+   Domain Age: 10319 days
+   Days Until Expiry: 271
+
+🌍 Network & Location:
+   ASN: 55470
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452941.4674704
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,420,,,,,
+,esic.nic.in,0,0.0,0,0,0,0,7599,0,0,National Informatics Centre,IN,70,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,0,,," Domain: esic.nic.in
+Registrable Domain: esic.nic.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.77.202
+   MX (Mail): mx2.mgovcloud.in, mx3.mgovcloud.in, mx.mgovcloud.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7599 days
+   Days Until Expiry: 70
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452942.4476056
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,403,b6db258d38f0c227,,0.0,0.0,0.0
+,esic.nic.in,0,0.0,0,0,0,0,7599,0,0,National Informatics Centre,IN,70,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,0,,," Domain: esic.nic.in
+Registrable Domain: esic.nic.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.77.202
+   MX (Mail): mx2.mgovcloud.in, mx3.mgovcloud.in, mx.mgovcloud.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7599 days
+   Days Until Expiry: 70
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452942.4476056
+   Processing Stage: resolved",1,benign,0,1,Search,1,0,0,0,607,b6db258d38f0c227,,0.0,0.0,0.0
+,esic.nic.in,0,0.0,0,0,0,0,7599,0,0,National Informatics Centre,IN,70,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,0,,,"https://esic.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: esic.gov.in
+URL: https://esic.gov.in/
+Registrable Domain: esic.nic.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 20 chars, Entropy: 3.68
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Search
+
+   📄 Page Content:
+      External Links: 64
+
+   🚩 Phishing Keywords Detected: password, login
+
+   ⚠️",0,,0,0,,0,0,0,0,403,b6db258d38f0c227,,0.0,0.0,0.0
+,esic.nic.in,0,0.0,0,0,0,0,7599,0,0,National Informatics Centre,IN,70,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,0,,,"https://esic.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: esic.gov.in
+URL: https://esic.gov.in/
+Registrable Domain: esic.nic.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 20 chars, Entropy: 3.68
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Search
+
+   📄 Page Content:
+      External Links: 64
+
+   🚩 Phishing Keywords Detected: password, login
+
+   ⚠️",1,benign,0,1,Search,1,0,0,0,607,b6db258d38f0c227,,0.0,0.0,0.0
+https://gujarat.gov.in/,gujarat.gov.in,23,3.8492,1,0,0,0,7899,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,309,0,0,0,0,0,0,0,0,0,2,2,3,,,"https://gujarat.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: gujarat.gov.in
+URL: https://gujarat.gov.in/
+Registrable Domain: gujarat.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.85
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:50:34.986131+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,374,8707070703f1f1fb,,0.0,0.0,0.0
+,icmr.gov.in,0,0.0,0,0,0,0,4857,0,0,National Informatics Centre,IN,255,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: icmr.gov.in
+Registrable Domain: icmr.gov.in
+
+📡 DNS Records:
+   A (IPv4): 103.195.217.63
+   AAAA (IPv6): 2001:4408:1184:41:28:195:217:63
+   MX (Mail): mx3.mgovcloud.in, mx2.mgovcloud.in, mx.mgovcloud.in
+   NS (Nameservers): ns2.nic.in, ns1.nic.in, ns10.nic.in, ns7.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 4857 days
+   Days Until Expiry: 255
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452944.5732617
+   Processing Stage",0,,0,0,,0,0,0,0,521,,,,,
+,dc.crsorgi.gov.in,0,0.0,0,0,0,0,4253,0,0,National Informatics Centre,IN,129,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,,," Domain: dc.crsorgi.gov.in
+Registrable Domain: dc.crsorgi.gov.in
+
+📡 DNS Records:
+   A (IPv4): 103.151.152.102
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 4253 days
+   Days Until Expiry: 129
+
+🌍 Network & Location:
+   ASN: 140170
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760500625.281141
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,352,,,,,
+,iitd.ac.in,0,0.0,0,0,0,0,8264,0,0,ERNET India,IN,866,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,2,,," Domain: iitd.ac.in
+Registrable Domain: iitd.ac.in
+
+📡 DNS Records:
+   A (IPv4): 103.27.9.24
+   AAAA (IPv6): 2001:df4:e000:29::212
+   MX (Mail): smtp3.iitd.ac.in, smtp1.iitd.ac.in, smtp2.iitd.ac.in
+   NS (Nameservers): dns8.iitd.ac.in, dns10.iitd.ac.in
+
+📋 WHOIS Information:
+   Registrar: ERNET India
+   Domain Age: 8264 days
+   Days Until Expiry: 866
+
+🌍 Network & Location:
+   ASN: 132780
+   Country: IN, New Delhi
+
+📊 Metadata:
+   First Seen: 1760452945.8013518
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,490,eb95545a126e39e2,,0.0,0.0,0.0
+,iitd.ac.in,0,0.0,0,0,0,0,8264,0,0,ERNET India,IN,866,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,2,,," Domain: iitd.ac.in
+Registrable Domain: iitd.ac.in
+
+📡 DNS Records:
+   A (IPv4): 103.27.9.24
+   AAAA (IPv6): 2001:df4:e000:29::212
+   MX (Mail): smtp3.iitd.ac.in, smtp1.iitd.ac.in, smtp2.iitd.ac.in
+   NS (Nameservers): dns8.iitd.ac.in, dns10.iitd.ac.in
+
+📋 WHOIS Information:
+   Registrar: ERNET India
+   Domain Age: 8264 days
+   Days Until Expiry: 866
+
+🌍 Network & Location:
+   ASN: 132780
+   Country: IN, New Delhi
+
+📊 Metadata:
+   First Seen: 1760452945.8013518
+   Processing Stage: resolved",1,benign,0,1,,0,0,0,0,569,eb95545a126e39e2,,0.0,0.0,0.0
+,iitd.ac.in,0,0.0,0,0,0,0,8264,0,0,ERNET India,IN,866,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,2,,,"https://home.iitd.ac.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: home.iitd.ac.in
+URL: https://home.iitd.ac.in/
+Registrable Domain: iitd.ac.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 24 chars, Entropy: 3.71
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 511
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfuscated Code Detected
+
+📊 Metadata:",0,,0,0,,0,0,0,0,490,eb95545a126e39e2,,0.0,0.0,0.0
+,iitd.ac.in,0,0.0,0,0,0,0,8264,0,0,ERNET India,IN,866,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,2,,,"https://home.iitd.ac.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: home.iitd.ac.in
+URL: https://home.iitd.ac.in/
+Registrable Domain: iitd.ac.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 24 chars, Entropy: 3.71
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 511
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfuscated Code Detected
+
+📊 Metadata:",1,benign,0,1,,0,0,0,0,569,eb95545a126e39e2,,0.0,0.0,0.0
+,idbi.com,0,0.0,0,0,0,0,10023,0,0,"Network Solutions, LLC",IN,933,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,4,,," Domain: idbi.com
+Registrable Domain: idbi.com
+
+📡 DNS Records:
+   A (IPv4): 103.8.125.18, 43.242.127.190
+   AAAA (IPv6): 2400:3b00:1:d::370, 2400:3b00:20:4::1:167
+   MX (Mail): mail.idbi.com
+   NS (Nameservers): ns-cloud-c2.googledomains.com, ns-cloud-c3.googledomains.com, ns-cloud-c4.googledomains.com, ns-cloud-c1.googledomains.com
+
+📋 WHOIS Information:
+   Registrar: Network Solutions, LLC
+   Domain Age: 10023 days
+   Days Until Expiry: 933
+
+🌍 Network & Location:
+   ASN: 18229
+   Country: IN
+
+📊 Metadata:
+ ",0,,0,0,,0,0,0,0,573,ceda132764ad12f8,,0.0,0.0,0.0
+,idbi.com,0,0.0,0,0,0,0,10023,0,0,"Network Solutions, LLC",IN,933,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,4,,," Domain: idbi.com
+Registrable Domain: idbi.com
+
+📡 DNS Records:
+   A (IPv4): 103.8.125.18, 43.242.127.190
+   AAAA (IPv6): 2400:3b00:1:d::370, 2400:3b00:20:4::1:167
+   MX (Mail): mail.idbi.com
+   NS (Nameservers): ns-cloud-c2.googledomains.com, ns-cloud-c3.googledomains.com, ns-cloud-c4.googledomains.com, ns-cloud-c1.googledomains.com
+
+📋 WHOIS Information:
+   Registrar: Network Solutions, LLC
+   Domain Age: 10023 days
+   Days Until Expiry: 933
+
+🌍 Network & Location:
+   ASN: 18229
+   Country: IN
+
+📊 Metadata:
+ ",1,benign,0,0,,0,1,0,0,506,ceda132764ad12f8,,0.0,0.0,0.0
+,idbi.com,0,0.0,0,0,0,0,10023,0,0,"Network Solutions, LLC",IN,933,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,4,,,"https://www.idbi.bank.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.idbi.bank.in
+URL: https://www.idbi.bank.in/
+Registrable Domain: idbi.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.64
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 367
+
+   🚩 Phishing Keywords Detected: password, account, verify
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:49:18.824332+00:00
+   Processing",0,,0,0,,0,0,0,0,573,ceda132764ad12f8,,0.0,0.0,0.0
+,idbi.com,0,0.0,0,0,0,0,10023,0,0,"Network Solutions, LLC",IN,933,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,4,,,"https://www.idbi.bank.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.idbi.bank.in
+URL: https://www.idbi.bank.in/
+Registrable Domain: idbi.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.64
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 367
+
+   🚩 Phishing Keywords Detected: password, account, verify
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:49:18.824332+00:00
+   Processing",1,benign,0,0,,0,1,0,0,506,ceda132764ad12f8,,0.0,0.0,0.0
+,imps.npci.org.in,0,0.0,0,0,0,0,6095,0,0,OVI HOSTING PVT LTD,,1209,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: imps.npci.org.in
+Registrable Domain: imps.npci.org.in
+
+📡 DNS Records:
+
+📋 WHOIS Information:
+   Registrar: OVI HOSTING PVT LTD
+   Domain Age: 6095 days
+   Days Until Expiry: 1209
+
+📊 Metadata:
+   First Seen: 1760452947.2658138
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,262,,,,,
+,digilocker.gov.in,0,0.0,0,0,0,0,3893,0,0,National Informatics Centre,IN,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,4,,," Domain: digilocker.gov.in
+Registrable Domain: digilocker.gov.in
+
+📡 DNS Records:
+   A (IPv4): 65.1.255.75, 3.111.202.19, 3.111.193.25
+   NS (Nameservers): ns2.nic.in, ns7.nic.in, ns10.nic.in, ns1.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 3893 days
+   Days Until Expiry: 124
+
+🌍 Network & Location:
+   ASN: 16509
+   Country: IN, Mumbai
+
+📊 Metadata:
+   First Seen: 1760452947.4410572
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,453,807f03bf8097836f,,0.0,0.0,0.0
+,digilocker.gov.in,0,0.0,0,0,0,0,3893,0,0,National Informatics Centre,IN,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,4,,," Domain: digilocker.gov.in
+Registrable Domain: digilocker.gov.in
+
+📡 DNS Records:
+   A (IPv4): 65.1.255.75, 3.111.202.19, 3.111.193.25
+   NS (Nameservers): ns2.nic.in, ns7.nic.in, ns10.nic.in, ns1.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 3893 days
+   Days Until Expiry: 124
+
+🌍 Network & Location:
+   ASN: 16509
+   Country: IN, Mumbai
+
+📊 Metadata:
+   First Seen: 1760452947.4410572
+   Processing Stage: resolved",1,benign,10,0,,1,1,0,0,562,807f03bf8097836f,,0.0,0.0,0.0
+,digilocker.gov.in,0,0.0,0,0,0,0,3893,0,0,National Informatics Centre,IN,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,4,,,"https://www.digilocker.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 10/100, Confidence: 0.50)
+   Risk Indicators: Elevated URL entropy
+
+Domain: www.digilocker.gov.in
+URL: https://www.digilocker.gov.in/
+Registrable Domain: digilocker.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 30 chars, Entropy: 4.07
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 13
+
+   🚩 Phishing Keywords Detected: login, secure, verify
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+",0,,0,0,,0,0,0,0,453,807f03bf8097836f,,0.0,0.0,0.0
+,digilocker.gov.in,0,0.0,0,0,0,0,3893,0,0,National Informatics Centre,IN,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,4,,,"https://www.digilocker.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 10/100, Confidence: 0.50)
+   Risk Indicators: Elevated URL entropy
+
+Domain: www.digilocker.gov.in
+URL: https://www.digilocker.gov.in/
+Registrable Domain: digilocker.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 30 chars, Entropy: 4.07
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 13
+
+   🚩 Phishing Keywords Detected: login, secure, verify
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+",1,benign,10,0,,1,1,0,0,562,807f03bf8097836f,,0.0,0.0,0.0
+,indianrailways.gov.in,0,0.0,0,0,0,0,8264,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,," Domain: indianrailways.gov.in
+Registrable Domain: indianrailways.gov.in
+
+📡 DNS Records:
+   A (IPv4): 203.176.112.122
+   MX (Mail): mail.indianrailways.gov.in
+   NS (Nameservers): ns3.indianrail.gov.in, ns1.indianrail.gov.in, ns2.indianrail.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 8264 days
+   Days Until Expiry: 136
+
+🌍 Network & Location:
+   ASN: 45596
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452948.8868194
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,490,,,,,
+,iitb.ac.in,0,0.0,0,0,0,0,7899,0,0,ERNET India,IN,3058,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,3,,," Domain: iitb.ac.in
+Registrable Domain: iitb.ac.in
+
+📡 DNS Records:
+   A (IPv4): 103.21.124.133
+   MX (Mail): fmlr2.iitb.ac.in, fmlr3.iitb.ac.in, fmlr1.iitb.ac.in, fmlr4.iitb.ac.in
+   NS (Nameservers): dns1.iitb.ac.in, dns2.iitb.ac.in, dns3.iitb.ac.in
+
+📋 WHOIS Information:
+   Registrar: ERNET India
+   Domain Age: 7899 days
+   Days Until Expiry: 3058
+
+🌍 Network & Location:
+   ASN: 132423
+   Country: IN, Mumbai
+
+📊 Metadata:
+   First Seen: 1760452948.897589
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,486,be3e144c48d03f3e,,0.0,0.0,0.0
+,iitb.ac.in,0,0.0,0,0,0,0,7899,0,0,ERNET India,IN,3058,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,3,,," Domain: iitb.ac.in
+Registrable Domain: iitb.ac.in
+
+📡 DNS Records:
+   A (IPv4): 103.21.124.133
+   MX (Mail): fmlr2.iitb.ac.in, fmlr3.iitb.ac.in, fmlr1.iitb.ac.in, fmlr4.iitb.ac.in
+   NS (Nameservers): dns1.iitb.ac.in, dns2.iitb.ac.in, dns3.iitb.ac.in
+
+📋 WHOIS Information:
+   Registrar: ERNET India
+   Domain Age: 7899 days
+   Days Until Expiry: 3058
+
+🌍 Network & Location:
+   ASN: 132423
+   Country: IN, Mumbai
+
+📊 Metadata:
+   First Seen: 1760452948.897589
+   Processing Stage: resolved",1,benign,0,2,"Search, Go",0,0,0,0,641,be3e144c48d03f3e,,0.0,0.0,0.0
+,iitb.ac.in,0,0.0,0,0,0,0,7899,0,0,ERNET India,IN,3058,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,3,,,"https://www.iitb.ac.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.iitb.ac.in
+URL: https://www.iitb.ac.in/
+Registrable Domain: iitb.ac.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.49
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 2
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Search, Go
+
+   📄 Page Content:
+      External Links: 92
+
+   🚩 Phishing Keywords Detected: account
+
+ ",0,,0,0,,0,0,0,0,486,be3e144c48d03f3e,,0.0,0.0,0.0
+,iitb.ac.in,0,0.0,0,0,0,0,7899,0,0,ERNET India,IN,3058,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,3,,,"https://www.iitb.ac.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.iitb.ac.in
+URL: https://www.iitb.ac.in/
+Registrable Domain: iitb.ac.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.49
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 2
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Search, Go
+
+   📄 Page Content:
+      External Links: 92
+
+   🚩 Phishing Keywords Detected: account
+
+ ",1,benign,0,2,"Search, Go",0,0,0,0,641,be3e144c48d03f3e,,0.0,0.0,0.0
+https://cert-in.org.in/,cert-in.org.in,23,3.7623,1,0,0,0,8183,0,0,S.G.S. Technologie Pvt Ltd dba Netandhost.com,IN,217,0,999,0,0,0,0,0,0,0,435,0,0,0,0,0,0,0,73,1,3,1,2,a445420727d0661026c63aa36191e243,b24d7bdfaf62a932f2e01777e97c8061010d120af3815752123ec27b8536f2d6,"https://cert-in.org.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: cert-in.org.in
+URL: https://cert-in.org.in/
+Registrable Domain: cert-in.org.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.76
+      Subdomains: 1, Hyphens: 1, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:45:44.863669+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,374,af6a6a6a62c78594,,0.0,0.0,0.0
+,gst.gov.in,0,0.0,0,0,0,0,3291,0,0,National Informatics Centre,IN,360,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,," Domain: gst.gov.in
+Registrable Domain: gst.gov.in
+
+📡 DNS Records:
+   A (IPv4): 103.83.76.18
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): ns2.gst.gov.in, ns1.gst.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 3291 days
+   Days Until Expiry: 360
+
+🌍 Network & Location:
+   ASN: 133231
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452950.508887
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,415,b5a524bb2b0bc347,,0.0,0.0,0.0
+,gst.gov.in,0,0.0,0,0,0,0,3291,0,0,National Informatics Centre,IN,360,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,," Domain: gst.gov.in
+Registrable Domain: gst.gov.in
+
+📡 DNS Records:
+   A (IPv4): 103.83.76.18
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): ns2.gst.gov.in, ns1.gst.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 3291 days
+   Days Until Expiry: 360
+
+🌍 Network & Location:
+   ASN: 133231
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452950.508887
+   Processing Stage: resolved",1,benign,0,0,,1,1,0,0,500,b5a524bb2b0bc347,,0.0,0.0,0.0
+,gst.gov.in,0,0.0,0,0,0,0,3291,0,0,National Informatics Centre,IN,360,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,,"https://www.gst.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.gst.gov.in
+URL: https://www.gst.gov.in/
+Registrable Domain: gst.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.52
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 15
+
+   🚩 Phishing Keywords Detected: account, login, verify
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:45:28.141439+00:00
+   Processing Stage: ",0,,0,0,,0,0,0,0,415,b5a524bb2b0bc347,,0.0,0.0,0.0
+,gst.gov.in,0,0.0,0,0,0,0,3291,0,0,National Informatics Centre,IN,360,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,,"https://www.gst.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.gst.gov.in
+URL: https://www.gst.gov.in/
+Registrable Domain: gst.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.52
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 15
+
+   🚩 Phishing Keywords Detected: account, login, verify
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:45:28.141439+00:00
+   Processing Stage: ",1,benign,0,0,,1,1,0,0,500,b5a524bb2b0bc347,,0.0,0.0,0.0
+,meity.gov.in,0,0.0,0,0,0,0,3357,0,0,National Informatics Centre,IN,294,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: meity.gov.in
+Registrable Domain: meity.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.11.192
+   AAAA (IPv6): 2001:4408:1081:1001::62
+   MX (Mail): mx2.mgovcloud.in, mx.mgovcloud.in, mx3.mgovcloud.in
+   NS (Nameservers): ns1.nic.in, ns10.nic.in, ns7.nic.in, ns2.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 3357 days
+   Days Until Expiry: 294
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN, Delhi
+
+📊 Metadata:
+   First Seen: 1760452950.5697725
+   Processing Stag",0,,0,0,,0,0,0,0,522,8f0f070703e3e3e3,,0.0,0.0,0.0
+,meity.gov.in,0,0.0,0,0,0,0,3357,0,0,National Informatics Centre,IN,294,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: meity.gov.in
+Registrable Domain: meity.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.11.192
+   AAAA (IPv6): 2001:4408:1081:1001::62
+   MX (Mail): mx2.mgovcloud.in, mx.mgovcloud.in, mx3.mgovcloud.in
+   NS (Nameservers): ns1.nic.in, ns10.nic.in, ns7.nic.in, ns2.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 3357 days
+   Days Until Expiry: 294
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN, Delhi
+
+📊 Metadata:
+   First Seen: 1760452950.5697725
+   Processing Stag",0,,0,0,,0,0,0,0,362,8f0f070703e3e3e3,,0.0,0.0,0.0
+,meity.gov.in,0,0.0,0,0,0,0,3357,0,0,National Informatics Centre,IN,294,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,,"https://www.meity.gov.in/ Domain: www.meity.gov.in
+URL: https://www.meity.gov.in/
+Registrable Domain: meity.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.80
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      HTML Size: 294 bytes
+      Internal Links: 0
+      External Links: 0
+      Images: 0
+      External Scripts: 0
+",0,,0,0,,0,0,0,0,522,8f0f070703e3e3e3,,0.0,0.0,0.0
+,meity.gov.in,0,0.0,0,0,0,0,3357,0,0,National Informatics Centre,IN,294,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,,"https://www.meity.gov.in/ Domain: www.meity.gov.in
+URL: https://www.meity.gov.in/
+Registrable Domain: meity.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.80
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      HTML Size: 294 bytes
+      Internal Links: 0
+      External Links: 0
+      Images: 0
+      External Scripts: 0
+",0,,0,0,,0,0,0,0,362,8f0f070703e3e3e3,,0.0,0.0,0.0
+,hal-india.co.in,0,0.0,0,0,0,0,2785,0,0,DOTCOM SERVICES (INDIA) PVT. LTD - DBA Worldindia.com,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,7,,," Domain: hal-india.co.in
+Registrable Domain: hal-india.co.in
+
+📡 DNS Records:
+   A (IPv4): 115.112.149.173, 115.112.148.193, 220.227.38.163
+   MX (Mail): mx2.mgovcloud.in, mx3.mgovcloud.in, mx.mgovcloud.in
+   NS (Nameservers): llb2.hal-india.co.in, 53036.earth.orderbox-dns.com, llb3.hal-india.co.in, llb1.hal-india.co.in, 53036.venus.orderbox-dns.com, 53036.mars.orderbox-dns.com, 53036.mercury.orderbox-dns.com
+
+📋 WHOIS Information:
+   Registrar: DOTCOM SERVICES (INDIA) PVT. LTD - DBA Worldindia.com
+   Domain ",0,,0,0,,0,0,0,0,679,e4601091afee1ddb,,0.0,0.0,0.0
+,hal-india.co.in,0,0.0,0,0,0,0,2785,0,0,DOTCOM SERVICES (INDIA) PVT. LTD - DBA Worldindia.com,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,7,,," Domain: hal-india.co.in
+Registrable Domain: hal-india.co.in
+
+📡 DNS Records:
+   A (IPv4): 115.112.149.173, 115.112.148.193, 220.227.38.163
+   MX (Mail): mx2.mgovcloud.in, mx3.mgovcloud.in, mx.mgovcloud.in
+   NS (Nameservers): llb2.hal-india.co.in, 53036.earth.orderbox-dns.com, llb3.hal-india.co.in, llb1.hal-india.co.in, 53036.venus.orderbox-dns.com, 53036.mars.orderbox-dns.com, 53036.mercury.orderbox-dns.com
+
+📋 WHOIS Information:
+   Registrar: DOTCOM SERVICES (INDIA) PVT. LTD - DBA Worldindia.com
+   Domain ",1,benign,0,1,Start,1,0,0,0,613,e4601091afee1ddb,,0.0,0.0,0.0
+,hal-india.co.in,0,0.0,0,0,0,0,2785,0,0,DOTCOM SERVICES (INDIA) PVT. LTD - DBA Worldindia.com,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,7,,,"https://hal-india.co.in/home 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: hal-india.co.in
+URL: https://hal-india.co.in/home
+Registrable Domain: hal-india.co.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 28 chars, Entropy: 3.94
+      Subdomains: 1, Hyphens: 1, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Start
+
+   📄 Page Content:
+      External Links: 172
+
+   🚩 Phishing Keywords Detected",0,,0,0,,0,0,0,0,679,e4601091afee1ddb,,0.0,0.0,0.0
+,hal-india.co.in,0,0.0,0,0,0,0,2785,0,0,DOTCOM SERVICES (INDIA) PVT. LTD - DBA Worldindia.com,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,7,,,"https://hal-india.co.in/home 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: hal-india.co.in
+URL: https://hal-india.co.in/home
+Registrable Domain: hal-india.co.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 28 chars, Entropy: 3.94
+      Subdomains: 1, Hyphens: 1, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Start
+
+   📄 Page Content:
+      External Links: 172
+
+   🚩 Phishing Keywords Detected",1,benign,0,1,Start,1,0,0,0,613,e4601091afee1ddb,,0.0,0.0,0.0
+https://irdai.gov.in/,irdai.gov.in,21,3.749,1,0,0,0,3690,0,0,National Informatics Centre,US,327,0,999,0,2,0,0,0,0,2,529631,64,0,1,0,0,0,20,150,1,2,3,4,bb789a0c0bf3438833f601042be4eb54,678f43adcf805acf1d5b4f3ebc2dd29e27ab23612a4482d05918c69afe5e58da,"https://irdai.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: irdai.gov.in
+URL: https://irdai.gov.in/
+Registrable Domain: irdai.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 21 chars, Entropy: 3.75
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 2
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 64
+
+   🚩 Phishing Keywords Detected: account, login
+
+   ⚠️ JavaScript Behavior:
+    ",1,benign,0,2,,1,0,0,0,641,f2857d7385798710,,0.0,0.0,0.0
+,ircon.org,0,0.0,0,0,0,0,7277,0,0,"GoDaddy.com, LLC",IN,757,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,2,,," Domain: ircon.org
+Registrable Domain: ircon.org
+
+📡 DNS Records:
+   A (IPv4): 103.241.144.78
+   MX (Mail): aspmx.l.google.com, alt1.aspmx.l.google.com, alt2.aspmx.l.google.com, alt3.aspmx.l.google.com, alt4.aspmx.l.google.com
+   NS (Nameservers): ns52.domaincontrol.com, ns51.domaincontrol.com
+
+📋 WHOIS Information:
+   Registrar: GoDaddy.com, LLC
+   Domain Age: 7277 days
+   Days Until Expiry: 757
+
+🌍 Network & Location:
+   ASN: 18229
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452954.1949959
+   Processing S",0,,0,0,,0,0,0,0,525,,,,,
+,ladakh.nic.in,0,0.0,0,0,0,0,7599,0,0,National Informatics Centre,,70,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: ladakh.nic.in
+Registrable Domain: ladakh.nic.in
+
+📊 Metadata:
+   First Seen: 1760452961799",0,,0,0,,0,0,0,0,97,,,,,
+,kavach.mail.gov.in,0,0.0,0,0,0,0,6602,0,0,National Informatics Centre,IN,337,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,,," Domain: kavach.mail.gov.in
+Registrable Domain: kavach.mail.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.15.168
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 6602 days
+   Days Until Expiry: 337
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN, Delhi
+
+📊 Metadata:
+   First Seen: 1760500623.4787147
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,359,,,,,
+,karnataka.gov.in,0,0.0,0,0,0,0,8080,0,0,National Informatics Centre,IN,320,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: karnataka.gov.in
+Registrable Domain: karnataka.gov.in
+
+📡 DNS Records:
+   A (IPv4): 103.138.196.75
+   MX (Mail): mx1.karnataka.gov.in, mx2.karnataka.gov.in
+   NS (Nameservers): ns7.nic.in, ns1.nic.in, ns2.nic.in, ns10.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 8080 days
+   Days Until Expiry: 320
+
+🌍 Network & Location:
+   ASN: 138727
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:19.990817",1,benign,0,0,,0,0,0,0,551,,,,,
+,kerala.gov.in,0,0.0,0,0,0,0,7958,0,0,National Informatics Centre,IN,77,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: kerala.gov.in
+Registrable Domain: kerala.gov.in
+
+📡 DNS Records:
+   A (IPv4): 103.135.130.250
+   MX (Mail): mailgwgov.nic.in
+   NS (Nameservers): ns1.cdit.org, ns2.cdit.org, ns3.cdit.org
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7958 days
+   Days Until Expiry: 77
+
+🌍 Network & Location:
+   ASN: 133037
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:19.965278+00:00
+   Processing Stage: rules:benig",1,benign,0,0,,0,0,0,0,512,,,,,
+https://manipur.gov.in/,manipur.gov.in,23,3.882,1,0,0,0,5377,0,0,National Informatics Centre,IN,101,0,999,0,1,0,0,0,0,0,73847,29,0,1,0,0,0,0,53,1,1,1,4,c014b9153f4f6ee4896933799837a890,d806e8c82228a9b51a69587b6db6be6c27db040a8a8e82717add6ff25539ea4a,"https://manipur.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: manipur.gov.in
+URL: https://manipur.gov.in/
+Registrable Domain: manipur.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.88
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 29
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfuscated Code Detected
+
+📊 Metadata:",1,benign,0,1,,0,0,0,0,570,8341608f8df8bd1f,,0.0,0.0,0.0
+,jk.gov.in,0,0.0,0,0,0,0,7416,0,0,National Informatics Centre,IN,253,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,," Domain: jk.gov.in
+Registrable Domain: jk.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.223.4
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): ns2.jk.gov.in, ns1.jk.gov.in, ns3.jk.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7416 days
+   Days Until Expiry: 253
+
+🌍 Network & Location:
+   ASN: 55824
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452962.0145414
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,427,,,,,
+,irctc.co.in,0,0.0,0,0,0,0,8533,0,0,GoDaddy,IN,597,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,6,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: irctc.co.in
+Registrable Domain: irctc.co.in
+
+📡 DNS Records:
+   A (IPv4): 103.252.142.27
+   MX (Mail): mail.irctc.co.in, mail1.irctc.co.in, mail.nget.irctc.co.in
+   NS (Nameservers): a11-66.akam.net, a12-64.akam.net, a13-67.akam.net, a26-67.akam.net, a8-67.akam.net, a1-107.akam.net
+
+📋 WHOIS Information:
+   Registrar: GoDaddy
+   Domain Age: 8533 days
+   Days Until Expiry: 597
+
+🌍 Network & Location:
+   ASN: 45596
+   Country: IN
+
+📊 Metadata:
+   F",1,benign,0,0,,0,0,0,0,588,,,,,
+,education.gov.in,0,0.0,0,0,0,0,1862,0,0,National Informatics Centre,IN,328,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,," Domain: education.gov.in
+Registrable Domain: education.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.163.45
+   NS (Nameservers): ns7.nic.in, ns1.nic.in, ns2.nic.in, ns10.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 1862 days
+   Days Until Expiry: 328
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452963.5448556
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,417,8f0f0f0303e3e3e3,,0.0,0.0,0.0
+,education.gov.in,0,0.0,0,0,0,0,1862,0,0,National Informatics Centre,IN,328,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,," Domain: education.gov.in
+Registrable Domain: education.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.163.45
+   NS (Nameservers): ns7.nic.in, ns1.nic.in, ns2.nic.in, ns10.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 1862 days
+   Days Until Expiry: 328
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452963.5448556
+   Processing Stage: resolved",1,benign,0,0,,0,0,0,0,387,8f0f0f0303e3e3e3,,0.0,0.0,0.0
+,education.gov.in,0,0.0,0,0,0,0,1862,0,0,National Informatics Centre,IN,328,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,,"http://www.education.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.education.gov.in
+URL: http://www.education.gov.in/
+Registrable Domain: education.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 28 chars, Entropy: 3.91
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:48:13.953634+00:00
+   Processing Stage: rules:benign",0,,0,0,,0,0,0,0,417,8f0f0f0303e3e3e3,,0.0,0.0,0.0
+,education.gov.in,0,0.0,0,0,0,0,1862,0,0,National Informatics Centre,IN,328,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,,"http://www.education.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.education.gov.in
+URL: http://www.education.gov.in/
+Registrable Domain: education.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 28 chars, Entropy: 3.91
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:48:13.953634+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,387,8f0f0f0303e3e3e3,,0.0,0.0,0.0
+,indianbank.in,0,0.0,0,0,0,0,7545,0,0,Sify Digital Services Limited,IN,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,," Domain: indianbank.in
+Registrable Domain: indianbank.in
+
+📡 DNS Records:
+   A (IPv4): 103.183.72.10
+   NS (Nameservers): ns1.sify.net, ns2.sify.net
+
+📋 WHOIS Information:
+   Registrar: Sify Digital Services Limited
+   Domain Age: 7545 days
+   Days Until Expiry: 124
+
+🌍 Network & Location:
+   ASN: 149528
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452963.5461693
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,393,9fc9401e62e1b727,,0.0,0.0,0.0
+,indianbank.in,0,0.0,0,0,0,0,7545,0,0,Sify Digital Services Limited,IN,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,," Domain: indianbank.in
+Registrable Domain: indianbank.in
+
+📡 DNS Records:
+   A (IPv4): 103.183.72.10
+   NS (Nameservers): ns1.sify.net, ns2.sify.net
+
+📋 WHOIS Information:
+   Registrar: Sify Digital Services Limited
+   Domain Age: 7545 days
+   Days Until Expiry: 124
+
+🌍 Network & Location:
+   ASN: 149528
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452963.5461693
+   Processing Stage: resolved",1,benign,0,3,,0,0,0,0,626,9fc9401e62e1b727,,0.0,0.0,0.0
+,indianbank.in,0,0.0,0,0,0,0,7545,0,0,Sify Digital Services Limited,IN,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,,"https://www.indianbank.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.indianbank.in
+URL: https://www.indianbank.in/
+Registrable Domain: indianbank.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 26 chars, Entropy: 3.61
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 3
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 101
+
+   🚩 Phishing Keywords Detected: account, secure
+
+   ⚠️ JavaScr",0,,0,0,,0,0,0,0,393,9fc9401e62e1b727,,0.0,0.0,0.0
+,indianbank.in,0,0.0,0,0,0,0,7545,0,0,Sify Digital Services Limited,IN,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,,"https://www.indianbank.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.indianbank.in
+URL: https://www.indianbank.in/
+Registrable Domain: indianbank.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 26 chars, Entropy: 3.61
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 3
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 101
+
+   🚩 Phishing Keywords Detected: account, secure
+
+   ⚠️ JavaScr",1,benign,0,3,,0,0,0,0,626,9fc9401e62e1b727,,0.0,0.0,0.0
+https://meghalaya.gov.in/,meghalaya.gov.in,25,3.9435,1,0,0,0,7454,0,0,National Informatics Centre,IN,215,0,999,0,1,0,0,0,0,0,64969,28,4,1,0,0,0,0,241,1,1,1,4,00c289ba07be371e939aa92a56cc2b7f,3ba88249aab8986e39c1c18ac44cecb4258bb43afd87dea4adde8880df9ae472,"https://meghalaya.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: meghalaya.gov.in
+URL: https://meghalaya.gov.in/
+Registrable Domain: meghalaya.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.94
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 28
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfuscated Code Detected
+
+📊 M",1,benign,0,1,,0,0,0,0,576,b68a49d0b436cbcb,,0.0,0.0,0.0
+https://maharashtra.gov.in/,maharashtra.gov.in,27,3.708,1,0,0,0,8390,0,0,National Informatics Centre,IN,10,0,999,0,1,0,0,0,0,1,2174180,14,0,0,0,0,0,0,67,1,1,1,2,0e9ce4a6f37609ff5596a60dbc5eed95,c55783871f373fd978f144b1d9a7d01d4002dde65509a95a04256ec167a5c113,"https://maharashtra.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: maharashtra.gov.in
+URL: https://maharashtra.gov.in/
+Registrable Domain: maharashtra.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 27 chars, Entropy: 3.71
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 14
+
+   🚩 Phishing Keywords Detected: account
+
+   ⚠️ JavaScri",1,benign,0,1,,0,0,0,0,591,d08caf3d60d62d6a,,0.0,0.0,0.0
+https://mtnl.net.in/,mtnl.net.in,20,3.3464,1,0,0,0,7899,0,0,#1 Indian Domains dba Mitsu.in,IN,136,0,999,0,1,0,0,0,0,0,67802,126,0,0,0,0,0,0,38,1,1,1,7,,,"https://mtnl.net.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: mtnl.net.in
+URL: https://mtnl.net.in/
+Registrable Domain: mtnl.net.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 20 chars, Entropy: 3.35
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 126
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:47:50.802702+0",1,benign,0,1,,0,0,0,0,529,cabbbb6c30a199e0,,0.0,0.0,0.0
+,mha.gov.in,0,0.0,0,0,0,0,7145,0,0,National Informatics Centre,IN,159,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: mha.gov.in
+Registrable Domain: mha.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.228.92
+   MX (Mail): mx.mgovcloud.in, mx2.mgovcloud.in, mx3.mgovcloud.in
+   NS (Nameservers): ns7.nic.in, ns10.nic.in, ns1.nic.in, ns2.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7145 days
+   Days Until Expiry: 159
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760452965.889083
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,470,,,,,
+https://centralbankofindia.co.in/,centralbankofindia.co.in,33,4.0438,1,0,0,0,8264,0,0,Sify Digital Services Limited,,136,0,999,0,0,0,0,0,0,0,7525,1,0,0,1,0,0,25,1,1,0,3,2,,,"https://centralbankofindia.co.in/ 🚨 VERDICT: BENIGN (Risk Score: 10/100, Confidence: 0.50)
+   Risk Indicators: Elevated URL entropy
+
+Domain: centralbankofindia.co.in
+URL: https://centralbankofindia.co.in/
+Registrable Domain: centralbankofindia.co.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 33 chars, Entropy: 4.04
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 1
+
+   ⚠️ JavaScript Behavior:
+      🚨 KEYLOGGER PATTERNS DETECTED
+      JS Risk Scor",1,benign,10,0,,0,0,0,0,582,b896c7493836c799,,0.0,0.0,0.0
+,licindia.in,0,0.0,0,0,0,0,7545,0,0,GoDaddy,US,124,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,," Domain: licindia.in
+Registrable Domain: licindia.in
+
+📡 DNS Records:
+   A (IPv4): 64.185.181.238
+   NS (Nameservers): ns09.domaincontrol.com, ns10.domaincontrol.com
+
+📋 WHOIS Information:
+   Registrar: GoDaddy
+   Domain Age: 7545 days
+   Days Until Expiry: 124
+
+🌍 Network & Location:
+   ASN: 40009
+   Country: US
+
+📊 Metadata:
+   First Seen: 1760452966.8634777
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,387,,,,,
+,nabard.org,0,0.0,0,0,0,0,9743,0,0,"Network Solutions, LLC",IN,3040,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: nabard.org
+Registrable Domain: nabard.org
+
+📡 DNS Records:
+   A (IPv4): 103.167.77.207
+   MX (Mail): nabard-org.mail.protection.outlook.com
+   NS (Nameservers): ns1.netcore.co.in, ns2.netcore.co.in
+
+📋 WHOIS Information:
+   Registrar: Network Solutions, LLC
+   Domain Age: 9743 days
+   Days Until Expiry: 3040
+
+🌍 Network & Location:
+   ASN: 141857
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:13.407963+00:00
+   Processing Stage: rul",1,benign,0,0,,0,0,0,0,520,,,,,
+https://newindia.co.in/,newindia.co.in,23,3.7294,1,0,0,0,7895,0,0,Sify Digital Services Limited,IN,139,0,999,0,0,0,0,0,0,2,4108120,126,1,0,0,0,0,0,72,1,1,5,2,0f32eda3820269d7311212ce99e5a2be,934e59ecad6ee8cd81294812b250b13e3e24a30d53ff65007933541fd1b38ad3,"https://newindia.co.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: newindia.co.in
+URL: https://newindia.co.in/
+Registrable Domain: newindia.co.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.73
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 126
+
+   🚩 Phishing Keywords Detected: account, login
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:49:11.289916+00:00
+   Processing Stage: rul",1,benign,0,0,,1,0,0,0,497,bfc9c8f8c2b240ad,,0.0,0.0,0.0
+https://nationalinsurance.nic.co.in/,nic.co.in,36,3.7454,2,0,0,0,8162,0,0,Netlynx Technologies Pvt. Ltd.,IN,603,0,999,0,1,0,0,0,0,0,277444,108,1,1,0,0,0,0,197,1,1,0,0,936002e74e86e53f60c8fe1645b94e9e,4005a0c45d07b7703b8514048c7072bad338e8e060ae0b7d3e815a43ebf9b8e3,"https://nationalinsurance.nic.co.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: nationalinsurance.nic.co.in
+URL: https://nationalinsurance.nic.co.in/
+Registrable Domain: nic.co.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 36 chars, Entropy: 3.75
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 108
+
+   ⚠️ JavaScript Behavior:
+      🚨 Ob",1,benign,0,1,,0,0,0,0,592,ffff00f0fef80000,,0.0,0.0,0.0
+,nic.in,0,0.0,0,0,0,0,7599,0,0,National Informatics Centre,,70,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,,," Domain: nic.in
+Registrable Domain: nic.in
+
+📡 DNS Records:
+   MX (Mail): mx.mgovcloud.in, mx2.mgovcloud.in, mx3.mgovcloud.in
+   NS (Nameservers): ns6.nic.in, ns8.nic.in, nicnet.nic.in, ns4.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7599 days
+   Days Until Expiry: 70
+
+📊 Metadata:
+   First Seen: 1760452971.5044062
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,385,,,,,
+https://mizoram.gov.in/,mizoram.gov.in,23,3.882,1,0,0,0,7806,0,0,National Informatics Centre,US,228,0,999,0,0,0,0,0,0,1,28007,1,0,0,0,0,0,0,46,1,1,1,2,cf3042959cdd1fc3d97ec594eaec8d9f,3b0e96532e6d459427070fd0b28aba35fb3a54a97a6432ba54b8c9a28524391a,"https://mizoram.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: mizoram.gov.in
+URL: https://mizoram.gov.in/
+Registrable Domain: mizoram.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.88
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 1
+
+   🚩 Phishing Keywords Detected: login
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:50:27.749033+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,1,0,0,0,486,b6beb6044cc349e3,,0.0,0.0,0.0
+,neft.rbi.org.in,0,0.0,0,0,0,0,8264,0,0,Sify Digital Services Limited,,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: neft.rbi.org.in
+Registrable Domain: neft.rbi.org.in
+
+📡 DNS Records:
+
+📋 WHOIS Information:
+   Registrar: Sify Digital Services Limited
+   Domain Age: 8264 days
+   Days Until Expiry: 136
+
+📊 Metadata:
+   First Seen: 1760452972.4468443
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,269,,,,,
+,nciipc.gov.in,0,0.0,0,0,0,0,5632,0,0,National Informatics Centre,IN,211,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,," Domain: nciipc.gov.in
+Registrable Domain: nciipc.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.59.137
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): ns1.nkn.in, ns3.nkn.in, ns6.nkn.in, ns2.nkn.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 5632 days
+   Days Until Expiry: 211
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN, Delhi
+
+📊 Metadata:
+   First Seen: 1760452973.7280772
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,445,,,,,
+https://nalcoindia.com/,nalcoindia.com,23,3.7951,0,0,0,0,9358,0,0,"GoDaddy.com, LLC",IN,502,0,999,0,2,0,0,0,0,2,399313,189,0,1,0,0,0,0,102,1,1,0,2,057eeb0acc852ba1da02d5cf5b62669d,60d2ccf0597071e6aa63231f132a8824920907c7da97d3e6cf6dbc23975c470d,"https://nalcoindia.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: nalcoindia.com
+URL: https://nalcoindia.com/
+Registrable Domain: nalcoindia.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.80
+      Subdomains: 0, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 2
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 189
+
+   🚩 Phishing Keywords Detected: account, login
+
+   ⚠️ JavaScript Behav",1,benign,0,2,,1,0,0,0,620,e666e666607053f1,,0.0,0.0,0.0
+https://nitc.ac.in/,nitc.ac.in,19,3.3264,1,0,0,0,7776,0,0,ERNET India,IN,2815,0,999,0,4,0,0,0,0,2,308623,55,1,0,0,0,0,0,114,1,1,7,5,a3dc3126e8bcebd0deea8605157ae4e4,c52f37b9e0b2d1eee02d732b9f44206e27d21684d22b0ab6e5f4f2c140f72589,"https://nitc.ac.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: nitc.ac.in
+URL: https://nitc.ac.in/
+Registrable Domain: nitc.ac.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 19 chars, Entropy: 3.33
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 4
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 55
+
+   🚩 Phishing Keywords Detected: login, secure
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+",1,benign,0,4,,1,0,0,0,573,8e8f70109f9fe0f0,,0.0,0.0,0.0
+,nsdl.co.in,0,0.0,0,0,0,0,8264,0,0,Endurance Digital Domain Technology Private Limited,IN,1597,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,2,,," Domain: nsdl.co.in
+Registrable Domain: nsdl.co.in
+
+📡 DNS Records:
+   A (IPv4): 121.240.225.117
+   MX (Mail): pluto.netcore.co.in, venus.netcore.co.in, cluster8.netcore.co.in, nsdl-co-in.mail.protection.outlook.com, cluster6.netcore.co.in
+   NS (Nameservers): ns1.netcore.co.in, ns2.netcore.co.in
+
+📋 WHOIS Information:
+   Registrar: Endurance Digital Domain Technology Private Limited
+   Domain Age: 8264 days
+   Days Until Expiry: 1597
+
+🌍 Network & Location:
+   ASN: 4755
+   Country: IN
+
+📊 Metadata:
+   First Se",0,,0,0,,0,0,0,0,563,,,,,
+,ntpc.co.in,0,0.0,0,0,0,0,8264,0,0,Netlynx Technologies Pvt. Ltd.,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,," Domain: ntpc.co.in
+Registrable Domain: ntpc.co.in
+
+📡 DNS Records:
+   A (IPv4): 141.226.103.3
+   MX (Mail): ntpc-co-in.mail.protection.outlook.com
+   NS (Nameservers): ns-691.awsdns-22.net, ns-1030.awsdns-00.org, ns-1808.awsdns-34.co.uk, ns-132.awsdns-16.com
+
+📋 WHOIS Information:
+   Registrar: Netlynx Technologies Pvt. Ltd.
+   Domain Age: 8264 days
+   Days Until Expiry: 136
+
+🌍 Network & Location:
+   ASN: 48851
+   Country: IN, Chennai
+
+📊 Metadata:
+   First Seen: 1760452976.7980607
+   Processing Stage: resolv",0,,0,0,,0,0,0,0,513,a73d38f0e0c2cacb,,0.0,0.0,0.0
+,ntpc.co.in,0,0.0,0,0,0,0,8264,0,0,Netlynx Technologies Pvt. Ltd.,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,," Domain: ntpc.co.in
+Registrable Domain: ntpc.co.in
+
+📡 DNS Records:
+   A (IPv4): 141.226.103.3
+   MX (Mail): ntpc-co-in.mail.protection.outlook.com
+   NS (Nameservers): ns-691.awsdns-22.net, ns-1030.awsdns-00.org, ns-1808.awsdns-34.co.uk, ns-132.awsdns-16.com
+
+📋 WHOIS Information:
+   Registrar: Netlynx Technologies Pvt. Ltd.
+   Domain Age: 8264 days
+   Days Until Expiry: 136
+
+🌍 Network & Location:
+   ASN: 48851
+   Country: IN, Chennai
+
+📊 Metadata:
+   First Seen: 1760452976.7980607
+   Processing Stage: resolv",1,benign,31,1,,0,0,0,0,1410,a73d38f0e0c2cacb,,0.0,0.0,0.0
+,ntpc.co.in,0,0.0,0,0,0,0,8264,0,0,Netlynx Technologies Pvt. Ltd.,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,,https://validate.perfdrive.com/?ssa=aa65afc4-5226-4480-b5fb-a1d39d7b0a23&ssb=29105227192&ssc=https%3A%2F%2Fntpc.co.in%2F&ssi=221ce59d-cs5n-4b36-b3ca-2c66d350b38a&ssk=botmanager_support@radware.com&ssm=44559758292098665103437416077107&ssn=cfa868bad9910c9c4cf2210d5c1d8d2c26794c10434b-5307-49c3-9c3316&sso=c06ae48b-73b3d53245266f5843e0cf8dd969e4a1ff1accd36c87235e&ssp=13717539771760477077176046238260380&ssq=46792325297871368799052978548368989233665&ssr=MTM2LjIzMi4xNTUuMTc4&sst=IC05-Prober/1.0%20(+https://example,0,,0,0,,0,0,0,0,513,a73d38f0e0c2cacb,,0.0,0.0,0.0
+,ntpc.co.in,0,0.0,0,0,0,0,8264,0,0,Netlynx Technologies Pvt. Ltd.,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,,https://validate.perfdrive.com/?ssa=aa65afc4-5226-4480-b5fb-a1d39d7b0a23&ssb=29105227192&ssc=https%3A%2F%2Fntpc.co.in%2F&ssi=221ce59d-cs5n-4b36-b3ca-2c66d350b38a&ssk=botmanager_support@radware.com&ssm=44559758292098665103437416077107&ssn=cfa868bad9910c9c4cf2210d5c1d8d2c26794c10434b-5307-49c3-9c3316&sso=c06ae48b-73b3d53245266f5843e0cf8dd969e4a1ff1accd36c87235e&ssp=13717539771760477077176046238260380&ssq=46792325297871368799052978548368989233665&ssr=MTM2LjIzMi4xNTUuMTc4&sst=IC05-Prober/1.0%20(+https://example,1,benign,31,1,,0,0,0,0,1410,a73d38f0e0c2cacb,,0.0,0.0,0.0
+https://nta.ac.in/,nta.ac.in,18,3.3083,1,0,0,0,2709,0,0,ERNET India,IN,1673,0,999,0,1,0,0,0,0,3,465727,34,1,0,0,0,0,0,55,1,1,1,2,8a32b20ad1495d67a3462a1dd371af90,2d4958e8e642e66ee52cf78c4c339d5adbdecd7c5fa1bd680be9a4040115e36e,"https://nta.ac.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: nta.ac.in
+URL: https://nta.ac.in/
+Registrable Domain: nta.ac.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 18 chars, Entropy: 3.31
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 34
+
+   🚩 Phishing Keywords Detected: account, login, urgent
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metad",1,benign,0,1,,1,0,0,0,579,aa902ad4b5e7f522,,0.0,0.0,0.0
+https://orientalinsurance.org.in/,orientalinsurance.org.in,33,3.9226,1,0,0,0,6087,0,0,Sify Digital Services Limited,US,1582,0,999,0,0,0,0,0,0,0,8500,0,1,0,1,0,0,25,42,1,4,0,4,dc192abebacad230030e4af2f9578e44,c404c5936c7e4a92c2ef408d2c163dd6b1b3798b64e038c15c704b2b70fdf285,"https://orientalinsurance.org.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: orientalinsurance.org.in
+URL: https://orientalinsurance.org.in/
+Registrable Domain: orientalinsurance.org.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 33 chars, Entropy: 3.92
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   ⚠️ JavaScript Behavior:
+      🚨 KEYLOGGER PATTERNS DETECTED
+      JS Risk Score: 25/100
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:49:20.992693+00:00
+   Processing S",1,benign,0,0,,0,0,0,0,496,c9496b2f3c362e32,,0.0,0.0,0.0
+,nlcindia.com,0,0.0,0,0,0,0,9454,0,0,gooddomainregistry.com,,42,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: nlcindia.com
+Registrable Domain: nlcindia.com
+
+📡 DNS Records:
+   MX (Mail): us2.mx1.mailhostbox.com, us2.mx3.mailhostbox.com, us2.mx2.mailhostbox.com
+   NS (Nameservers): mdns1.555servers.com, mdns2.555servers.com, mdns3.555servers.com, mdns4.555servers.com
+
+📋 WHOIS Information:
+   Registrar: gooddomainregistry.com
+   Domain Age: 9454 days
+   Days Until Expiry: 42
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:02.283516+00:00
+   Processing Stag",1,benign,0,0,,0,0,0,0,526,,,,,
+,pfrda.gov.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: pfrda.gov.in
+Registrable Domain: pfrda.gov.in
+
+📊 Metadata:
+   First Seen: 1760452981671",0,,0,0,,0,0,0,0,95,,,,,
+,nic.gov.in,0,0.0,0,0,0,0,292,0,0,National Informatics Centre,IN,437,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: nic.gov.in
+Registrable Domain: nic.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.52.167
+   MX (Mail): mx.mgovcloud.in, mx2.mgovcloud.in, mx3.mgovcloud.in
+   NS (Nameservers): ns10.nic.in, ns7.nic.in, ns1.nic.in, ns2.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 292 days
+   Days Until Expiry: 437
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN, Delhi
+
+📊 Metadata:
+   First Seen: 1760500622.4425986
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,477,8f0f070703e3e3e3,,0.0,0.0,0.0
+,nic.gov.in,0,0.0,0,0,0,0,292,0,0,National Informatics Centre,IN,437,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,," Domain: nic.gov.in
+Registrable Domain: nic.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.52.167
+   MX (Mail): mx.mgovcloud.in, mx2.mgovcloud.in, mx3.mgovcloud.in
+   NS (Nameservers): ns10.nic.in, ns7.nic.in, ns1.nic.in, ns2.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 292 days
+   Days Until Expiry: 437
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN, Delhi
+
+📊 Metadata:
+   First Seen: 1760500622.4425986
+   Processing Stage: resolved",1,benign,0,0,,0,0,0,0,370,8f0f070703e3e3e3,,0.0,0.0,0.0
+,nic.gov.in,0,0.0,0,0,0,0,292,0,0,National Informatics Centre,IN,437,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,,"https://www.nic.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.nic.gov.in
+URL: https://www.nic.gov.in/
+Registrable Domain: nic.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.64
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:57:25.187207+00:00
+   Processing Stage: rules:benign",0,,0,0,,0,0,0,0,477,8f0f070703e3e3e3,,0.0,0.0,0.0
+,nic.gov.in,0,0.0,0,0,0,0,292,0,0,National Informatics Centre,IN,437,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,,,"https://www.nic.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.nic.gov.in
+URL: https://www.nic.gov.in/
+Registrable Domain: nic.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.64
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:57:25.187207+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,370,8f0f070703e3e3e3,,0.0,0.0,0.0
+,.gov.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," Domain: gov.in
+Registrable Domain: .gov.in
+
+📊 Metadata:
+   First Seen: 1760452939428",0,,0,0,,0,0,0,0,84,,,,,
+,zoo.gov.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: zoo.gov.in
+Registrable Domain: zoo.gov.in
+
+📡 DNS Records:
+
+📋 WHOIS Information:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:20.814279+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,239,,,,,
+,urban.gov.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: urban.gov.in
+Registrable Domain: urban.gov.in
+
+📡 DNS Records:
+
+📋 WHOIS Information:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:21.128089+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,243,,,,,
+,water.gov.in,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: water.gov.in
+Registrable Domain: water.gov.in
+
+📡 DNS Records:
+
+📋 WHOIS Information:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:21.499485+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,243,,,,,
+https://punjab.gov.in/,punjab.gov.in,22,3.8797,1,0,0,0,7745,0,0,National Informatics Centre,IN,289,0,999,0,5,0,0,0,0,0,308165,55,2,1,0,0,0,20,153,1,1,1,3,f09bff3b01efc9fced4fa807464b53bf,c84c14292b6d7ebece09721817f8588ab4e358394d0725289bf810afe94572fd,"https://punjab.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: punjab.gov.in
+URL: https://punjab.gov.in/
+Registrable Domain: punjab.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 22 chars, Entropy: 3.88
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 5
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 55
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfuscated Code Detected
+      JS Risk Sc",1,benign,0,5,,0,0,0,0,595,80fb2bb740167e66,,0.0,0.0,0.0
+https://recindia.nic.in/,recindia.nic.in,24,3.6054,1,0,0,0,7599,0,0,National Informatics Centre,IN,70,0,999,0,2,0,0,0,0,0,79289,87,0,0,0,0,0,0,79,1,1,0,0,15cb4d0dd1f73ae6d24981103d338812,fbe8ed5679ba8757906c731f8173b352a7149890c5e24b50e352982262602b50,"https://recindia.nic.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: recindia.nic.in
+URL: https://recindia.nic.in/
+Registrable Domain: recindia.nic.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 24 chars, Entropy: 3.61
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 2
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 87
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14",1,benign,0,2,,0,0,0,0,540,ce1317cec99dcc48,,0.0,0.0,0.0
+https://sail.co.in/,sail.co.in,19,3.5766,1,0,0,0,8264,0,0,Infocom Network Private Limited,IN,136,0,999,0,1,0,0,0,0,0,194516,52,4,1,0,0,0,0,166,1,1,1,1,2417924a02a8ced3b59043aadcfd2317,41436c50c1bf64977ee0fcacc1bf756ce7dc28a511dac713d5a130e521309f7e,"https://sail.co.in/ Domain: sail.co.in
+URL: https://sail.co.in/
+Registrable Domain: sail.co.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 19 chars, Entropy: 3.58
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: खोज
+
+   📄 Page Content:
+      HTML Size: 194,516 bytes
+      Internal Links: 182
+      External Links: 52
+      Images: 63
+      ⚠️ IFrames: 4
+      External Scripts: 10",0,,0,1,खोज,0,0,0,0,577,9e194e469b8f4e19,,0.0,0.0,0.0
+,powergrid.in,0,0.0,0,0,0,0,7545,0,0,GoDaddy,IN,854,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: powergrid.in
+Registrable Domain: powergrid.in
+
+📡 DNS Records:
+   A (IPv4): 4.240.62.100
+   MX (Mail): powergrid-in.mail.protection.outlook.com
+   NS (Nameservers): ns46.domaincontrol.com, ns45.domaincontrol.com
+
+📋 WHOIS Information:
+   Registrar: GoDaddy
+   Domain Age: 7545 days
+   Days Until Expiry: 854
+
+🌍 Network & Location:
+   ASN: 8075
+   Country: IN, Pune
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:06.128917+00:00
+   Processing Stage: r",1,benign,0,0,,0,0,0,0,522,b636362666666666,,0.0,0.0,0.0
+,powergrid.in,0,0.0,0,0,0,0,7545,0,0,GoDaddy,IN,854,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: powergrid.in
+Registrable Domain: powergrid.in
+
+📡 DNS Records:
+   A (IPv4): 4.240.62.100
+   MX (Mail): powergrid-in.mail.protection.outlook.com
+   NS (Nameservers): ns46.domaincontrol.com, ns45.domaincontrol.com
+
+📋 WHOIS Information:
+   Registrar: GoDaddy
+   Domain Age: 7545 days
+   Days Until Expiry: 854
+
+🌍 Network & Location:
+   ASN: 8075
+   Country: IN, Pune
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:06.128917+00:00
+   Processing Stage: r",1,benign,0,0,,0,0,0,0,376,b636362666666666,,0.0,0.0,0.0
+,powergrid.in,0,0.0,0,0,0,0,7545,0,0,GoDaddy,IN,854,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,,"https://www.powergrid.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.powergrid.in
+URL: https://www.powergrid.in/
+Registrable Domain: powergrid.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.73
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:49:53.382466+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,522,b636362666666666,,0.0,0.0,0.0
+,powergrid.in,0,0.0,0,0,0,0,7545,0,0,GoDaddy,IN,854,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,,"https://www.powergrid.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.powergrid.in
+URL: https://www.powergrid.in/
+Registrable Domain: powergrid.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.73
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:49:53.382466+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,376,b636362666666666,,0.0,0.0,0.0
+https://rajasthan.gov.in/,rajasthan.gov.in,25,3.7533,1,0,0,0,8172,0,0,National Informatics Centre,IN,228,0,999,0,1,0,0,0,0,0,246062,141,1,0,0,0,0,0,204,1,1,4,2,fcd32f6b3c250bd2ca37bebe0edca9f6,65b48d1d833cde168e18a2e716c127bf871e766c7d32738780a6a7c09f327cb5,"https://rajasthan.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: rajasthan.gov.in
+URL: https://rajasthan.gov.in/
+Registrable Domain: rajasthan.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.75
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 141
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-",1,benign,0,1,,0,0,0,0,544,f2541272087753df,,0.0,0.0,0.0
+,tn.gov.in,0,0.0,0,0,0,0,7899,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: tn.gov.in
+Registrable Domain: tn.gov.in
+
+📡 DNS Records:
+   A (IPv4): 218.248.29.65
+   MX (Mail): mail.tn.gov.in
+   NS (Nameservers): ns3.tn.gov.in, ns1.tn.gov.in, ns2.tn.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7899 days
+   Days Until Expiry: 136
+
+🌍 Network & Location:
+   ASN: 9829
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:21.845200+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,502,9a9224e563e3bd38,,0.0,0.0,0.0
+,tn.gov.in,0,0.0,0,0,0,0,7899,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: tn.gov.in
+Registrable Domain: tn.gov.in
+
+📡 DNS Records:
+   A (IPv4): 218.248.29.65
+   MX (Mail): mail.tn.gov.in
+   NS (Nameservers): ns3.tn.gov.in, ns1.tn.gov.in, ns2.tn.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7899 days
+   Days Until Expiry: 136
+
+🌍 Network & Location:
+   ASN: 9829
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:21.845200+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,1,0,0,0,481,9a9224e563e3bd38,,0.0,0.0,0.0
+,tn.gov.in,0,0.0,0,0,0,0,7899,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,,"https://www.tn.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.tn.gov.in
+URL: https://www.tn.gov.in/
+Registrable Domain: tn.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 22 chars, Entropy: 3.50
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 110
+
+   🚩 Phishing Keywords Detected: login
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:53:22.669293+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,502,9a9224e563e3bd38,,0.0,0.0,0.0
+,tn.gov.in,0,0.0,0,0,0,0,7899,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,,"https://www.tn.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.tn.gov.in
+URL: https://www.tn.gov.in/
+Registrable Domain: tn.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 22 chars, Entropy: 3.50
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 110
+
+   🚩 Phishing Keywords Detected: login
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:53:22.669293+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,1,0,0,0,481,9a9224e563e3bd38,,0.0,0.0,0.0
+,railtelindia.com,0,0.0,0,0,0,0,8675,0,0,"ENOM, INC.",IN,90,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: railtelindia.com
+Registrable Domain: railtelindia.com
+
+📡 DNS Records:
+   A (IPv4): 112.133.230.193
+   MX (Mail): email.railtelindia.com
+   NS (Nameservers): ns1.rcil.gov.in, ns2.rcil.gov.in
+
+📋 WHOIS Information:
+   Registrar: ENOM, INC.
+   Domain Age: 8675 days
+   Days Until Expiry: 90
+
+🌍 Network & Location:
+   ASN: 24186
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:06.579670+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,498,bd5054ee7c10393d,,0.0,0.0,0.0
+,railtelindia.com,0,0.0,0,0,0,0,8675,0,0,"ENOM, INC.",IN,90,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: railtelindia.com
+Registrable Domain: railtelindia.com
+
+📡 DNS Records:
+   A (IPv4): 112.133.230.193
+   MX (Mail): email.railtelindia.com
+   NS (Nameservers): ns1.rcil.gov.in, ns2.rcil.gov.in
+
+📋 WHOIS Information:
+   Registrar: ENOM, INC.
+   Domain Age: 8675 days
+   Days Until Expiry: 90
+
+🌍 Network & Location:
+   ASN: 24186
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:06.579670+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,452,bd5054ee7c10393d,,0.0,0.0,0.0
+,railtelindia.com,0,0.0,0,0,0,0,8675,0,0,"ENOM, INC.",IN,90,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,,"https://www.railtel.in/hi/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.railtel.in
+URL: https://www.railtel.in/hi/
+Registrable Domain: railtelindia.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 26 chars, Entropy: 3.61
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 45
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:49:57.852476+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,498,bd5054ee7c10393d,,0.0,0.0,0.0
+,railtelindia.com,0,0.0,0,0,0,0,8675,0,0,"ENOM, INC.",IN,90,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,,"https://www.railtel.in/hi/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.railtel.in
+URL: https://www.railtel.in/hi/
+Registrable Domain: railtelindia.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 26 chars, Entropy: 3.61
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 45
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:49:57.852476+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,452,bd5054ee7c10393d,,0.0,0.0,0.0
+,sebi.gov.in,0,0.0,0,0,0,0,8264,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sebi.gov.in
+Registrable Domain: sebi.gov.in
+
+📡 DNS Records:
+   A (IPv4): 202.191.181.158, 202.191.181.30
+   MX (Mail): mx3.mgovcloud.in, mx.mgovcloud.in, mx2.mgovcloud.in
+   NS (Nameservers): pratibhuti.sebi.gov.in, musbdsdnsm1.sebi.gov.in, chdrdsdnsmc1.sebi.gov.in, nirakshak.sebi.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 8264 days
+   Days Until Expiry: 136
+
+🌍 Network & Location:
+   ASN: 9583
+   Cou",1,benign,0,0,,0,0,0,0,614,c34313b1b93d6969,,0.0,0.0,0.0
+,sebi.gov.in,0,0.0,0,0,0,0,8264,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sebi.gov.in
+Registrable Domain: sebi.gov.in
+
+📡 DNS Records:
+   A (IPv4): 202.191.181.158, 202.191.181.30
+   MX (Mail): mx3.mgovcloud.in, mx.mgovcloud.in, mx2.mgovcloud.in
+   NS (Nameservers): pratibhuti.sebi.gov.in, musbdsdnsm1.sebi.gov.in, chdrdsdnsmc1.sebi.gov.in, nirakshak.sebi.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 8264 days
+   Days Until Expiry: 136
+
+🌍 Network & Location:
+   ASN: 9583
+   Cou",1,benign,0,1,,1,0,0,0,660,c34313b1b93d6969,,0.0,0.0,0.0
+,sebi.gov.in,0,0.0,0,0,0,0,8264,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,,,"https://www.sebi.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.sebi.gov.in
+URL: https://www.sebi.gov.in/
+Registrable Domain: sebi.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 24 chars, Entropy: 3.74
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 1
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 154
+
+   🚩 Phishing Keywords Detected: password, account, login
+
+   ⚠️ JavaSc",1,benign,0,0,,0,0,0,0,614,c34313b1b93d6969,,0.0,0.0,0.0
+,sebi.gov.in,0,0.0,0,0,0,0,8264,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,,,"https://www.sebi.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.sebi.gov.in
+URL: https://www.sebi.gov.in/
+Registrable Domain: sebi.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 24 chars, Entropy: 3.74
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 1
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 154
+
+   🚩 Phishing Keywords Detected: password, account, login
+
+   ⚠️ JavaSc",1,benign,0,1,,1,0,0,0,660,c34313b1b93d6969,,0.0,0.0,0.0
+https://jharkhand.gov.in/,jharkhand.gov.in,25,3.9435,1,0,0,0,7717,0,0,National Informatics Centre,IN,317,0,999,0,3,0,2,0,0,2,276916,153,3,0,0,1,0,10,118,1,1,1,4,,,"https://jharkhand.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: jharkhand.gov.in
+URL: https://jharkhand.gov.in/
+Registrable Domain: jharkhand.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.94
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 3
+      Password Fields: 0
+      Email Fields: 2
+
+   📄 Page Content:
+      External Links: 153
+
+   🚩 Phishing Keywords Detected: password, login
+
+   ⚠️ JavaScr",1,benign,0,3,,1,0,0,0,658,9ce31ef00ce30ee3,,0.0,0.0,0.0
+https://mp.gov.in/,mp.gov.in,18,3.5724,1,0,0,0,7416,0,0,National Informatics Centre,IN,253,0,999,0,1,0,0,0,0,0,38884,57,0,0,0,0,0,0,86,1,1,1,4,0a87ebdd057a58066f457b031a217c5d,ca7ff996240d8a0fb4324737c5d5b41f1884616ee172d04823b2326d6e5f8df5,"https://mp.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: mp.gov.in
+URL: https://mp.gov.in/
+Registrable Domain: mp.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 18 chars, Entropy: 3.57
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 57
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:50:24.488237+00:00
+   P",1,benign,0,1,,0,0,0,0,522,afc0407af093aeae,,0.0,0.0,0.0
+,odisha.gov.in,0,0.0,0,0,0,0,5058,0,0,National Informatics Centre,IN,55,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: odisha.gov.in
+Registrable Domain: odisha.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.141.48, 117.250.67.148
+   MX (Mail): mail.odisha.gov.in
+   NS (Nameservers): ns1.ocachosting.in, ns3.ocachosting.in, ns2.ocachosting.in, ns4.ocachosting.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 5058 days
+   Days Until Expiry: 55
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T1",1,benign,0,0,,0,0,0,0,565,,,,,
+https://nagaland.gov.in/,nagaland.gov.in,24,3.7406,1,0,0,0,6761,0,0,National Informatics Centre,IN,178,0,999,0,0,0,0,0,0,0,52978,32,0,0,0,0,0,0,13,1,1,1,2,29d5fb005668d8b824d7083786252fd9,e7e9a528900b73ff82f9f8a95ea502b26afb9142c416fa2c85af0694dfd6799c,"https://nagaland.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: nagaland.gov.in
+URL: https://nagaland.gov.in/
+Registrable Domain: nagaland.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 24 chars, Entropy: 3.74
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 32
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:51:17.195059+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,450,ccba324c4cb333cd,,0.0,0.0,0.0
+,sikkim.gov.in,0,0.0,0,0,0,0,7745,0,0,National Informatics Centre,IN,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sikkim.gov.in
+Registrable Domain: sikkim.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.126.233
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): ns10.nic.in, ns7.nic.in, ns2.nic.in, ns1.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7745 days
+   Days Until Expiry: 289
+
+🌍 Network & Location:
+   ASN: 55824
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:19.446915+00:00
+   Processing Stage: rules:b",1,benign,0,0,,0,0,0,0,516,eaca58c96b859535,,0.0,0.0,0.0
+,sikkim.gov.in,0,0.0,0,0,0,0,7745,0,0,National Informatics Centre,IN,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sikkim.gov.in
+Registrable Domain: sikkim.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.126.233
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): ns10.nic.in, ns7.nic.in, ns2.nic.in, ns1.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7745 days
+   Days Until Expiry: 289
+
+🌍 Network & Location:
+   ASN: 55824
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:19.446915+00:00
+   Processing Stage: rules:b",1,benign,0,1,,1,0,0,0,582,eaca58c96b859535,,0.0,0.0,0.0
+,sikkim.gov.in,0,0.0,0,0,0,0,7745,0,0,National Informatics Centre,IN,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,,"https://www.sikkim.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.sikkim.gov.in
+URL: https://www.sikkim.gov.in/
+Registrable Domain: sikkim.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 26 chars, Entropy: 3.74
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 32
+
+   🚩 Phishing Keywords Detected: login
+
+   ⚠️ JavaScript Behavio",1,benign,0,0,,0,0,0,0,516,eaca58c96b859535,,0.0,0.0,0.0
+,sikkim.gov.in,0,0.0,0,0,0,0,7745,0,0,National Informatics Centre,IN,289,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,,"https://www.sikkim.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.sikkim.gov.in
+URL: https://www.sikkim.gov.in/
+Registrable Domain: sikkim.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 26 chars, Entropy: 3.74
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 32
+
+   🚩 Phishing Keywords Detected: login
+
+   ⚠️ JavaScript Behavio",1,benign,0,1,,1,0,0,0,582,eaca58c96b859535,,0.0,0.0,0.0
+https://py.gov.in/,py.gov.in,18,3.5724,1,0,0,0,7416,0,0,National Informatics Centre,IN,253,0,999,0,1,0,0,0,0,1,121736,44,0,1,0,1,0,10,137,1,1,1,3,00c46d96684f80bba586f92a4e91255e,e627f85931ed1a8ab2a8a3c7d485f8a49714f6740a3ed91b1f59b2f64cd09859,"https://py.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: py.gov.in
+URL: https://py.gov.in/
+Registrable Domain: py.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 18 chars, Entropy: 3.57
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 44
+
+   🚩 Phishing Keywords Detected: account
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfuscated Code",1,benign,0,1,,0,0,0,0,661,ebe310b61cc9c959,,0.0,0.0,0.0
+,telangana.gov.in,0,0.0,0,0,0,0,4184,0,0,National Informatics Centre,IN,198,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: telangana.gov.in
+Registrable Domain: telangana.gov.in
+
+📡 DNS Records:
+   A (IPv4): 103.122.128.143
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): dns2.telangana.gov.in, dns1.telangana.gov.in, dns3.telangana.gov.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 4184 days
+   Days Until Expiry: 198
+
+🌍 Network & Location:
+   ASN: 136659
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:45.080715+00:00
+ ",1,benign,0,0,,0,0,0,0,543,,,,,
+https://tripura.gov.in/,tripura.gov.in,23,3.7623,1,0,0,0,7556,0,0,National Informatics Centre,IN,113,0,999,0,0,0,0,0,0,0,257088,70,1,1,0,0,0,0,198,1,1,1,4,155d25997edcb83aca9b9c158916d832,db55cf907a70ea06553457fd9c9b9945010f0ba527d8bef9327e5fd2335a40b4,"https://tripura.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: tripura.gov.in
+URL: https://tripura.gov.in/
+Registrable Domain: tripura.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.76
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 70
+
+   ⚠️ JavaScript Behavior:
+      🚨 Obfuscated Code Detected
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:52:02.707574+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,480,aef041a7c08f1fc9,,0.0,0.0,0.0
+,wb.gov.in,0,0.0,0,0,0,0,8271,0,0,National Informatics Centre,IN,136,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: wb.gov.in
+Registrable Domain: wb.gov.in
+
+📡 DNS Records:
+   A (IPv4): 202.61.117.51
+   MX (Mail): mail.wb.gov.in, wb-gov-in.mail.protection.outlook.com
+   NS (Nameservers): ns2.nic.in, ns7.nic.in, ns10.nic.in, ns1.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 8271 days
+   Days Until Expiry: 136
+
+🌍 Network & Location:
+   ASN: 55741
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:45.291999+00:0",1,benign,0,0,,0,0,0,0,546,,,,,
+,up.gov.in,0,0.0,0,0,0,0,7416,0,0,National Informatics Centre,IN,253,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: up.gov.in
+Registrable Domain: up.gov.in
+
+📡 DNS Records:
+   A (IPv4): 164.100.181.61
+   MX (Mail): mailgw.nic.in
+   NS (Nameservers): ns1.nic.in, ns2.nic.in, ns7.nic.in, ns10.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 7416 days
+   Days Until Expiry: 253
+
+🌍 Network & Location:
+   ASN: 55824
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:21.820978+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,507,,,,,
+,parivahan.gov.in,0,0.0,0,0,0,0,5205,0,0,National Informatics Centre,IN,273,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: parivahan.gov.in
+Registrable Domain: parivahan.gov.in
+
+📡 DNS Records:
+   A (IPv4): 103.195.218.37
+   NS (Nameservers): ns2.nic.in, ns10.nic.in, ns1.nic.in, ns7.nic.in
+
+📋 WHOIS Information:
+   Registrar: National Informatics Centre
+   Domain Age: 5205 days
+   Days Until Expiry: 273
+
+🌍 Network & Location:
+   ASN: 4758
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:43:28.444179+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,492,,,,,
+https://uidai.gov.in/,uidai.gov.in,21,3.749,1,0,0,0,5951,0,0,National Informatics Centre,IN,257,0,999,0,0,0,0,0,0,0,5152,0,0,0,0,0,0,0,5,1,2,1,4,,,"https://uidai.gov.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: uidai.gov.in
+URL: https://uidai.gov.in/
+Registrable Domain: uidai.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 21 chars, Entropy: 3.75
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+📊 Metadata:
+   First Seen: 2025-10-14T14:52:59.883067+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,368,b1b3933b9991a9a2,,0.0,0.0,0.0
+,uk.gov.in,0,0.0,0,0,0,0,6121,0,0,National Informatics Centre,IN,87,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,4,,," Domain: uk.gov.in
+Registrable Domain: uk.gov.in
+
+📊 Metadata:
+   First Seen: 1760453016032",0,,0,0,,0,0,0,0,89,,,,,
+,tcs.com,0,0.0,0,0,0,0,10185,0,0,"Network Solutions, LLC",IN,2231,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,14,5,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: tcs.com
+Registrable Domain: tcs.com
+
+📡 DNS Records:
+   A (IPv4): 4.247.162.6
+   MX (Mail): Inblrg05.tcs.com, Inmumg05.tcs.com, inchng05.tcs.com, inmumg01.tcs.com, inblrg01.tcs.com, usnjyg01.tcs.com, uklong01.tcs.com, inchng04.tcs.com, inblrg03.tcs.com, inchng01.tcs.com, inmumg02.tcs.com, inchng02.tcs.com, Inmumg04.tcs.com, Inblrg04.tcs.com
+   NS (Nameservers): ns5.tcs.com, ns7.tcs.com, ns8.tcs.com, ns6.tcs.com, ns3.tcs.com
+
+📋 WHOIS Informatio",1,benign,0,0,,0,0,0,0,755,,,,,
+https://dc.crsorgi.gov.in/crs/,crsorgi.gov.in,30,3.7396,2,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,1,115178,5,0,0,0,0,0,0,44,1,0,0,0,8822e5658cbce6f26b84fd646ef99fe4,fb1afd27f65def3a5729d991ec0e15fee1e94b23bc33d302ff234dda6f76763a,"https://dc.crsorgi.gov.in/crs/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: dc.crsorgi.gov.in
+URL: https://dc.crsorgi.gov.in/crs/
+Registrable Domain: crsorgi.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 30 chars, Entropy: 3.74
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 5
+
+   🚩 Phishing Keywords Detected: login
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:57:33.010759+00:00
+   Processing Stag",1,benign,0,0,,1,0,0,0,496,99bc44bfbb404783,,0.0,0.0,0.0
+,icicicareers.com,0,0.0,0,0,0,0,9311,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,,184,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: icicicareers.com
+Registrable Domain: icicicareers.com
+
+📡 DNS Records:
+   NS (Nameservers): ns3.icicibank.com, ns2.icicibank.com, ns1.icicibank.com, a7-65.akam.net
+
+📋 WHOIS Information:
+   Registrar: PDR Ltd. d/b/a PublicDomainRegistry.com
+   Domain Age: 9311 days
+   Days Until Expiry: 184
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:57:01.335340+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,449,,,,,
+,hdfc.com,0,0.0,0,0,0,0,9865,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,,360,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: hdfc.com
+Registrable Domain: hdfc.com
+
+📡 DNS Records:
+   A (IPv4): 104.16.121.45, 104.16.122.45
+   AAAA (IPv6): 2606:4700::6810:792d, 2606:4700::6810:7a2d
+   MX (Mail): hdfc-com.mail.protection.outlook.com
+   NS (Nameservers): mia.ns.cloudflare.com, skip.ns.cloudflare.com
+
+📋 WHOIS Information:
+   Registrar: PDR Ltd. d/b/a PublicDomainRegistry.com
+   Domain Age: 9865 days
+   Days Until Expiry: 360
+
+🌍 Network & Location:
+   ASN: 13335
+
+📊 Metada",1,benign,0,0,,0,0,0,0,596,,,,,
+,yonobusiness.sbi,0,0.0,0,0,0,0,2566,0,0,Synergy Wholesale Accreditations Pty Ltd,IN,355,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: yonobusiness.sbi
+Registrable Domain: yonobusiness.sbi
+
+📡 DNS Records:
+   A (IPv4): 103.68.221.208
+   AAAA (IPv6): 2405:a700:14:12e::230
+   NS (Nameservers): a1-148.akam.net, a16-64.akam.net, a20-64.akam.net, a22-65.akam.net, a3-66.akam.net, a5-66.akam.net
+
+📋 WHOIS Information:
+   Registrar: Synergy Wholesale Accreditations Pty Ltd
+   Domain Age: 2566 days
+   Days Until Expiry: 355
+
+🌍 Network & Location:
+   ASN: 45644
+   Country: IN
+
+📊 Metadat",1,benign,0,0,,0,0,0,0,595,b39370ca4accceca,,0.0,0.0,0.0
+,yonobusiness.sbi,0,0.0,0,0,0,0,2566,0,0,Synergy Wholesale Accreditations Pty Ltd,IN,355,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: yonobusiness.sbi
+Registrable Domain: yonobusiness.sbi
+
+📡 DNS Records:
+   A (IPv4): 103.68.221.208
+   AAAA (IPv6): 2405:a700:14:12e::230
+   NS (Nameservers): a1-148.akam.net, a16-64.akam.net, a20-64.akam.net, a22-65.akam.net, a3-66.akam.net, a5-66.akam.net
+
+📋 WHOIS Information:
+   Registrar: Synergy Wholesale Accreditations Pty Ltd
+   Domain Age: 2566 days
+   Days Until Expiry: 355
+
+🌍 Network & Location:
+   ASN: 45644
+   Country: IN
+
+📊 Metadat",1,benign,0,1,SEND,1,0,0,0,654,b39370ca4accceca,,0.0,0.0,0.0
+,yonobusiness.sbi,0,0.0,0,0,0,0,2566,0,0,Synergy Wholesale Accreditations Pty Ltd,IN,355,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6,,,"https://yonobusiness.sbi.bank.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: yonobusiness.sbi.bank.in
+URL: https://yonobusiness.sbi.bank.in/
+Registrable Domain: yonobusiness.sbi
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 33 chars, Entropy: 3.75
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: SEND
+
+   📄 Page Content:
+      External Links: 136
+
+   🚩 Phishin",1,benign,0,0,,0,0,0,0,595,b39370ca4accceca,,0.0,0.0,0.0
+,yonobusiness.sbi,0,0.0,0,0,0,0,2566,0,0,Synergy Wholesale Accreditations Pty Ltd,IN,355,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6,,,"https://yonobusiness.sbi.bank.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: yonobusiness.sbi.bank.in
+URL: https://yonobusiness.sbi.bank.in/
+Registrable Domain: yonobusiness.sbi
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 33 chars, Entropy: 3.75
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: SEND
+
+   📄 Page Content:
+      External Links: 136
+
+   🚩 Phishin",1,benign,0,1,SEND,1,0,0,0,654,b39370ca4accceca,,0.0,0.0,0.0
+,hdfcbank.com,0,0.0,0,0,0,0,10414,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,,543,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: hdfcbank.com
+Registrable Domain: hdfcbank.com
+
+📡 DNS Records:
+   A (IPv4): 104.17.6.56, 104.16.36.67
+   AAAA (IPv6): 2606:4700::6811:638, 2606:4700::6810:2443
+   MX (Mail): hdfcbank-com.mail.protection.outlook.com
+   NS (Nameservers): roxy.ns.cloudflare.com, elmo.ns.cloudflare.com
+
+📋 WHOIS Information:
+   Registrar: PDR Ltd. d/b/a PublicDomainRegistry.com
+   Domain Age: 10414 days
+   Days Until Expiry: 543
+
+🌍 Network & Location:
+   ASN: 13335",1,benign,0,0,,0,0,0,0,606,b6bd2636b4e642c2,,0.0,0.0,0.0
+,hdfcbank.com,0,0.0,0,0,0,0,10414,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,,543,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: hdfcbank.com
+Registrable Domain: hdfcbank.com
+
+📡 DNS Records:
+   A (IPv4): 104.17.6.56, 104.16.36.67
+   AAAA (IPv6): 2606:4700::6811:638, 2606:4700::6810:2443
+   MX (Mail): hdfcbank-com.mail.protection.outlook.com
+   NS (Nameservers): roxy.ns.cloudflare.com, elmo.ns.cloudflare.com
+
+📋 WHOIS Information:
+   Registrar: PDR Ltd. d/b/a PublicDomainRegistry.com
+   Domain Age: 10414 days
+   Days Until Expiry: 543
+
+🌍 Network & Location:
+   ASN: 13335",1,benign,0,1,Send,1,0,0,0,721,b6bd2636b4e642c2,,0.0,0.0,0.0
+,hdfcbank.com,0,0.0,0,0,0,0,10414,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,,543,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,2,,,"https://www.hdfcbank.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.hdfcbank.com
+URL: https://www.hdfcbank.com/
+Registrable Domain: hdfcbank.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.94
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Send
+
+   📄 Page Content:
+      External Links: 268
+
+   🚩 Phishing Keywords Detected: account",1,benign,0,0,,0,0,0,0,606,b6bd2636b4e642c2,,0.0,0.0,0.0
+,hdfcbank.com,0,0.0,0,0,0,0,10414,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,,543,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,2,,,"https://www.hdfcbank.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.hdfcbank.com
+URL: https://www.hdfcbank.com/
+Registrable Domain: hdfcbank.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.94
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+      Submit Buttons: Send
+
+   📄 Page Content:
+      External Links: 268
+
+   🚩 Phishing Keywords Detected: account",1,benign,0,1,Send,1,0,0,0,721,b6bd2636b4e642c2,,0.0,0.0,0.0
+,sbi.co.in,0,0.0,0,0,0,0,8385,0,0,Sify Digital Services Limited,IN,1111,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sbi.co.in
+Registrable Domain: sbi.co.in
+
+📡 DNS Records:
+   A (IPv4): 103.209.96.176
+   AAAA (IPv6): 2405:a700:14:100::6e
+   MX (Mail): sbi-co-in.mail.protection.outlook.com
+   NS (Nameservers): pdns.satyam.net.in, sdns.satyam.net.in
+
+📋 WHOIS Information:
+   Registrar: Sify Digital Services Limited
+   Domain Age: 8385 days
+   Days Until Expiry: 1111
+
+🌍 Network & Location:
+   ASN: 45644
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:5",1,benign,0,0,,0,0,0,0,562,be81c166c43b3b99,,0.0,0.0,0.0
+,sbi.co.in,0,0.0,0,0,0,0,8385,0,0,Sify Digital Services Limited,IN,1111,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sbi.co.in
+Registrable Domain: sbi.co.in
+
+📡 DNS Records:
+   A (IPv4): 103.209.96.176
+   AAAA (IPv6): 2405:a700:14:100::6e
+   MX (Mail): sbi-co-in.mail.protection.outlook.com
+   NS (Nameservers): pdns.satyam.net.in, sdns.satyam.net.in
+
+📋 WHOIS Information:
+   Registrar: Sify Digital Services Limited
+   Domain Age: 8385 days
+   Days Until Expiry: 1111
+
+🌍 Network & Location:
+   ASN: 45644
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:5",1,benign,0,0,,0,0,0,0,453,be81c166c43b3b99,,0.0,0.0,0.0
+,sbi.co.in,0,0.0,0,0,0,0,8385,0,0,Sify Digital Services Limited,IN,1111,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,,"https://sbi.co.in/redirect/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sbi.co.in
+URL: https://sbi.co.in/redirect/
+Registrable Domain: sbi.co.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 27 chars, Entropy: 3.74
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 1
+
+   🚩 Phishing Keywords Detected: secure
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:57:34.352729+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,562,be81c166c43b3b99,,0.0,0.0,0.0
+,sbi.co.in,0,0.0,0,0,0,0,8385,0,0,Sify Digital Services Limited,IN,1111,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,,,"https://sbi.co.in/redirect/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sbi.co.in
+URL: https://sbi.co.in/redirect/
+Registrable Domain: sbi.co.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 27 chars, Entropy: 3.74
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 1
+
+   🚩 Phishing Keywords Detected: secure
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:57:34.352729+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,453,be81c166c43b3b99,,0.0,0.0,0.0
+,icicidirect.com,0,0.0,0,0,0,0,9503,0,0,"Network Solutions, LLC",IN,358,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,8,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: icicidirect.com
+Registrable Domain: icicidirect.com
+
+📡 DNS Records:
+   A (IPv4): 3.111.94.222, 13.200.187.22
+   MX (Mail): icicidirect-com.mail.protection.outlook.com
+   NS (Nameservers): a12-65.akam.net, a14-65.akam.net, a20-67.akam.net, ns2.icicibank.com, ns3.icicibank.com, a1-79.akam.net, ns1.icicibank.com, a3-66.akam.net
+
+📋 WHOIS Information:
+   Registrar: Network Solutions, LLC
+   Domain Age: 9503 days
+   Days Until Expiry: 358
+
+🌍 Networ",1,benign,0,0,,0,0,0,0,656,beaaf8381caee860,,0.0,0.0,0.0
+,icicidirect.com,0,0.0,0,0,0,0,9503,0,0,"Network Solutions, LLC",IN,358,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,8,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: icicidirect.com
+Registrable Domain: icicidirect.com
+
+📡 DNS Records:
+   A (IPv4): 3.111.94.222, 13.200.187.22
+   MX (Mail): icicidirect-com.mail.protection.outlook.com
+   NS (Nameservers): a12-65.akam.net, a14-65.akam.net, a20-67.akam.net, ns2.icicibank.com, ns3.icicibank.com, a1-79.akam.net, ns1.icicibank.com, a3-66.akam.net
+
+📋 WHOIS Information:
+   Registrar: Network Solutions, LLC
+   Domain Age: 9503 days
+   Days Until Expiry: 358
+
+🌍 Networ",1,benign,15,0,,1,0,0,0,572,beaaf8381caee860,,0.0,0.0,0.0
+,icicidirect.com,0,0.0,0,0,0,0,9503,0,0,"Network Solutions, LLC",IN,358,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,8,,,"https://icicidirect.com/login.aspx?ReturnUrl=%2f 🚨 VERDICT: BENIGN (Risk Score: 15/100, Confidence: 0.50)
+   Risk Indicators: High URL entropy
+
+Domain: icicidirect.com
+URL: https://icicidirect.com/login.aspx?ReturnUrl=%2f
+Registrable Domain: icicidirect.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 48 chars, Entropy: 4.52
+      Subdomains: 0, Hyphens: 0, Special Chars: 3
+
+   📄 Page Content:
+      External Links: 47
+
+   🚩 Phishing Keywords Detected: account, login, suspended
+
+   ⚠️ JavaSc",1,benign,0,0,,0,0,0,0,656,beaaf8381caee860,,0.0,0.0,0.0
+,icicidirect.com,0,0.0,0,0,0,0,9503,0,0,"Network Solutions, LLC",IN,358,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,8,,,"https://icicidirect.com/login.aspx?ReturnUrl=%2f 🚨 VERDICT: BENIGN (Risk Score: 15/100, Confidence: 0.50)
+   Risk Indicators: High URL entropy
+
+Domain: icicidirect.com
+URL: https://icicidirect.com/login.aspx?ReturnUrl=%2f
+Registrable Domain: icicidirect.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 48 chars, Entropy: 4.52
+      Subdomains: 0, Hyphens: 0, Special Chars: 3
+
+   📄 Page Content:
+      External Links: 47
+
+   🚩 Phishing Keywords Detected: account, login, suspended
+
+   ⚠️ JavaSc",1,benign,15,0,,1,0,0,0,572,beaaf8381caee860,,0.0,0.0,0.0
+,icicilombard.com,0,0.0,0,0,0,0,8862,0,0,"Network Solutions, LLC",IN,999,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,10,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: icicilombard.com
+Registrable Domain: icicilombard.com
+
+📡 DNS Records:
+   A (IPv4): 13.234.149.210, 3.108.115.94
+   AAAA (IPv6): 2001:df0:2fd:1::20
+   MX (Mail): icicilombard-com.mail.protection.outlook.com
+   NS (Nameservers): a1-24.akam.net, ns3.icicilombard.com, a11-65.akam.net, ns1.icicilombard.com, a18-66.akam.net, ns4.icicilombard.com, a10-65.akam.net, a3-66.akam.net, ns2.icicilombard.com, a28-64.akam.net
+
+📋 WHOIS Information:
+   Registr",1,benign,0,0,,0,0,0,0,743,,,,,
+,pnbindia.in,0,0.0,0,0,0,0,7545,0,0,MPS Infotecnics Limited,IN,1950,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,," Domain: pnbindia.in
+Registrable Domain: pnbindia.in
+
+📡 DNS Records:
+   A (IPv4): 49.50.72.206
+   NS (Nameservers): ns3.pnbindia.com, ns4.pnbindia.com, ns1.pnbindia.com, ns2.pnbindia.com
+
+📋 WHOIS Information:
+   Registrar: MPS Infotecnics Limited
+   Domain Age: 7545 days
+   Days Until Expiry: 1950
+
+🌍 Network & Location:
+   ASN: 55470
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760500625.9265926
+   Processing Stage: resolved",0,,0,0,,0,0,0,0,426,bf1b58104345e3be,,0.0,0.0,0.0
+,pnbindia.in,0,0.0,0,0,0,0,7545,0,0,MPS Infotecnics Limited,IN,1950,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,," Domain: pnbindia.in
+Registrable Domain: pnbindia.in
+
+📡 DNS Records:
+   A (IPv4): 49.50.72.206
+   NS (Nameservers): ns3.pnbindia.com, ns4.pnbindia.com, ns1.pnbindia.com, ns2.pnbindia.com
+
+📋 WHOIS Information:
+   Registrar: MPS Infotecnics Limited
+   Domain Age: 7545 days
+   Days Until Expiry: 1950
+
+🌍 Network & Location:
+   ASN: 55470
+   Country: IN
+
+📊 Metadata:
+   First Seen: 1760500625.9265926
+   Processing Stage: resolved",1,benign,0,1,,0,0,0,0,632,bf1b58104345e3be,,0.0,0.0,0.0
+,pnbindia.in,0,0.0,0,0,0,0,7545,0,0,MPS Infotecnics Limited,IN,1950,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,,"https://pnb.bank.in/hi/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: pnb.bank.in
+URL: https://pnb.bank.in/hi/
+Registrable Domain: pnbindia.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.45
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 779
+
+   ⚠️ JavaScript Behavior:
+      🚨 KEYLOGGER PATTERNS DETECTED
+      ⚠️ Form ",0,,0,0,,0,0,0,0,426,bf1b58104345e3be,,0.0,0.0,0.0
+,pnbindia.in,0,0.0,0,0,0,0,7545,0,0,MPS Infotecnics Limited,IN,1950,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,,,"https://pnb.bank.in/hi/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: pnb.bank.in
+URL: https://pnb.bank.in/hi/
+Registrable Domain: pnbindia.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.45
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 779
+
+   ⚠️ JavaScript Behavior:
+      🚨 KEYLOGGER PATTERNS DETECTED
+      ⚠️ Form ",1,benign,0,1,,0,0,0,0,632,bf1b58104345e3be,,0.0,0.0,0.0
+,iciciprulicfe.com,0,0.0,0,0,0,0,9999,0,0,,,0,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: iciciprulicfe.com
+Registrable Domain: iciciprulicfe.com
+
+📡 DNS Records:
+
+📋 WHOIS Information:
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:57:07.912255+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,253,,,,,
+,airtel.in,0,0.0,0,0,0,0,7587,0,0,GoDaddy,IN,3004,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,15,2,,," Domain: airtel.in
+Registrable Domain: airtel.in
+
+📡 DNS Records:
+   A (IPv4): 125.16.74.90
+   AAAA (IPv6): 2404:a800:ff00:1::101
+   MX (Mail): mx-mail6.airtel.com, mx-mail5.airtel.com, mx-mail41.airtel.com, mx-mail40.airtel.com, mx-mail4.airtel.com, mx-mail39.airtel.com, mx-mail38.airtel.com, mx-mail37.airtel.com, mx-mail36.airtel.com, mx-mail35.airtel.com, mx-mail34.airtel.com, mx-mail3.airtel.com, airtel-in.mail.protection.outlook.com, mx-mail2.airtel.com, mx-mail1.airtel.com
+   NS (Nameservers): aaadel.m",0,,0,0,,0,0,0,0,783,c567ef4545cec610,,0.0,0.0,0.0
+,airtel.in,0,0.0,0,0,0,0,7587,0,0,GoDaddy,IN,3004,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,15,2,,," Domain: airtel.in
+Registrable Domain: airtel.in
+
+📡 DNS Records:
+   A (IPv4): 125.16.74.90
+   AAAA (IPv6): 2404:a800:ff00:1::101
+   MX (Mail): mx-mail6.airtel.com, mx-mail5.airtel.com, mx-mail41.airtel.com, mx-mail40.airtel.com, mx-mail4.airtel.com, mx-mail39.airtel.com, mx-mail38.airtel.com, mx-mail37.airtel.com, mx-mail36.airtel.com, mx-mail35.airtel.com, mx-mail34.airtel.com, mx-mail3.airtel.com, airtel-in.mail.protection.outlook.com, mx-mail2.airtel.com, mx-mail1.airtel.com
+   NS (Nameservers): aaadel.m",1,benign,0,0,,1,0,0,0,489,c567ef4545cec610,,0.0,0.0,0.0
+,airtel.in,0,0.0,0,0,0,0,7587,0,0,GoDaddy,IN,3004,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,15,2,,,"https://www.airtel.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.airtel.in
+URL: https://www.airtel.in/
+Registrable Domain: airtel.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 22 chars, Entropy: 3.63
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 14
+
+   🚩 Phishing Keywords Detected: account, login
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:58:02.181020+00:00
+   Processing Stage: rules:benign",0,,0,0,,0,0,0,0,783,c567ef4545cec610,,0.0,0.0,0.0
+,airtel.in,0,0.0,0,0,0,0,7587,0,0,GoDaddy,IN,3004,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,15,2,,,"https://www.airtel.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.airtel.in
+URL: https://www.airtel.in/
+Registrable Domain: airtel.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 22 chars, Entropy: 3.63
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 14
+
+   🚩 Phishing Keywords Detected: account, login
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:58:02.181020+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,1,0,0,0,489,c567ef4545cec610,,0.0,0.0,0.0
+https://netpnb.com/,netpnb.com,19,3.5369,0,0,0,0,8824,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,2132,0,999,0,0,0,0,0,0,0,1801,1,0,0,0,0,0,0,1,1,1,1,4,d19dbdd7121c97de378c30b401833361,ad65a56c9eed9f87017a91c1951a47bf9c6ee6aa9e0808f33c6cba707d60dca6,"https://netpnb.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: netpnb.com
+URL: https://netpnb.com/
+Registrable Domain: netpnb.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 19 chars, Entropy: 3.54
+      Subdomains: 0, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 1
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:58:03.340434+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,434,ec6c4c4c4e466c7d,,0.0,0.0,0.0
+,icicibank.com,0,0.0,0,0,0,0,10682,0,0,"Network Solutions, LLC",IN,273,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,9,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: icicibank.com
+Registrable Domain: icicibank.com
+
+📡 DNS Records:
+   A (IPv4): 20.204.105.107
+   MX (Mail): icicibank-com.mail.protection.outlook.com
+   NS (Nameservers): a7-65.akam.net, a1-79.akam.net, a3-66.akam.net, ns1.icicibank.com, ns3.icicibank.com, ns2.icicibank.com, a20-67.akam.net, a14-65.akam.net, a12-65.akam.net
+
+📋 WHOIS Information:
+   Registrar: Network Solutions, LLC
+   Domain Age: 10682 days
+   Days Until Expiry: 273
+
+🌍 Network ",1,benign,0,0,,0,0,0,0,651,f0707072525b1f8f,,0.0,0.0,0.0
+,icicibank.com,0,0.0,0,0,0,0,10682,0,0,"Network Solutions, LLC",IN,273,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,9,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: icicibank.com
+Registrable Domain: icicibank.com
+
+📡 DNS Records:
+   A (IPv4): 20.204.105.107
+   MX (Mail): icicibank-com.mail.protection.outlook.com
+   NS (Nameservers): a7-65.akam.net, a1-79.akam.net, a3-66.akam.net, ns1.icicibank.com, ns3.icicibank.com, ns2.icicibank.com, a20-67.akam.net, a14-65.akam.net, a12-65.akam.net
+
+📋 WHOIS Information:
+   Registrar: Network Solutions, LLC
+   Domain Age: 10682 days
+   Days Until Expiry: 273
+
+🌍 Network ",1,benign,0,1,,1,0,0,0,728,f0707072525b1f8f,,0.0,0.0,0.0
+,icicibank.com,0,0.0,0,0,0,0,10682,0,0,"Network Solutions, LLC",IN,273,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,9,,,"https://www.icicibank.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.icicibank.com
+URL: https://www.icicibank.com/
+Registrable Domain: icicibank.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 26 chars, Entropy: 3.82
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 92
+
+   🚩 Phishing Keywords Detected: account, login
+
+   ⚠️ JavaScrip",1,benign,0,0,,0,0,0,0,651,f0707072525b1f8f,,0.0,0.0,0.0
+,icicibank.com,0,0.0,0,0,0,0,10682,0,0,"Network Solutions, LLC",IN,273,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,9,,,"https://www.icicibank.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.icicibank.com
+URL: https://www.icicibank.com/
+Registrable Domain: icicibank.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 26 chars, Entropy: 3.82
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 92
+
+   🚩 Phishing Keywords Detected: account, login
+
+   ⚠️ JavaScrip",1,benign,0,1,,1,0,0,0,728,f0707072525b1f8f,,0.0,0.0,0.0
+,sbicard.com,0,0.0,0,0,0,0,9660,0,0,"CSC Corporate Domains, Inc.",IN,1662,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,6,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sbicard.com
+Registrable Domain: sbicard.com
+
+📡 DNS Records:
+   A (IPv4): 103.48.124.27
+   AAAA (IPv6): 2001:df6:1:9::27
+   MX (Mail): sbicard-com.mail.protection.outlook.com
+   NS (Nameservers): a16-65.akam.net, a7-65.akam.net, a3-64.akam.net, a28-67.akam.net, a1-120.akam.net, a20-66.akam.net
+
+📋 WHOIS Information:
+   Registrar: CSC Corporate Domains, Inc.
+   Domain Age: 9660 days
+   Days Until Expiry: 1662
+
+🌍 Network & Location:
+   ASN: 13255",1,benign,0,0,,0,0,0,0,622,877c077c076f2703,,0.0,0.0,0.0
+,sbicard.com,0,0.0,0,0,0,0,9660,0,0,"CSC Corporate Domains, Inc.",IN,1662,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,6,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sbicard.com
+Registrable Domain: sbicard.com
+
+📡 DNS Records:
+   A (IPv4): 103.48.124.27
+   AAAA (IPv6): 2001:df6:1:9::27
+   MX (Mail): sbicard-com.mail.protection.outlook.com
+   NS (Nameservers): a16-65.akam.net, a7-65.akam.net, a3-64.akam.net, a28-67.akam.net, a1-120.akam.net, a20-66.akam.net
+
+📋 WHOIS Information:
+   Registrar: CSC Corporate Domains, Inc.
+   Domain Age: 9660 days
+   Days Until Expiry: 1662
+
+🌍 Network & Location:
+   ASN: 13255",1,benign,0,4,,1,1,0,0,672,877c077c076f2703,,0.0,0.0,0.0
+,sbicard.com,0,0.0,0,0,0,0,9660,0,0,"CSC Corporate Domains, Inc.",IN,1662,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,6,,,"https://www.sbicard.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.sbicard.com
+URL: https://www.sbicard.com/
+Registrable Domain: sbicard.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 24 chars, Entropy: 3.86
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 4
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 20
+
+   🚩 Phishing Keywords Detected: password, account, login, secure, verif",1,benign,0,0,,0,0,0,0,622,877c077c076f2703,,0.0,0.0,0.0
+,sbicard.com,0,0.0,0,0,0,0,9660,0,0,"CSC Corporate Domains, Inc.",IN,1662,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,6,,,"https://www.sbicard.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.sbicard.com
+URL: https://www.sbicard.com/
+Registrable Domain: sbicard.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 24 chars, Entropy: 3.86
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 4
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 20
+
+   🚩 Phishing Keywords Detected: password, account, login, secure, verif",1,benign,0,4,,1,1,0,0,672,877c077c076f2703,,0.0,0.0,0.0
+,airtel.com,0,0.0,0,0,0,0,5722,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,121,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,13,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: airtel.com
+Registrable Domain: airtel.com
+
+📡 DNS Records:
+   A (IPv4): 125.16.74.25
+   AAAA (IPv6): 2404:a800:ff00::a0e:2e8e
+   MX (Mail): mx-mail5.airtel.com, mx-mail6.airtel.com, mx-mail34.airtel.com, mx-mail3.airtel.com, mx-mail41.airtel.com, mx-mail40.airtel.com, mx-mail39.airtel.com, mx-mail38.airtel.com, mx-mail37.airtel.com, mx-mail36.airtel.com, mx-mail35.airtel.com, mx-mail4.airtel.com, airtel-com.mail.protection.outlook.com
+   NS (N",1,benign,0,0,,0,0,0,0,889,8018fee31ffc07e0,,0.0,0.0,0.0
+,airtel.com,0,0.0,0,0,0,0,5722,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,121,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,13,4,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: airtel.com
+Registrable Domain: airtel.com
+
+📡 DNS Records:
+   A (IPv4): 125.16.74.25
+   AAAA (IPv6): 2404:a800:ff00::a0e:2e8e
+   MX (Mail): mx-mail5.airtel.com, mx-mail6.airtel.com, mx-mail34.airtel.com, mx-mail3.airtel.com, mx-mail41.airtel.com, mx-mail40.airtel.com, mx-mail39.airtel.com, mx-mail38.airtel.com, mx-mail37.airtel.com, mx-mail36.airtel.com, mx-mail35.airtel.com, mx-mail4.airtel.com, airtel-com.mail.protection.outlook.com
+   NS (N",1,benign,0,0,,0,0,0,0,443,8018fee31ffc07e0,,0.0,0.0,0.0
+,airtel.com,0,0.0,0,0,0,0,5722,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,121,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,13,4,,,"https://www.airtel.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.airtel.com
+URL: https://www.airtel.com/
+Registrable Domain: airtel.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.82
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 12
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:58:10.020670+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,889,8018fee31ffc07e0,,0.0,0.0,0.0
+,airtel.com,0,0.0,0,0,0,0,5722,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,121,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,13,4,,,"https://www.airtel.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.airtel.com
+URL: https://www.airtel.com/
+Registrable Domain: airtel.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 23 chars, Entropy: 3.82
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 12
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:58:10.020670+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,443,8018fee31ffc07e0,,0.0,0.0,0.0
+https://iocl.com/,iocl.com,17,3.4548,0,0,0,0,10662,0,0,"Network Solutions, LLC",US,658,0,999,0,1,0,0,0,0,1,227419,82,2,0,0,0,0,0,164,1,1,1,2,03eb9a65cbfd69b21b4c34ce81cfc9d4,29f9368ee3eb44f85df2ef8da53ea332df40a351f254079eabb97283818858dd,"https://iocl.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: iocl.com
+URL: https://iocl.com/
+Registrable Domain: iocl.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 17 chars, Entropy: 3.45
+      Subdomains: 0, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 82
+
+   🚩 Phishing Keywords Detected: secure
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: ",1,benign,0,1,,0,0,0,0,560,a2931a4763b16ccf,,0.0,0.0,0.0
+,hdfcergo.com,0,0.0,0,0,0,0,6655,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,1745,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,6,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: hdfcergo.com
+Registrable Domain: hdfcergo.com
+
+📡 DNS Records:
+   A (IPv4): 52.66.101.246
+   MX (Mail): hdfcergo-com.mail.protection.outlook.com
+   NS (Nameservers): ns22.adwebtech.com, ns23.adwebtech.com, ns24.adwebtech.com, ns21.adwebtech.com, ns20.adwebtech.com, ns25.adwebtech.com
+
+📋 WHOIS Information:
+   Registrar: PDR Ltd. d/b/a PublicDomainRegistry.com
+   Domain Age: 6655 days
+   Days Until Expiry: 1745
+
+🌍 Network & Location:
+   ASN: 165",1,benign,0,0,,0,0,0,0,631,aec713f0118d26f6,,0.0,0.0,0.0
+,hdfcergo.com,0,0.0,0,0,0,0,6655,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,1745,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,6,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: hdfcergo.com
+Registrable Domain: hdfcergo.com
+
+📡 DNS Records:
+   A (IPv4): 52.66.101.246
+   MX (Mail): hdfcergo-com.mail.protection.outlook.com
+   NS (Nameservers): ns22.adwebtech.com, ns23.adwebtech.com, ns24.adwebtech.com, ns21.adwebtech.com, ns20.adwebtech.com, ns25.adwebtech.com
+
+📋 WHOIS Information:
+   Registrar: PDR Ltd. d/b/a PublicDomainRegistry.com
+   Domain Age: 6655 days
+   Days Until Expiry: 1745
+
+🌍 Network & Location:
+   ASN: 165",1,benign,0,5,,1,0,0,0,704,aec713f0118d26f6,,0.0,0.0,0.0
+,hdfcergo.com,0,0.0,0,0,0,0,6655,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,1745,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,6,,,"https://www.hdfcergo.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.hdfcergo.com
+URL: https://www.hdfcergo.com/
+Registrable Domain: hdfcergo.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.86
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 5
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 139
+
+   🚩 Phishing Keywords Detected: password, account, login, secure
+
+",1,benign,0,0,,0,0,0,0,631,aec713f0118d26f6,,0.0,0.0,0.0
+,hdfcergo.com,0,0.0,0,0,0,0,6655,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,1745,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,6,,,"https://www.hdfcergo.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.hdfcergo.com
+URL: https://www.hdfcergo.com/
+Registrable Domain: hdfcergo.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.86
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 5
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 139
+
+   🚩 Phishing Keywords Detected: password, account, login, secure
+
+",1,benign,0,5,,1,0,0,0,704,aec713f0118d26f6,,0.0,0.0,0.0
+https://irctc.com/,irctc.com,18,3.3774,0,0,0,0,8541,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,IN,589,0,999,0,2,0,0,0,0,3,205984,135,2,0,0,0,0,0,183,1,1,1,2,86aac2c81e17e40a04ec62c7930e2b8b,f82398f8d02486e74958f58feb3d66aa0a9403436ccf853131c17fc3124fde2d,"https://irctc.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: irctc.com
+URL: https://irctc.com/
+Registrable Domain: irctc.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 18 chars, Entropy: 3.38
+      Subdomains: 0, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 2
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External Links: 135
+
+   🚩 Phishing Keywords Detected: login, secure, verify
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metad",1,benign,0,2,,1,1,0,0,579,a787c039e9d146a7,,0.0,0.0,0.0
+,hdfclife.com,0,0.0,0,0,0,0,9442,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,SG,54,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,6,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: hdfclife.com
+Registrable Domain: hdfclife.com
+
+📡 DNS Records:
+   A (IPv4): 23.54.118.35, 23.54.118.51
+   AAAA (IPv6): 2600:1417:75::17d4:fd68, 2600:1417:75::17d4:fd33
+   MX (Mail): as1.securemta.in, as3.securemta.in
+   NS (Nameservers): a28-67.akam.net, a3-64.akam.net, a4-64.akam.net, a8-67.akam.net, a1-100.akam.net, a13-65.akam.net
+
+📋 WHOIS Information:
+   Registrar: PDR Ltd. d/b/a PublicDomainRegistry.com
+   Domain Age: 9442 days
+   Days Un",1,benign,0,0,,0,0,0,0,683,aa6e45175d1178ea,,0.0,0.0,0.0
+,hdfclife.com,0,0.0,0,0,0,0,9442,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,SG,54,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,6,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: hdfclife.com
+Registrable Domain: hdfclife.com
+
+📡 DNS Records:
+   A (IPv4): 23.54.118.35, 23.54.118.51
+   AAAA (IPv6): 2600:1417:75::17d4:fd68, 2600:1417:75::17d4:fd33
+   MX (Mail): as1.securemta.in, as3.securemta.in
+   NS (Nameservers): a28-67.akam.net, a3-64.akam.net, a4-64.akam.net, a8-67.akam.net, a1-100.akam.net, a13-65.akam.net
+
+📋 WHOIS Information:
+   Registrar: PDR Ltd. d/b/a PublicDomainRegistry.com
+   Domain Age: 9442 days
+   Days Un",1,benign,0,21,"GET APP LINK, GET APP LINK, PROCEED, Verify, PROCEED",1,1,0,0,778,aa6e45175d1178ea,,0.0,0.0,0.0
+,hdfclife.com,0,0.0,0,0,0,0,9442,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,SG,54,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,6,,,"https://www.hdfclife.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.hdfclife.com
+URL: https://www.hdfclife.com/
+Registrable Domain: hdfclife.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.86
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 21
+      Password Fields: 0
+      Email Fields: 6
+      Submit Buttons: GET APP LINK, GET APP LINK, PROCEED, Verify, PROCEED
+
+   📄 Page Content:
+      External Lin",1,benign,0,0,,0,0,0,0,683,aa6e45175d1178ea,,0.0,0.0,0.0
+,hdfclife.com,0,0.0,0,0,0,0,9442,0,0,PDR Ltd. d/b/a PublicDomainRegistry.com,SG,54,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,6,,,"https://www.hdfclife.com/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: www.hdfclife.com
+URL: https://www.hdfclife.com/
+Registrable Domain: hdfclife.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 25 chars, Entropy: 3.86
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 21
+      Password Fields: 0
+      Email Fields: 6
+      Submit Buttons: GET APP LINK, GET APP LINK, PROCEED, Verify, PROCEED
+
+   📄 Page Content:
+      External Lin",1,benign,0,21,"GET APP LINK, GET APP LINK, PROCEED, Verify, PROCEED",1,1,0,0,778,aa6e45175d1178ea,,0.0,0.0,0.0
+,sbiepay.sbi,0,0.0,0,0,0,0,1993,0,0,Synergy Wholesale Accreditations Pty Ltd,IN,197,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sbiepay.sbi
+Registrable Domain: sbiepay.sbi
+
+📡 DNS Records:
+   A (IPv4): 103.68.221.1
+   AAAA (IPv6): 2405:a700:14:171:103:68:221:1
+   NS (Nameservers): a3-66.akam.net, a5-66.akam.net, a1-148.akam.net, a16-64.akam.net, a20-64.akam.net, a22-65.akam.net
+
+📋 WHOIS Information:
+   Registrar: Synergy Wholesale Accreditations Pty Ltd
+   Domain Age: 1993 days
+   Days Until Expiry: 197
+
+🌍 Network & Location:
+   ASN: 45644
+   Country: IN
+
+📊 Metadata:
+ ",1,benign,0,0,,0,0,0,0,591,bb48481b49493fcf,,0.0,0.0,0.0
+,sbiepay.sbi,0,0.0,0,0,0,0,1993,0,0,Synergy Wholesale Accreditations Pty Ltd,IN,197,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: sbiepay.sbi
+Registrable Domain: sbiepay.sbi
+
+📡 DNS Records:
+   A (IPv4): 103.68.221.1
+   AAAA (IPv6): 2405:a700:14:171:103:68:221:1
+   NS (Nameservers): a3-66.akam.net, a5-66.akam.net, a1-148.akam.net, a16-64.akam.net, a20-64.akam.net, a22-65.akam.net
+
+📋 WHOIS Information:
+   Registrar: Synergy Wholesale Accreditations Pty Ltd
+   Domain Age: 1993 days
+   Days Until Expiry: 197
+
+🌍 Network & Location:
+   ASN: 45644
+   Country: IN
+
+📊 Metadata:
+ ",1,benign,10,0,,1,1,0,0,608,bb48481b49493fcf,,0.0,0.0,0.0
+,sbiepay.sbi,0,0.0,0,0,0,0,1993,0,0,Synergy Wholesale Accreditations Pty Ltd,IN,197,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6,,,"https://epay.sbi.bank.in/secure/home 🚨 VERDICT: BENIGN (Risk Score: 10/100, Confidence: 0.50)
+   Risk Indicators: Elevated URL entropy
+
+Domain: epay.sbi.bank.in
+URL: https://epay.sbi.bank.in/secure/home
+Registrable Domain: sbiepay.sbi
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 36 chars, Entropy: 4.07
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 5
+
+   🚩 Phishing Keywords Detected: password, account, login, secure, verify
+
+   ⚠️ JavaScript Beha",1,benign,0,0,,0,0,0,0,591,bb48481b49493fcf,,0.0,0.0,0.0
+,sbiepay.sbi,0,0.0,0,0,0,0,1993,0,0,Synergy Wholesale Accreditations Pty Ltd,IN,197,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6,,,"https://epay.sbi.bank.in/secure/home 🚨 VERDICT: BENIGN (Risk Score: 10/100, Confidence: 0.50)
+   Risk Indicators: Elevated URL entropy
+
+Domain: epay.sbi.bank.in
+URL: https://epay.sbi.bank.in/secure/home
+Registrable Domain: sbiepay.sbi
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 36 chars, Entropy: 4.07
+      Subdomains: 2, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 5
+
+   🚩 Phishing Keywords Detected: password, account, login, secure, verify
+
+   ⚠️ JavaScript Beha",1,benign,10,0,,1,1,0,0,608,bb48481b49493fcf,,0.0,0.0,0.0
+,bobibanking.com,0,0.0,0,0,0,0,9147,0,0,Terranet (India) Private Limited,IN,1809,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: bobibanking.com
+Registrable Domain: bobibanking.com
+
+📡 DNS Records:
+   A (IPv4): 103.85.40.27
+   NS (Nameservers): ns2.rilinfo.net, ns1.rilinfo.net
+
+📋 WHOIS Information:
+   Registrar: Terranet (India) Private Limited
+   Domain Age: 9147 days
+   Days Until Expiry: 1809
+
+🌍 Network & Location:
+   ASN: 136252
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:57:13.983925+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,481,fa31514343653d6b,,0.0,0.0,0.0
+,bobibanking.com,0,0.0,0,0,0,0,9147,0,0,Terranet (India) Private Limited,IN,1809,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,," 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: bobibanking.com
+Registrable Domain: bobibanking.com
+
+📡 DNS Records:
+   A (IPv4): 103.85.40.27
+   NS (Nameservers): ns2.rilinfo.net, ns1.rilinfo.net
+
+📋 WHOIS Information:
+   Registrar: Terranet (India) Private Limited
+   Domain Age: 9147 days
+   Days Until Expiry: 1809
+
+🌍 Network & Location:
+   ASN: 136252
+   Country: IN
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:57:13.983925+00:00
+   Processing Stage: rules:benign",1,benign,10,1,,1,0,0,0,671,fa31514343653d6b,,0.0,0.0,0.0
+,bobibanking.com,0,0.0,0,0,0,0,9147,0,0,Terranet (India) Private Limited,IN,1809,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,,"https://feba.bobibanking.com/default.htm 🚨 VERDICT: BENIGN (Risk Score: 10/100, Confidence: 0.50)
+   Risk Indicators: Elevated URL entropy
+
+Domain: feba.bobibanking.com
+URL: https://feba.bobibanking.com/default.htm
+Registrable Domain: bobibanking.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 40 chars, Entropy: 4.22
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External ",1,benign,0,0,,0,0,0,0,481,fa31514343653d6b,,0.0,0.0,0.0
+,bobibanking.com,0,0.0,0,0,0,0,9147,0,0,Terranet (India) Private Limited,IN,1809,0,999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,,,"https://feba.bobibanking.com/default.htm 🚨 VERDICT: BENIGN (Risk Score: 10/100, Confidence: 0.50)
+   Risk Indicators: Elevated URL entropy
+
+Domain: feba.bobibanking.com
+URL: https://feba.bobibanking.com/default.htm
+Registrable Domain: bobibanking.com
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 40 chars, Entropy: 4.22
+      Subdomains: 1, Hyphens: 0, Special Chars: 0
+
+   📝 Forms Detected:
+      Total Forms: 1
+      Password Fields: 0
+      Email Fields: 0
+
+   📄 Page Content:
+      External ",1,benign,10,1,,1,0,0,0,671,fa31514343653d6b,,0.0,0.0,0.0
+https://bankofbaroda.in/,bankofbaroda.in,24,3.8554,0,0,0,0,7544,0,0,Terranet (India) Private Limited,IN,1951,0,999,0,0,0,0,0,0,0,5258,1,0,0,0,0,0,0,1,1,1,0,2,,,"https://bankofbaroda.in/ 🚨 VERDICT: BENIGN (Risk Score: 0/100, Confidence: 0.50)
+
+Domain: bankofbaroda.in
+URL: https://bankofbaroda.in/
+Registrable Domain: bankofbaroda.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 24 chars, Entropy: 3.86
+      Subdomains: 0, Hyphens: 0, Special Chars: 0
+
+   📄 Page Content:
+      External Links: 1
+
+   ⚠️ JavaScript Behavior:
+
+📊 Metadata:
+   First Seen: 2025-10-15T03:59:06.798967+00:00
+   Processing Stage: rules:benign",1,benign,0,0,,0,0,0,0,449,f62c6c22c99bc393,,0.0,0.0,0.0
+https://kavach.mail.gov.in/mfid/secureLogin_showSecureLogin.action#!,mail.gov.in,68,4.556,2,0,0,0,9999,0,0,,,0,0,999,0,3,1,0,0,0,3,19400,2,0,0,0,0,0,0,20,1,0,0,0,28d19c17047b8cff14081cded0b0e30b,7bc0c5ee21d19dbe7a2b8e95f2056c7e46ae89049b7fe8ca85a14bf2d14c66a7,"https://kavach.mail.gov.in/mfid/secureLogin_showSecureLogin.action#! 🚨 VERDICT: BENIGN (Risk Score: 15/100, Confidence: 0.50)
+   Risk Indicators: High URL entropy
+
+Domain: kavach.mail.gov.in
+URL: https://kavach.mail.gov.in/mfid/secureLogin_showSecureLogin.action#!
+Registrable Domain: mail.gov.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 68 chars, Entropy: 4.56
+      Subdomains: 2, Hyphens: 0, Special Chars: 3
+
+   📝 Forms Detected:
+      Total Forms: 3
+      Password Fields: 1
+      Email",1,benign,15,3,,1,0,0,0,678,b3335c4c4e667919,,0.0,0.0,0.0
+https://accounts.mgovcloud.in/signin?servicename=AaaServer&serviceurl=https%3A%2F%2Faccounts.mgovcloud.in%2Fhome,mgovcloud.in,112,4.6204,1,0,0,0,9999,0,0,,,0,0,999,0,7,2,0,0,0,4,107793,14,0,0,0,1,0,10,57,1,0,0,0,7509906d12d99604850a7a18f0683380,d409aa1654cf67e8bf1f93bd91cb31034a1d84ed19e5877067ed019ba04cb5e1,"https://accounts.mgovcloud.in/signin?servicename=AaaServer&serviceurl=https%3A%2F%2Faccounts.mgovcloud.in%2Fhome 🚨 VERDICT: BENIGN (Risk Score: 20/100, Confidence: 0.50)
+   Risk Indicators: Long URL, High URL entropy
+
+Domain: accounts.mgovcloud.in
+URL: https://accounts.mgovcloud.in/signin?servicename=AaaServer&serviceurl=https%3A%2F%2Faccounts.mgovcloud.in%2Fhome
+Registrable Domain: mgovcloud.in
+
+🔍 Page Features & Analysis:
+
+   URL Structure:
+      Length: 112 chars, Entropy: 4.62
+      Subdomains: 1, Hyphe",1,benign,20,7,,1,1,0,0,812,da56706428e58bbe,,0.0,0.0,0.0

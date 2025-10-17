@@ -439,3 +439,52 @@ services:
         reservations:
           memory: 256M
 
+  # ============================================
+  # AIML - Phishing Detection Models
+  # ============================================
+  aiml-detector:
+    build:
+      context: ../../AIML
+      dockerfile: Dockerfile
+    container_name: aiml-detector
+    restart: unless-stopped
+    environment:
+      # ChromaDB connection
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+      - CHROMA_COLLECTION=domains
+      # Service configuration
+      - OUTPUT_DIR=/out
+      - CHECK_INTERVAL_SECONDS=30
+      - BATCH_SIZE=10
+      # Model paths (inside container)
+      - MODEL_DIR=/app/models
+      - DATA_DIR=/app/data
+      # Logging
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+    volumes:
+      # Mount output directory for JSON verdicts
+      - ../out:/out
+      # Mount models and data (if trained models are external)
+      - ../../AIML/models:/app/models:ro
+      - ../../AIML/data:/app/data:ro
+    depends_on:
+      chroma:
+        condition: service_started
+      feature-crawler:
+        condition: service_started
+      chroma-ingestor:
+        condition: service_started
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "ls /out/aiml_service.log 2>/dev/null || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
