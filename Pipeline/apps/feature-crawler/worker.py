@@ -90,21 +90,38 @@ def entropy(s: str) -> float:
 
 SPECIALS = set("@&%$!#?=._-/")
 
-def get_safe_filename(cse_id: str, registrable: str, url: str) -> str:
+def get_safe_filename(cse_id: str, registrable: str, url: str, canonical_fqdn: str = None) -> str:
     """
-    Generate filesystem-safe filename from domain + URL hash.
-    This ensures human-readable filenames while maintaining uniqueness.
+    Generate filesystem-safe filename prioritizing original domain over redirected URLs.
+    This ensures filenames reflect the original submitted domain, not redirect destinations.
 
     Format: "{sanitized_domain}_{url_hash_8chars}"
-    Example: "sbi.bank.in_a3f29c81" for https://sbi.bank.in/login
+    Example: "sbi.bankpay.in_a3f29c81" for sbi.bankpay.in → redirects to sedo.com
              "login.onlinesbi.co.in_7b2e4d95" for https://login.onlinesbi.co.in/verify
 
-    Falls back to CSE ID or full URL hash if domain extraction fails.
+    Priority order:
+    1. canonical_fqdn (original domain before redirects) - HIGHEST PRIORITY
+    2. Domain extracted from URL (if canonical_fqdn missing)
+    3. registrable domain
+    4. cse_id
+    5. Full URL hash
+
+    Args:
+        cse_id: Brand/CSE identifier
+        registrable: Registrable domain (eTLD+1)
+        url: URL to crawl (may be after redirects)
+        canonical_fqdn: Original domain before any redirects (preferred)
     """
     # Generate short hash from URL for uniqueness
     url_hash = hashlib.sha256(url.encode("utf-8")).hexdigest()[:8]
 
-    # Try to extract full domain from URL (including subdomains)
+    # PRIORITY 1: Use canonical_fqdn if available (original domain before redirects)
+    # This is CRITICAL for tracking phishing domains that redirect to parking services
+    if canonical_fqdn:
+        safe_domain = re.sub(r"[^a-zA-Z0-9.-]", "_", canonical_fqdn)
+        return f"{safe_domain}_{url_hash}"
+
+    # PRIORITY 2: Try to extract full domain from URL (including subdomains)
     try:
         parsed = urlparse(url)
         domain = parsed.netloc or parsed.path.split('/')[0]
@@ -115,17 +132,17 @@ def get_safe_filename(cse_id: str, registrable: str, url: str) -> str:
     except Exception:
         pass
 
-    # Fallback 1: use registrable domain if available
+    # PRIORITY 3: Use registrable domain if available
     if registrable:
         safe_registrable = re.sub(r"[^a-zA-Z0-9.-]", "_", registrable)
         return f"{safe_registrable}_{url_hash}"
 
-    # Fallback 2: use CSE ID if available
+    # PRIORITY 4: Use CSE ID if available
     if cse_id:
         safe_id = cse_id.replace(":", "_").replace("/", "_").replace("\\", "_")
         return f"{safe_id}_{url_hash}"
 
-    # Last resort: full URL hash (original behavior)
+    # PRIORITY 5: Last resort - full URL hash (original behavior)
     return hashlib.sha256(url.encode("utf-8")).hexdigest()
 
 def url_struct_features(url: str) -> Dict[str, Any]:
@@ -553,11 +570,17 @@ def pick_url(rec: Dict[str,Any]) -> str:
     return rec.get("url") or rec.get("final_url") or rec.get("final",{}).get("url") or rec.get("input_url") or rec.get("href") or ""
 
 # --------------- crawler -----------------
-def crawl_once(play, url: str, cse_id: str = None, registrable: str = None) -> Dict[str,Any]:
+def crawl_once(play, url: str, cse_id: str = None, registrable: str = None, canonical_fqdn: str = None) -> Dict[str,Any]:
     """
     Crawl URL with proper redirect tracking.
     Waits for final destination before extracting features.
-    Uses CSE ID for filenames.
+    Uses canonical_fqdn (original domain) for filenames to track redirected domains.
+
+    Args:
+        url: URL to crawl (may be final destination after redirect)
+        cse_id: Brand/CSE identifier
+        registrable: Registrable domain
+        canonical_fqdn: Original domain before any redirects (preferred for filenames)
     """
     ts = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
     t0 = time.time()
@@ -623,8 +646,10 @@ def crawl_once(play, url: str, cse_id: str = None, registrable: str = None) -> D
         title = page.title()
         status = response_status or 200
 
-        # ✅ USE CSE ID FOR FILENAMES
-        filename_base = get_safe_filename(cse_id, registrable, final_url)
+        # ✅ USE CANONICAL_FQDN FOR FILENAMES (original domain before redirects)
+        # This ensures filenames reflect the original submitted domain, not redirect destinations
+        # Example: sbi.bankpay.in → sedo.com = saves as "sbi.bankpay.in_HASH.html"
+        filename_base = get_safe_filename(cse_id, registrable, url, canonical_fqdn)
         
         html_path = OUT_DIR/"html"/f"{filename_base}.html"
         shot_path = OUT_DIR/"screenshots"/f"{filename_base}_full.png"
@@ -790,10 +815,11 @@ def main():
                             consumer.commit()
                             continue
 
-                        # ✅ EXTRACT CSE ID AND REGISTRABLE FROM MESSAGE
+                        # ✅ EXTRACT CSE ID, REGISTRABLE, AND CANONICAL_FQDN FROM MESSAGE
                         cse_id = rec.get("cse_id") or rec.get("id") or rec.get("cse") or None
                         registrable = rec.get("registrable") or None
                         seed_registrable = rec.get("seed_registrable") or None  # Get original seed domain
+                        canonical_fqdn = rec.get("canonical_fqdn") or rec.get("fqdn") or None  # Original domain (before redirects)
 
                         # Extract full variant domain from URL for better logging
                         from urllib.parse import urlparse
@@ -811,10 +837,10 @@ def main():
                         retry_tracker[url] = attempt
 
                         # Crawl
-                        log.info(f"[crawl] attempt {attempt}/{MAX_RETRIES} for {url} (cse_id={cse_id})")
-                        art = crawl_once(p, url, cse_id=cse_id, registrable=registrable)
-                        
-                        filename_base = get_safe_filename(cse_id, registrable, url)
+                        log.info(f"[crawl] attempt {attempt}/{MAX_RETRIES} for {url} (cse_id={cse_id}, original_domain={canonical_fqdn})")
+                        art = crawl_once(p, url, cse_id=cse_id, registrable=registrable, canonical_fqdn=canonical_fqdn)
+
+                        filename_base = get_safe_filename(cse_id, registrable, url, canonical_fqdn)
                         log.info("[ok] crawled %s -> %s (status=%s, ms=%s, redirects=%s, files=%s.*)",
                                 url, art.get("final_url"), art.get("status"),
                                 art.get("latency_ms"), art.get("redirects", {}).get("redirect_count", 0),
