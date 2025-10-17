@@ -45,25 +45,32 @@ router.get('/live-monitoring/current-scan-progress', async (req, res) => {
         // Get all feature crawler seeds
         const seedKeys = await redisClient.keys('fcrawler:seed:*:total');
 
-        console.log('[current-scan] Found', seedKeys.length, 'active seeds');
+        console.log('[current-scan] Found', seedKeys.length, 'seed keys');
 
         if (seedKeys.length > 0) {
-            // Aggregate totals across all seeds
+            // Aggregate totals across all seeds (filter out completed ones)
             for (const key of seedKeys) {
                 // Extract domain from key: fcrawler:seed:{domain}:total
                 const parts = key.split(':');
                 if (parts.length >= 4) {
                     const domain = parts[2];
 
-                    const total = await redisClient.get(`fcrawler:seed:${domain}:total`);
-                    const crawled = await redisClient.get(`fcrawler:seed:${domain}:crawled`);
+                    const total = parseInt(await redisClient.get(`fcrawler:seed:${domain}:total`)) || 0;
+                    const crawled = parseInt(await redisClient.get(`fcrawler:seed:${domain}:crawled`)) || 0;
+                    const status = await redisClient.get(`fcrawler:seed:${domain}:status`);
 
-                    totalUrls += parseInt(total) || 0;
-                    processedUrls += parseInt(crawled) || 0;
+                    // Skip completed seeds
+                    if (status === 'completed' || crawled >= total) {
+                        console.log(`[current-scan] Skipping completed seed: ${domain} (${crawled}/${total}, status: ${status})`);
+                        continue;
+                    }
+
+                    totalUrls += total;
+                    processedUrls += crawled;
                 }
             }
 
-            console.log('[current-scan] Aggregated:', {
+            console.log('[current-scan] Active seeds aggregated:', {
                 total: totalUrls,
                 processed: processedUrls
             });
@@ -123,20 +130,70 @@ router.get('/live-monitoring/current-scan-progress', async (req, res) => {
 
         if (activeSeed && activeSeed.length > 0) {
             const domain = activeSeed[0];
-            const progressData = await redisClient.hGetAll(`dnstwist:progress:${domain}`);
 
-            if (progressData) {
-                const startedAt = parseInt(progressData.started_at || 0);
-                const now = Math.floor(Date.now() / 1000);
+            // Check if this domain is actually still being processed
+            const crawlerStatus = await redisClient.get(`fcrawler:seed:${domain}:status`);
+            const crawled = parseInt(await redisClient.get(`fcrawler:seed:${domain}:crawled`)) || 0;
+            const total = parseInt(await redisClient.get(`fcrawler:seed:${domain}:total`)) || 0;
 
-                currentlyProcessing = {
-                    domain: domain,
-                    current_pass: progressData.current_pass || 'unknown',
-                    elapsed_seconds: startedAt > 0 ? now - startedAt : 0,
-                    type: 'dnstwist'
-                };
+            // If completed, clean up stale entry
+            if (crawlerStatus === 'completed' || (total > 0 && crawled >= total)) {
+                console.log(`[current-scan] Cleaning up stale active queue entry: ${domain}`);
+                await redisClient.zRem('dnstwist:queue:active', domain);
+                await redisClient.del(`dnstwist:progress:${domain}`);
+            } else {
+                // Domain is actively being processed
+                const progressData = await redisClient.hGetAll(`dnstwist:progress:${domain}`);
 
-                console.log('[current-scan] Currently processing:', currentlyProcessing);
+                if (progressData && Object.keys(progressData).length > 0) {
+                    const startedAt = parseInt(progressData.started_at || 0);
+                    const now = Math.floor(Date.now() / 1000);
+                    const elapsedSeconds = startedAt > 0 ? now - startedAt : 0;
+
+                    // Check for stale entries (processing for more than 2 hours)
+                    const MAX_PROCESSING_TIME = 2 * 60 * 60; // 2 hours in seconds
+                    if (elapsedSeconds > MAX_PROCESSING_TIME) {
+                        console.log(`[current-scan] Cleaning up stale entry (${elapsedSeconds}s elapsed): ${domain}`);
+                        await redisClient.zRem('dnstwist:queue:active', domain);
+                        await redisClient.del(`dnstwist:progress:${domain}`);
+                    } else {
+                        currentlyProcessing = {
+                            domain: domain,
+                            current_pass: progressData.current_pass || 'unknown',
+                            elapsed_seconds: elapsedSeconds,
+                            type: 'dnstwist'
+                        };
+
+                        console.log('[current-scan] Currently processing:', currentlyProcessing);
+                    }
+                }
+            }
+        }
+
+        // If no DNSTwist processing, check if Feature Crawler is actively working
+        if (!currentlyProcessing && totalUrls > 0 && processedUrls < totalUrls) {
+            // Find the first seed that's actively being crawled
+            for (const key of seedKeys) {
+                const parts = key.split(':');
+                if (parts.length >= 4) {
+                    const domain = parts[2];
+                    const status = await redisClient.get(`fcrawler:seed:${domain}:status`);
+                    const crawled = parseInt(await redisClient.get(`fcrawler:seed:${domain}:crawled`)) || 0;
+                    const total = parseInt(await redisClient.get(`fcrawler:seed:${domain}:total`)) || 0;
+
+                    // Show this domain if it's actively being crawled
+                    if (status === 'processing' || (status !== 'completed' && crawled < total)) {
+                        currentlyProcessing = {
+                            domain: domain,
+                            current_progress: `${crawled}/${total}`,
+                            elapsed_seconds: 0, // Feature crawler doesn't track start time
+                            type: 'feature_crawler'
+                        };
+
+                        console.log('[current-scan] Feature crawler processing:', currentlyProcessing);
+                        break;
+                    }
+                }
             }
         }
 
