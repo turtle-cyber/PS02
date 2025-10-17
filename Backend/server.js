@@ -6,6 +6,8 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const { URL } = require('url');
+const { getCseName } = require('./utils/cse_list');
+
 const urlDetectionRouter = require('./routes/urlDetection/url-detection');
 const monitoringStatsRouter = require('./routes/monitoring/monitoring-stats');
 const dnstwistStatsRouter = require('./routes/dnstwist/dnstwist-stats');
@@ -23,7 +25,6 @@ const liveUrlScanRouter = require('./routes/liveMonitoring/live-url-scan');
 const currentScanRouter = require('./routes/liveMonitoring/current-scan');
 const taggingDistributionRouter = require('./routes/liveMonitoring/tagging-distribution');
 const uniqueDomainCountRouter = require('./routes/liveMonitoring/unique-domain-count');
-const { CSE_BY_URL } = require('./utils/cse_list');
 
 // ============================================
 // Configuration
@@ -208,7 +209,7 @@ app.post('/api/submit', async (req, res) => {
 
     logger.info('🎯 New submission request', {
         input: inputUrl,
-        cse_id: CSE_BY_URL[url] || "Unknown",
+        cse_id: getCseName(inputUrl),
         notes: notes,
         use_full_pipeline: useFullPipeline,
         ip: req.ip
@@ -252,6 +253,11 @@ app.post('/api/submit', async (req, res) => {
             });
         }
 
+        // Determine CSE name for this URL
+        const determinedCseName = getCseName(inputUrl);
+        // Use determined CSE name, or fall back to request-level cse_id if not found
+        const finalCseId = determinedCseName !== 'Unknown' ? determinedCseName : (cse_id || 'Unknown');
+
         // Determine target topic and message format based on pipeline choice
         let targetTopic;
         let message;
@@ -265,7 +271,7 @@ app.post('/api/submit', async (req, res) => {
                 fqdn: extractedDomain,
                 source: 'frontend_api',
                 timestamp: Math.floor(Date.now() / 1000),
-                cse_id: cse_id,
+                cse_id: finalCseId,
                 notes: notes,
                 original_input: inputUrl,
                 submitter_ip: req.ip
@@ -282,7 +288,7 @@ app.post('/api/submit', async (req, res) => {
                 seed_registrable: extractedDomain,  // For tracking: no variants in direct flow
                 source: 'frontend_api_direct',
                 timestamp: Math.floor(Date.now() / 1000),
-                cse_id: cse_id,
+                cse_id: finalCseId,
                 notes: notes,
                 original_input: inputUrl,
                 submitter_ip: req.ip
@@ -457,6 +463,11 @@ app.post('/api/submit-bulk', async (req, res) => {
                     continue;
                 }
 
+                // Determine CSE name for this specific URL
+                const determinedCseName = getCseName(inputUrl);
+                // Use determined CSE name, or fall back to request-level cse_id if not found
+                const finalCseId = determinedCseName !== 'Unknown' ? determinedCseName : (cse_id || 'Unknown');
+
                 // Create message based on pipeline choice
                 let message;
                 if (useFullPipeline) {
@@ -464,7 +475,7 @@ app.post('/api/submit-bulk', async (req, res) => {
                         fqdn: extractedDomain,
                         source: 'frontend_api_bulk',
                         timestamp: Math.floor(Date.now() / 1000),
-                        cse_id: cse_id,
+                        cse_id: finalCseId,
                         notes: notes,
                         original_input: inputUrl,
                         submitter_ip: req.ip,
@@ -478,7 +489,7 @@ app.post('/api/submit-bulk', async (req, res) => {
                         seed_registrable: extractedDomain,  // For tracking: no variants in direct flow
                         source: 'frontend_api_bulk_direct',
                         timestamp: Math.floor(Date.now() / 1000),
-                        cse_id: cse_id,
+                        cse_id: finalCseId,
                         notes: notes,
                         original_input: inputUrl,
                         submitter_ip: req.ip,

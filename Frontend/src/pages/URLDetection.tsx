@@ -268,7 +268,6 @@ const URLDetection = () => {
           const payload = {
             urls: urls,
             use_full_pipeline: isLookalike || false,
-            cse_id: "BULK_IMPORT",
             notes: "CSV import",
           };
 

@@ -96,7 +96,7 @@ const HOST_TO_NAME = (() => {
       acc[base] = name;
       acc[`www.${base}`] = name; // allow explicit www
     } catch {
-      // ignore malformed entries in source map
+      
     }
   }
   return acc;
@@ -131,9 +131,9 @@ export function normalizeHost(input) {
  *   getCseName("http://www.sbi.co.in/personal")  // "State Bank of India (SBI)"
  *   getCseName("sbi.co.in")                      // "State Bank of India (SBI)"
  */
+
 export function getCseName(inputUrl) {
   const host = normalizeHost(inputUrl);
-  if (!host) return undefined;
-  // Lookup using normalized host; HOST_TO_NAME has both base and www keys.
-  return HOST_TO_NAME[host] || HOST_TO_NAME[`www.${host}`];
+  if (!host) return "Unknown"; 
+  return HOST_TO_NAME[host] || HOST_TO_NAME[`www.${host}`] || "Unknown";
 }
