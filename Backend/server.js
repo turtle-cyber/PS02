@@ -17,6 +17,12 @@ const parkedInsightsRouter = require('./routes/dashboard/parked-insights');
 const overviewRouter = require('./routes/dashboard/overview');
 const domainStatsRouter = require('./routes/dashboard/domain-stats');
 
+// Live Monitoring Routes
+const liveUrlScanRouter = require('./routes/liveMonitoring/live-url-scan');
+const currentScanRouter = require('./routes/liveMonitoring/current-scan');
+const taggingDistributionRouter = require('./routes/liveMonitoring/tagging-distribution');
+const uniqueDomainCountRouter = require('./routes/liveMonitoring/unique-domain-count');
+
 // ============================================
 // Configuration
 // ============================================
@@ -162,6 +168,12 @@ app.use('/api', urlWatchRouter);
 app.use('/api', parkedInsightsRouter);
 app.use('/api', overviewRouter);
 app.use('/api', domainStatsRouter);
+
+// Live Monitoring Routes
+app.use('/api', liveUrlScanRouter);
+app.use('/api', currentScanRouter);
+app.use('/api', taggingDistributionRouter);
+app.use('/api', uniqueDomainCountRouter);
 
 /**
  * Health check endpoint
