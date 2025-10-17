@@ -19,6 +19,7 @@ const urlWatchRouter = require('./routes/dashboard/url-watch');
 const parkedInsightsRouter = require('./routes/dashboard/parked-insights');
 const overviewRouter = require('./routes/dashboard/overview');
 const domainStatsRouter = require('./routes/dashboard/domain-stats');
+const threatLandscapeRouter = require('./routes/dashboard/threat-landscape');
 
 // Live Monitoring Routes
 const liveUrlScanRouter = require('./routes/liveMonitoring/live-url-scan');
@@ -172,6 +173,7 @@ app.use('/api', urlWatchRouter);
 app.use('/api', parkedInsightsRouter);
 app.use('/api', overviewRouter);
 app.use('/api', domainStatsRouter);
+app.use('/api', threatLandscapeRouter);
 
 // Live Monitoring Routes
 app.use('/api', liveUrlScanRouter);
