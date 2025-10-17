@@ -611,17 +611,22 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
         keep["iframe_count"] = r["iframes"]
 
     # SSL certificate analysis
-    if "ssl" in r or "tls" in r:
-        ssl = r.get("ssl") or r.get("tls") or {}
+    if "ssl" in r or "tls" in r or "ssl_info" in r:
+        ssl = r.get("ssl") or r.get("tls") or r.get("ssl_info") or {}
         keep["uses_https"] = bool(ssl.get("uses_https", False))
         keep["is_self_signed"] = bool(ssl.get("is_self_signed", False))
         keep["domain_mismatch"] = bool(ssl.get("domain_mismatch") or ssl.get("has_domain_mismatch", False))
         keep["trusted_issuer"] = bool(ssl.get("trusted_issuer", False))
         if "cert_age_days" in ssl:
             keep["cert_age_days"] = ssl["cert_age_days"]
-            keep["is_newly_issued_cert"] = bool(ssl.get("is_newly_issued") or ssl.get("cert_is_very_new", False))
+            keep["is_newly_issued_cert"] = bool(ssl.get("is_newly_issued") or ssl.get("is_very_new_cert", False))
         if "cert_risk_score" in ssl:
             keep["cert_risk_score"] = ssl["cert_risk_score"]
+        # Additional SSL fields from http-fetcher
+        if "issuer" in ssl:
+            keep["cert_issuer"] = ssl["issuer"]
+        if "subject" in ssl:
+            keep["cert_subject"] = ssl["subject"]
 
     if "favicon_md5" in r:
         keep["favicon_md5"] = r["favicon_md5"]
@@ -638,14 +643,29 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
         keep["js_eval_usage"] = js.get("eval_usage", 0) > 0
         keep["js_keylogger"] = js.get("keylogger_patterns", 0) > 0
         keep["js_form_manipulation"] = js.get("form_manipulation", 0) > 0
+        keep["js_redirect_detected"] = js.get("redirect_scripts", 0) > 0
         if "js_risk_score" in js:
             keep["js_risk_score"] = js["js_risk_score"]
+        # Additional JS analysis fields
+        if "eval_usage" in js:
+            keep["js_eval_count"] = js["eval_usage"]
+        if "base64_decoding" in js:
+            keep["js_encoding_count"] = js["base64_decoding"]
+        if "obfuscated_scripts" in js:
+            keep["js_obfuscated_count"] = js["obfuscated_scripts"]
 
     if "forms" in r:
         forms = r["forms"]
         if "suspicious_form_count" in forms:
             keep["suspicious_form_count"] = forms["suspicious_form_count"]
             keep["has_suspicious_forms"] = forms["suspicious_form_count"] > 0
+        # Form submission analysis
+        if "forms_to_ip" in forms:
+            keep["forms_to_ip"] = forms["forms_to_ip"]
+        if "forms_to_suspicious_tld" in forms:
+            keep["forms_to_suspicious_tld"] = forms["forms_to_suspicious_tld"]
+        if "forms_to_private_ip" in forms:
+            keep["forms_to_private_ip"] = forms["forms_to_private_ip"]
 
     # CRITICAL: Store file paths for HTML/PDF/screenshots from feature-crawler
     if "html_path" in r:

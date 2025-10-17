@@ -614,9 +614,47 @@ for v in variants:
 | Field | Type | Description |
 |-------|------|-------------|
 | `uses_https` | boolean | Has SSL certificate |
-| `is_self_signed` | boolean | Self-signed cert |
-| `domain_mismatch` | boolean | Cert domain mismatch |
-| `cert_age_days` | integer | Certificate age |
+| `is_self_signed` | boolean | 🚨 Self-signed cert (top phishing indicator) |
+| `domain_mismatch` | boolean | 🚨 Cert domain mismatch |
+| `cert_age_days` | integer | Certificate age in days |
+| `is_newly_issued_cert` | boolean | ⚠️ Cert issued < 30 days ago |
+| `trusted_issuer` | boolean | Cert from trusted CA |
+| `cert_issuer` | string | Certificate issuer name |
+| `cert_subject` | string | Certificate subject name |
+| `cert_risk_score` | integer | SSL risk score (0-100) |
+
+### Form Submission Analysis
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `suspicious_form_count` | integer | Forms with suspicious targets |
+| `has_suspicious_forms` | boolean | ⚠️ Has forms to IPs/suspicious TLDs |
+| `forms_to_ip` | integer | 🚨 Forms submitting to IP addresses |
+| `forms_to_suspicious_tld` | integer | ⚠️ Forms to .tk/.ml/.ga/.xyz/etc |
+| `forms_to_private_ip` | integer | 🚨 Forms to localhost/private IPs |
+
+### JavaScript Analysis
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `js_obfuscated` | boolean | ⚠️ Uses obfuscation techniques |
+| `js_obfuscated_count` | integer | Number of obfuscated scripts |
+| `js_eval_usage` | boolean | Uses eval() function |
+| `js_eval_count` | integer | Number of eval() calls |
+| `js_encoding_count` | integer | Base64/encoding usage count |
+| `js_keylogger` | boolean | 🚨 Keylogger patterns detected |
+| `js_form_manipulation` | boolean | ⚠️ Dynamically modifies forms |
+| `js_redirect_detected` | boolean | JavaScript redirects detected |
+| `js_risk_score` | integer | JavaScript risk score (0-100) |
+
+### Additional Analysis Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `favicon_md5` | string | MD5 hash of favicon |
+| `favicon_sha256` | string | SHA256 hash of favicon |
+| `redirect_count` | integer | Number of HTTP redirects |
+| `had_redirects` | boolean | Page performed redirects |
 
 ### File Paths (for artifacts)
 

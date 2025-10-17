@@ -187,6 +187,7 @@ All responses follow this format:
 
 ## Key Metadata Fields
 
+### Core Fields
 - `registrable` - Domain name
 - `seed_registrable` - Original brand
 - `cse_id` - Brand identifier
@@ -198,8 +199,33 @@ All responses follow this format:
 - `has_credential_form` - Has login form
 - `country` - Hosting country
 
-### DNSTwist Statistics (Original Seeds Only)
+### SSL/Certificate Fields
+- `is_self_signed` - 🚨 Self-signed certificate
+- `cert_age_days` - Certificate age
+- `is_newly_issued_cert` - Cert < 30 days old
+- `cert_risk_score` - SSL risk (0-100)
+- `domain_mismatch` - Cert domain mismatch
+- `trusted_issuer` - From trusted CA
 
+### Form Submission Analysis
+- `forms_to_ip` - 🚨 Forms to IP addresses
+- `forms_to_suspicious_tld` - Forms to .tk/.ml/.ga
+- `forms_to_private_ip` - Forms to localhost
+- `has_suspicious_forms` - Has suspicious forms
+
+### JavaScript Analysis
+- `js_keylogger` - 🚨 Keylogger detected
+- `js_obfuscated` - Uses obfuscation
+- `js_form_manipulation` - Modifies forms
+- `js_redirect_detected` - JS redirects
+- `js_risk_score` - JS risk (0-100)
+
+### Additional Fields
+- `favicon_md5` - Favicon hash (brand detection)
+- `redirect_count` - HTTP redirect count
+- `had_redirects` - Has redirects
+
+### DNSTwist Statistics (Original Seeds Only)
 - `dnstwist_variants_registered` - Number of registered variants
 - `dnstwist_variants_unregistered` - Number of unregistered variants
 - `dnstwist_total_generated` - Total variants generated
@@ -258,6 +284,38 @@ curl "http://localhost:3000/api/chroma/variants?is_newly_registered=true&verdict
 ```bash
 curl "http://localhost:3000/api/chroma/variants?seed_registrable=sbi.co.in&limit=1000" \
   | jq -r '.domains[] | "\(.metadata.registrable),\(.metadata.risk_score),\(.metadata.verdict)"'
+```
+
+### Find Domains with Self-Signed Certificates (High Risk)
+```bash
+# Self-signed certs are the #1 phishing indicator
+curl "http://localhost:3000/api/chroma/search?query=login%20banking&limit=50" \
+  | jq '.results.variants[] | select(.metadata.is_self_signed == true)'
+```
+
+### Find Domains with Keyloggers Detected
+```bash
+# JavaScript keyloggers capturing credentials
+curl "http://localhost:3000/api/chroma/search?query=credential%20harvesting&limit=50" \
+  | jq '.results.variants[] | select(.metadata.js_keylogger == true)'
+```
+
+### Find Forms Submitting to IP Addresses
+```bash
+# Forms sending credentials to external IPs (major red flag)
+curl "http://localhost:3000/api/chroma/search?query=phishing%20forms&limit=50" \
+  | jq '.results.variants[] | select(.metadata.forms_to_ip > 0)'
+```
+
+### Find Domains with Multiple Risk Indicators
+```bash
+# Combine SSL + keylogger + suspicious forms
+curl "http://localhost:3000/api/chroma/search?query=high%20risk%20phishing&limit=50" \
+  | jq '.results.variants[] | select(
+      .metadata.is_self_signed == true or
+      .metadata.js_keylogger == true or
+      .metadata.forms_to_ip > 0
+    )'
 ```
 
 ---

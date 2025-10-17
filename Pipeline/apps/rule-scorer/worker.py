@@ -320,7 +320,7 @@ def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
     if http:
         hcopy = dict(http)
         _drop_heavy(hcopy)
-        for k in ("tls","had_redirects","status","server","title","final_url","original_host","host"):
+        for k in ("ssl_info","tls","had_redirects","status","server","title","final_url","original_host","host","redirect_count"):
             if k in hcopy: out[k] = hcopy[k]
 
     # Features (preserve nested structures used by ingestor)
@@ -328,11 +328,12 @@ def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
         fcopy = dict(feat)
         _drop_heavy(fcopy)
         for k in ("url_features","idn","forms","text_keywords","javascript",
-                  "html_size","external_links","iframe_count",
+                  "html_size","html_length_bytes","external_links","iframe_count","iframes",
                   "form_count","password_fields","email_fields",
                   "has_credential_form","keyword_count",
                   "suspicious_form_count","has_suspicious_forms",
-                  "forms_to_ip","forms_to_suspicious_tld","forms_to_private_ip"):
+                  "forms_to_ip","forms_to_suspicious_tld","forms_to_private_ip",
+                  "favicon_md5","favicon_sha256","redirect_count","had_redirects"):
             if k in fcopy: out[k] = fcopy[k]
 
     return out

@@ -528,6 +528,7 @@ async def probe_host(fqdn: str) -> Dict[str, Any]:
             "redirect_count": redirect_count,
             "parking_detection": parking,
             "phishing_signals": phishing,
+            "ssl_info": final.get("ssl_info") if final else None,  # Include SSL certificate data
         }
 
 # ---------- kafka plumbing with retry ----------
