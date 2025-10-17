@@ -167,6 +167,7 @@ const LiveMonitoring: React.FC = () => {
 
   const { urlTaggingData, urlTaggingLoading } = useGetUrlTagging();
 
+  /* ------- Helpers For Graph ------- */
   const seriesCount = useMemo<[number, number][]>(() => {
     return (liveUrlScanData ?? []).map((p: LivePoint) => [
       new Date(p.timestamp).getTime(),
@@ -255,7 +256,7 @@ const LiveMonitoring: React.FC = () => {
     {
       name: "Phishing",
       key: "phishing",
-      value: phishing + 10,
+      value: phishing,
       color: grad("#EF4444", "#F87171"),
     },
     {

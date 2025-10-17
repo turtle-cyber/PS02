@@ -23,6 +23,7 @@ const liveUrlScanRouter = require('./routes/liveMonitoring/live-url-scan');
 const currentScanRouter = require('./routes/liveMonitoring/current-scan');
 const taggingDistributionRouter = require('./routes/liveMonitoring/tagging-distribution');
 const uniqueDomainCountRouter = require('./routes/liveMonitoring/unique-domain-count');
+const { CSE_BY_URL } = require('./utils/cse_list');
 
 // ============================================
 // Configuration
@@ -207,7 +208,7 @@ app.post('/api/submit', async (req, res) => {
 
     logger.info('🎯 New submission request', {
         input: inputUrl,
-        cse_id: cse_id,
+        cse_id: CSE_BY_URL[url] || "Unknown",
         notes: notes,
         use_full_pipeline: useFullPipeline,
         ip: req.ip

@@ -34,31 +34,6 @@ import {
   GET_URL_WATCH_GRAPH,
 } from "@/endpoints/dashboard.endpoints";
 
-const NavLink = styled(Typography)<{ active?: boolean }>(({ active }) => ({
-  color: active ? "#E50914" : "#FFFFFF",
-  textDecoration: "none",
-  fontWeight: 500,
-  fontSize: "14px",
-  position: "relative",
-  cursor: "pointer",
-  transition: "all 0.3s ease",
-  "&:hover": {
-    color: "#E50914",
-  },
-  ...(active && {
-    "&::after": {
-      content: '""',
-      position: "absolute",
-      bottom: "-8px",
-      left: 0,
-      right: 0,
-      height: "2px",
-      background: "#E50914",
-      boxShadow: "0 0 8px rgba(229, 9, 20, 0.6)",
-    },
-  }),
-}));
-
 const useGetUrlInsightsData = () => {
   const [urlInsightsData, setUrlInsightsData] = useState<any>({});
   const [urlInsightsLoading, setUrlInsightsLoading] = useState(false);
@@ -166,7 +141,6 @@ const useGetOverview = () => {
     try {
       const response = await http.get(GET_OVERVIEW);
       setOverviewData(response?.data?.overview || []);
-      console.log(response?.data?.overview);
     } catch (error) {
       console.error("Error Fetching Overview Data with error: ", error);
     } finally {

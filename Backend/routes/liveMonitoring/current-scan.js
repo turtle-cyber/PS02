@@ -172,26 +172,75 @@ router.get('/live-monitoring/current-scan-progress', async (req, res) => {
 
         // If no DNSTwist processing, check if Feature Crawler is actively working
         if (!currentlyProcessing && totalUrls > 0 && processedUrls < totalUrls) {
-            // Find the first seed that's actively being crawled
-            for (const key of seedKeys) {
-                const parts = key.split(':');
-                if (parts.length >= 4) {
-                    const domain = parts[2];
+            // Use fcrawler:active_seeds sorted set to find the most recently active seed
+            // This ensures we show the seed that's ACTUALLY being processed right now
+            const activeSeeds = await redisClient.zRangeWithScores('fcrawler:active_seeds', 0, -1);
+
+            if (activeSeeds && activeSeeds.length > 0) {
+                const now = Math.floor(Date.now() / 1000);
+                const STALENESS_THRESHOLD = 5 * 60; // 5 minutes in seconds
+
+                // Sort by most recent activity (highest score = most recent timestamp)
+                const sortedSeeds = activeSeeds
+                    .map(item => ({
+                        domain: item.value,
+                        timestamp: item.score
+                    }))
+                    .sort((a, b) => b.timestamp - a.timestamp); // Most recent first
+
+                // Find the first seed that's both recent AND incomplete
+                for (const seedInfo of sortedSeeds) {
+                    const domain = seedInfo.domain;
+                    const lastActivity = seedInfo.timestamp;
+                    const ageSeconds = now - lastActivity;
+
+                    // Skip stale seeds (inactive for > 5 minutes)
+                    if (ageSeconds > STALENESS_THRESHOLD) {
+                        console.log(`[current-scan] Skipping stale seed: ${domain} (inactive for ${Math.floor(ageSeconds / 60)} minutes)`);
+                        continue;
+                    }
+
                     const status = await redisClient.get(`fcrawler:seed:${domain}:status`);
                     const crawled = parseInt(await redisClient.get(`fcrawler:seed:${domain}:crawled`)) || 0;
                     const total = parseInt(await redisClient.get(`fcrawler:seed:${domain}:total`)) || 0;
 
-                    // Show this domain if it's actively being crawled
-                    if (status === 'processing' || (status !== 'completed' && crawled < total)) {
+                    // Show this domain if it's incomplete and was recently updated
+                    if (status !== 'completed' && crawled < total) {
                         currentlyProcessing = {
                             domain: domain,
                             current_progress: `${crawled}/${total}`,
-                            elapsed_seconds: 0, // Feature crawler doesn't track start time
+                            elapsed_seconds: ageSeconds,
                             type: 'feature_crawler'
                         };
 
-                        console.log('[current-scan] Feature crawler processing:', currentlyProcessing);
+                        console.log(`[current-scan] Feature crawler actively processing: ${domain} (updated ${ageSeconds}s ago)`);
                         break;
+                    }
+                }
+            }
+
+            // Fallback: If no active seeds found, try the old method (for backward compatibility)
+            if (!currentlyProcessing) {
+                console.log('[current-scan] No recent active seeds found, falling back to first incomplete seed');
+                for (const key of seedKeys) {
+                    const parts = key.split(':');
+                    if (parts.length >= 4) {
+                        const domain = parts[2];
+                        const status = await redisClient.get(`fcrawler:seed:${domain}:status`);
+                        const crawled = parseInt(await redisClient.get(`fcrawler:seed:${domain}:crawled`)) || 0;
+                        const total = parseInt(await redisClient.get(`fcrawler:seed:${domain}:total`)) || 0;
+
+                        if (status !== 'completed' && crawled < total) {
+                            currentlyProcessing = {
+                                domain: domain,
+                                current_progress: `${crawled}/${total}`,
+                                elapsed_seconds: 0,
+                                type: 'feature_crawler'
+                            };
+
+                            console.log('[current-scan] Feature crawler processing (fallback):', currentlyProcessing);
+                            break;
+                        }
                     }
                 }
             }
