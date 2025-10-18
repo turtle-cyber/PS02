@@ -558,13 +558,35 @@ router.get('/domain/:domain', async (req, res) => {
 
         logger.info('✅ Domain found', { domain, collection: collectionName });
 
-        // Build response object
+        // Extract IPv4 and nameserver from document
+        const ipv4 = extractIPv4(found.document);
+        const nameserver = extractNameserver(found.document);
+
+        // Format first_seen timestamp
+        const firstSeenFormatted = found.metadata.first_seen
+            ? formatTimestamp(found.metadata.first_seen)
+            : null;
+
+        // Remove raw first_seen and add extracted fields
+        const { first_seen, ...metadataWithoutFirstSeen } = found.metadata;
+        const enhancedMetadata = {
+            ...metadataWithoutFirstSeen,
+            ipv4: ipv4,
+            nameserver: nameserver,
+            first_seen: firstSeenFormatted
+        };
+
+        // Build response object with enhanced data
         const response = {
             success: true,
             domain: domain,
             collection: collectionName,
             is_original_seed: collectionName === ORIGINALS_COLLECTION,
-            data: found
+            data: {
+                id: found.id,
+                metadata: enhancedMetadata,
+                document: found.document
+            }
         };
 
         // Add DNSTwist stats for original seeds only

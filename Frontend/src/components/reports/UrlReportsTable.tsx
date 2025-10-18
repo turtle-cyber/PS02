@@ -80,9 +80,11 @@ export const UrlReportsTable: React.FC<UrlReportsTableProps> = ({
     setSelectedRows(next);
   };
 
-  // NEW: navigate to /reports/url/detail/<row.id>
+  // NEW: navigate to /reports/url/detail/<row.metadata.registrable>
   const handleRowClick = (row: DomainItem) => {
-    navigate(`/reports/url/detail/${encodeURIComponent(row.id)}`);
+    const raw = row?.id ?? "";
+    const idOnly = raw.includes(":") ? raw.split(":")[0] : raw; // "www.ntpc.co.in"
+    navigate(`/reports/url/detail/${encodeURIComponent(idOnly)}`);
   };
 
   const isEmpty = !loading && rows.length === 0;

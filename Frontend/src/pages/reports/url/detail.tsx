@@ -1,17 +1,52 @@
-import * as React from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { DetailHeader } from "@/components/reports/DetailHeader";
 import { DetailCards } from "@/components/reports/DetailCards";
 import { getMockUrlDetail } from "@/data/mockReportDetails";
 import { LiquidCard } from "@/components/ui/liquid-card";
+import { useCallback, useEffect, useState } from "react";
+import { http } from "@/hooks/config";
+import { GET_DOMAIN_DETAIL } from "@/endpoints/reports.endpoints";
+import { toast } from "sonner";
+
+const useGetUrlReportDetail = (id?: string) => {
+  const [reportDetailData, setReportDetailsData] = useState<any>(null);
+  const [reportsDetailsLoading, setReportsDetailsLoading] = useState(false);
+
+  const fetchReportDetails = useCallback(async () => {
+    if (!id) return; // no id → no call
+    setReportsDetailsLoading(true);
+    try {
+      const url = `${GET_DOMAIN_DETAIL}/${id}`;
+      const response = await http.get(url);
+      setReportDetailsData(response?.data || {});
+    } catch (error) {
+      toast.error("Error Fetching URL Report Detail");
+      console.error("Error Fetching URL Report Detail:", error);
+    } finally {
+      setReportsDetailsLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchReportDetails();
+  }, [fetchReportDetails]);
+
+  return {
+    reportDetailData,
+    reportsDetailsLoading,
+    refetch: fetchReportDetails,
+  };
+};
 
 const UrlDetailPage = () => {
   const location = useLocation();
   const params = useParams<{ id?: string }>();
 
-  // If you came from the table with navigate(..., { state: { row } })
   const row = location.state?.row;
   const idFromUrl = params.id ? decodeURIComponent(params.id) : undefined;
+
+  const { reportDetailData, reportsDetailsLoading } =
+    useGetUrlReportDetail(idFromUrl);
 
   // TODO: In the future, fetch real data with `idFromUrl` or row.id
   const data = getMockUrlDetail();
@@ -26,30 +61,51 @@ const UrlDetailPage = () => {
         verdict: row.verdict || data.verdict,
       }
     : data;
-
+  console.log(reportDetailData);
   return (
     <div className="min-h-screen">
       <main className="px-6 py-4">
         <LiquidCard variant="glass">
           <DetailHeader
-            url={displayData.sourceUrl}
+            url={reportDetailData?.domain}
             backPath="/reports/url"
             backLabel="Back to URL Reports"
-            verdict={displayData.verdict}
-            confidence={displayData.confidence}
+            verdict={reportDetailData?.metadata?.final_verdict}
+            confidence={reportDetailData?.metadata?.risk_score}
             risk={displayData.risk}
             metaLeft={[
-              { label: "Source URL", value: displayData.sourceUrl },
-              { label: "Destination URL", value: displayData.destinationUrl },
-              { label: "IP Address", value: displayData.ipAddress },
+              { label: "Source URL", value: reportDetailData?.domain },
+              {
+                label: "Destination URL",
+                value: reportDetailData?.metadata?.destination_url || "N/A",
+              },
+              {
+                label: "IP Address",
+                value: reportDetailData?.data?.metadata?.ipv4,
+              },
             ]}
             metaRight={[
-              { label: "A Count", value: displayData.aCount },
-              { label: "Country", value: displayData.country },
+              {
+                label: "A Count",
+                value: reportDetailData?.data?.metadata?.a_count,
+              },
+              {
+                label: "Country",
+                value: reportDetailData?.data?.metadata?.country || "N/A",
+              },
               { label: "Risk", value: displayData.risk },
-              { label: "MX Record", value: displayData.mxRecord },
-              { label: "Registrar", value: displayData.registrar },
-              { label: "Domain Age", value: displayData.domainAge },
+              {
+                label: "MX Count",
+                value: reportDetailData?.data?.metadata?.mx_count,
+              },
+              {
+                label: "Registrar",
+                value: reportDetailData?.data?.metadata?.registrar,
+              },
+              {
+                label: "Domain Age",
+                value: reportDetailData?.data?.metadata?.domain_age_days,
+              },
             ]}
             lastScan={displayData.lastScan}
           />
