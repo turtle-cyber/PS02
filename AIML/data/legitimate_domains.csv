@@ -1,0 +1,63 @@
+domain,organization,sector,country,notes
+sbmbank.com,State Bank of Mauritius,Banking,MU,Not related to SBI India
+sbmbank.mu,State Bank of Mauritius,Banking,MU,Not related to SBI India
+sbhbank.com,State Bank of Hyderabad,Banking,IN,Merged with SBI but different historical domain
+kotakbank.com,Kotak Mahindra Bank,Banking,IN,Legitimate major Indian bank
+kotaklife.com,Kotak Life Insurance,Insurance,IN,Legitimate insurance subsidiary
+kotakmahindra.com,Kotak Mahindra Group,Finance,IN,Parent company
+hdfcbank.com,HDFC Bank,Banking,IN,CSE verified major bank
+hdfc.com,HDFC Limited,Finance,IN,CSE verified parent company
+hdfclife.com,HDFC Life Insurance,Insurance,IN,Legitimate insurance subsidiary
+hdfcergo.com,HDFC ERGO Insurance,Insurance,IN,Legitimate insurance subsidiary
+icicibank.com,ICICI Bank,Banking,IN,CSE verified major bank
+icicilombard.com,ICICI Lombard,Insurance,IN,Legitimate insurance subsidiary
+iciciprulife.com,ICICI Prudential Life,Insurance,IN,Legitimate insurance subsidiary
+axisbank.com,Axis Bank,Banking,IN,CSE verified major bank
+canarabank.com,Canara Bank,Banking,IN,CSE verified public sector bank
+canarabnk.com,Canara Bank Alternate,Banking,IN,Alternate domain for Canara Bank
+sbi.co.in,State Bank of India,Banking,IN,CSE verified largest Indian bank
+onlinesbi.com,State Bank of India Online,Banking,IN,SBI online banking portal
+sbicard.com,SBI Cards and Payment Services,Banking,IN,SBI credit card subsidiary
+sbigeneral.in,SBI General Insurance,Insurance,IN,SBI insurance subsidiary
+sbilife.co.in,SBI Life Insurance,Insurance,IN,SBI life insurance subsidiary
+pnbindia.in,Punjab National Bank,Banking,IN,CSE verified public sector bank
+bankofbaroda.in,Bank of Baroda,Banking,IN,CSE verified public sector bank
+bankofbaroda.com,Bank of Baroda International,Banking,IN,International portal
+bankofmaharashtra.in,Bank of Maharashtra,Banking,IN,CSE verified public sector bank
+unionbankofindia.co.in,Union Bank of India,Banking,IN,CSE verified public sector bank
+indianbank.in,Indian Bank,Banking,IN,CSE verified public sector bank
+barodampay.com,Baroda M-Pay,Banking,IN,Bank of Baroda mobile payment
+airtel.com,Bharti Airtel,Telecom,IN,CSE verified telecom provider
+airtel.in,Bharti Airtel India,Telecom,IN,CSE verified Indian portal
+airtelafrica.com,Airtel Africa,Telecom,Multiple,Airtel African operations
+airtelmoney.com,Airtel Money,FinTech,IN,Airtel payment service
+myvi.in,Vi (Vodafone Idea),Telecom,IN,CSE verified telecom merger
+vi.com,Vi Global,Telecom,IN,Vi international portal
+vodafoneidea.com,Vodafone Idea Limited,Telecom,IN,Corporate portal for Vi
+jio.com,Reliance Jio,Telecom,IN,Major telecom provider
+jiomoney.com,Jio Money,FinTech,IN,Jio payment service
+nic.in,National Informatics Centre,Government,IN,CSE verified government IT agency
+nicsi.com,NIC Services Inc,Government,IN,NIC subsidiary
+meity.gov.in,Ministry of Electronics and IT,Government,IN,CSE verified ministry
+india.gov.in,National Portal of India,Government,IN,CSE verified government portal
+mygov.in,MyGov India,Government,IN,Citizen engagement platform
+digilocker.gov.in,DigiLocker,Government,IN,Digital document storage
+umang.gov.in,UMANG,Government,IN,Unified mobile app for govt services
+uidai.gov.in,UIDAI,Government,IN,Aadhaar authority
+npci.org.in,National Payments Corporation,Finance,IN,UPI operator
+upi.org.in,UPI Portal,Finance,IN,NPCI UPI portal
+bhimupi.org.in,BHIM UPI,Finance,IN,NPCI BHIM app
+bharatpetroleum.in,Bharat Petroleum,Energy,IN,CSE verified oil company
+iocl.com,Indian Oil Corporation,Energy,IN,Major oil company
+ongc.co.in,ONGC,Energy,IN,Oil and Natural Gas Corporation
+ntpc.co.in,NTPC,Energy,IN,Power generation company
+powergrid.in,Power Grid Corporation,Energy,IN,Power transmission
+coal india.in,Coal India,Energy,IN,Coal mining company
+irctc.co.in,IRCTC,Transport,IN,CSE verified railway booking
+indianrailways.gov.in,Indian Railways,Transport,IN,Government railway portal
+airindia.in,Air India,Aviation,IN,National airline
+goindigo.in,IndiGo Airlines,Aviation,IN,Major private airline
+spicejet.com,SpiceJet,Aviation,IN,Private airline
+airvistara.com,Vistara,Aviation,IN,Full-service airline
+goibibo.com,Goibibo,Travel,IN,Travel booking platform
+makemytrip.com,MakeMyTrip,Travel,IN,Travel booking platform

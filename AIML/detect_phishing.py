@@ -16,6 +16,7 @@ import imagehash
 import open_clip
 from torchvision import transforms, models
 from urllib.parse import urlparse
+from difflib import SequenceMatcher
 
 def extract_domain_from_url(url_or_domain):
     """Extract clean domain from URL or domain string"""
@@ -107,6 +108,16 @@ class UnifiedPhishingDetector:
         self.cse_domains = set(self.cse_features_df['registrable'].unique())
         print(f"✓ CSE Whitelist: {len(self.cse_domains)} verified benign domains")
 
+        # 7. Load legitimate domains database (similar names, different orgs)
+        try:
+            self.legitimate_domains_df = pd.read_csv(self.data_dir / "legitimate_domains.csv")
+            self.legitimate_domains = set(self.legitimate_domains_df['domain'].unique())
+            print(f"✓ Legitimate Domains DB: {len(self.legitimate_domains)} verified non-CSE benign domains")
+        except FileNotFoundError:
+            print("⚠ legitimate_domains.csv not found, skipping similar-name protection")
+            self.legitimate_domains = set()
+            self.legitimate_domains_df = pd.DataFrame()
+
         print("\nAll models loaded successfully!\n")
 
     def _load_autoencoder(self, path):
@@ -131,6 +142,106 @@ class UnifiedPhishingDetector:
         if base1 in base2 or base2 in base1:
             return True
 
+        return False
+
+    def calculate_name_similarity(self, domain1, domain2):
+        """Calculate similarity between two domain names (0-1 scale)"""
+        # Extract base names (before TLD)
+        base1 = domain1.split('.')[0].lower()
+        base2 = domain2.split('.')[0].lower()
+
+        # Use SequenceMatcher for similarity ratio
+        similarity = SequenceMatcher(None, base1, base2).ratio()
+        return similarity
+
+    def find_similar_cse_domains(self, domain, similarity_threshold=0.6):
+        """
+        Find CSE domains with similar names
+
+        Args:
+            domain: Domain to check
+            similarity_threshold: Minimum similarity ratio (0.6 = 60% similar)
+
+        Returns:
+            List of (cse_domain, similarity_score) tuples
+        """
+        similar_domains = []
+
+        for cse_domain in self.cse_domains:
+            similarity = self.calculate_name_similarity(domain, cse_domain)
+
+            # If similar enough but not exact match
+            if similarity >= similarity_threshold and domain != cse_domain:
+                similar_domains.append((cse_domain, similarity))
+
+        # Sort by similarity (highest first)
+        similar_domains.sort(key=lambda x: x[1], reverse=True)
+        return similar_domains
+
+    def check_visual_dissimilarity(self, screenshot_path, favicon_md5, matched_cse_domain):
+        """
+        Check if visual characteristics differ from matched CSE domain
+
+        Returns:
+            True if visually different (NOT phishing), False if similar (possible phishing)
+        """
+        # Check 1: Favicon mismatch
+        if favicon_md5:
+            cse_favicons = self.favicon_db[self.favicon_db['registrable'] == matched_cse_domain]
+            if len(cse_favicons) > 0:
+                cse_favicon_md5 = cse_favicons.iloc[0]['favicon_md5']
+                if favicon_md5 != cse_favicon_md5:
+                    return True  # Different favicon = different brand
+
+        # Check 2: Screenshot phash mismatch
+        if screenshot_path and Path(screenshot_path).exists():
+            try:
+                img = Image.open(screenshot_path)
+                phash = str(imagehash.phash(img))
+
+                cse_phashes = self.phash_db[self.phash_db['registrable'] == matched_cse_domain]
+                if len(cse_phashes) > 0:
+                    cse_phash = cse_phashes.iloc[0]['screenshot_phash']
+
+                    # Calculate hamming distance
+                    hash1 = imagehash.hex_to_hash(phash)
+                    hash2 = imagehash.hex_to_hash(cse_phash)
+                    distance = hash1 - hash2
+
+                    # If distance > 15, visually very different
+                    if distance > 15:
+                        return True  # Different appearance = different website
+            except Exception as e:
+                print(f"⚠ Screenshot comparison failed: {e}")
+
+        # Check 3: CLIP embedding dissimilarity
+        if screenshot_path and Path(screenshot_path).exists() and self.clip_model:
+            try:
+                # Get CLIP embedding for test image
+                test_img = Image.open(screenshot_path).convert('RGB')
+                test_img_tensor = self.clip_preprocess(test_img).unsqueeze(0)
+
+                with torch.no_grad():
+                    test_embedding = self.clip_model.encode_image(test_img_tensor).cpu().numpy()[0]
+
+                # Find CSE domain embedding
+                for i, meta in enumerate(self.cse_metadata):
+                    if meta['registrable'] == matched_cse_domain:
+                        cse_embedding = self.cse_embeddings[i]
+
+                        # Calculate cosine similarity
+                        similarity = np.dot(test_embedding, cse_embedding) / (
+                            np.linalg.norm(test_embedding) * np.linalg.norm(cse_embedding)
+                        )
+
+                        # If similarity < 0.70, visually very different
+                        if similarity < 0.70:
+                            return True  # Different visual content
+                        break
+            except Exception as e:
+                print(f"⚠ CLIP comparison failed: {e}")
+
+        # Default: cannot confirm dissimilarity
         return False
 
     def check_favicon_match(self, favicon_md5, domain):
@@ -288,6 +399,64 @@ class UnifiedPhishingDetector:
 
         return None
 
+    def check_redirected_brand_impersonation(self, domain, redirect_count, screenshot_path):
+        """
+        Detect brand impersonation when domain redirects to parking/different site
+
+        This handles the case where a phishing domain redirects to a parking page:
+        - Original domain name looks like a CSE brand (e.g., sbi-secure-login.com)
+        - But redirects to parking (e.g., sedo.com)
+        - Visual features won't match brand (screenshot shows parking page)
+        - But domain name itself indicates impersonation attempt
+
+        Args:
+            domain: Original domain name
+            redirect_count: Number of redirects that occurred
+            screenshot_path: Path to screenshot (of final redirected page)
+
+        Returns:
+            Detection result dict if brand impersonation detected via redirect, None otherwise
+        """
+        # Only check if domain actually redirected
+        if not redirect_count or redirect_count == 0:
+            return None
+
+        # Check if domain name is similar to any CSE brand
+        similar_cse = self.find_similar_cse_domains(domain, similarity_threshold=0.6)
+
+        if not similar_cse:
+            return None  # No CSE brand similarity
+
+        most_similar_cse, similarity_score = similar_cse[0]
+
+        # Check if domain is already in CSE whitelist (legitimate subdomain/variant)
+        if domain in self.cse_domains or domain in self.legitimate_domains:
+            return None
+
+        # Check if it's a related domain (same organization)
+        if self.domains_are_related(domain, most_similar_cse):
+            return None  # Likely legitimate variant
+
+        # Domain name looks like CSE brand AND redirected
+        # This is suspicious - likely parking or phishing attempt
+
+        # Additional check: if screenshot available, see if it shows parking indicators
+        is_parking_page = False
+        if screenshot_path and Path(screenshot_path).exists():
+            # Could add OCR-based parking detection here
+            # For now, rely on redirect + brand similarity
+            pass
+
+        return {
+            'signal': 'redirected_brand_impersonation',
+            'verdict': 'SUSPICIOUS',
+            'confidence': 0.82,
+            'reason': f"Domain name similar to {most_similar_cse} ({similarity_score:.0%}) but redirects ({redirect_count} hops) - possible brand impersonation or parked domain",
+            'matched_cse': most_similar_cse,
+            'similarity': similarity_score,
+            'redirect_count': redirect_count
+        }
+
     def check_parking_signals(self, features, domain):
         """Detect if domain shows parking indicators via ML features"""
         if not features:
@@ -360,9 +529,28 @@ class UnifiedPhishingDetector:
             if isinstance(val, bool):
                 val = int(val)
 
+            # Final NaN check - ensure no NaN/inf values remain
+            if isinstance(val, float) and (np.isnan(val) or np.isinf(val)):
+                val = 0
+
             feature_dict[fname] = val
 
         feature_vector = [feature_dict[f] for f in self.feature_names]
+
+        # Additional validation: replace any remaining NaN/inf in the vector
+        feature_vector = [0 if isinstance(v, float) and (np.isnan(v) or np.isinf(v)) else v for v in feature_vector]
+
+        # Extra safety: Check for NaN after all processing
+        if any(isinstance(v, float) and (np.isnan(v) or np.isinf(v)) for v in feature_vector):
+            print(f"⚠ Warning: NaN/inf values still present after cleaning, replacing with 0")
+            feature_vector = [0 if isinstance(v, float) and (np.isnan(v) or np.isinf(v)) else v for v in feature_vector]
+
+        # Ensure all values are numeric (convert any remaining strings)
+        try:
+            feature_vector = [float(v) if not isinstance(v, str) else 0 for v in feature_vector]
+        except (ValueError, TypeError) as e:
+            print(f"⚠ Warning: Cannot convert feature vector to numeric: {e}")
+            return None  # Cannot process this domain
 
         # Predict
         score = self.tabular_model.decision_function([feature_vector])[0]
@@ -430,6 +618,56 @@ class UnifiedPhishingDetector:
                     'signal_count': 0
                 }
 
+        # STAGE 1.5: Check legitimate non-CSE domains (similar names, different orgs)
+        if domain in self.legitimate_domains:
+            org = 'Verified organization'
+            if len(self.legitimate_domains_df) > 0:
+                matching = self.legitimate_domains_df[self.legitimate_domains_df['domain'] == domain]
+                if len(matching) > 0:
+                    org = matching.iloc[0]['organization']
+
+            return {
+                'domain': domain,
+                'verdict': 'BENIGN',
+                'confidence': 0.92,
+                'signals': [{
+                    'signal': 'legitimate_domain_database',
+                    'verdict': 'BENIGN',
+                    'confidence': 0.92,
+                    'reason': f'{domain} is verified legitimate domain ({org})'
+                }],
+                'signal_count': 0
+            }
+
+        # STAGE 1.6: Check similar-name domains with visual dissimilarity
+        # If domain name is similar to CSE domain BUT visually different → BENIGN
+        similar_cse = self.find_similar_cse_domains(domain, similarity_threshold=0.6)
+
+        if similar_cse:
+            # Get most similar CSE domain
+            most_similar_cse, similarity_score = similar_cse[0]
+
+            # Check if visually different from the similar CSE domain
+            is_visually_different = self.check_visual_dissimilarity(
+                screenshot_path,
+                favicon_md5,
+                most_similar_cse
+            )
+
+            if is_visually_different:
+                return {
+                    'domain': domain,
+                    'verdict': 'BENIGN',
+                    'confidence': 0.88,
+                    'signals': [{
+                        'signal': 'similar_name_different_visuals',
+                        'verdict': 'BENIGN',
+                        'confidence': 0.88,
+                        'reason': f'{domain} has similar name to {most_similar_cse} ({similarity_score:.0%} similar) but visually different content - likely legitimate alternative organization'
+                    }],
+                    'signal_count': 0
+                }
+
         # STAGE 2: Parking Detection (before similarity checks)
         if features:
             parking_result = self.check_parking_signals(features, domain)
@@ -445,6 +683,18 @@ class UnifiedPhishingDetector:
         # STAGE 3: Similarity Detection (slow path)
         signals = []
         matched_cse_domain = None  # Track which CSE domain was matched
+
+        # Check for redirected brand impersonation FIRST
+        # This catches domains that look like brands but redirect to parking/other sites
+        if features:
+            redirect_count = features.get('redirect_count', 0)
+            if redirect_count and redirect_count > 0:
+                redirect_brand_result = self.check_redirected_brand_impersonation(
+                    domain, redirect_count, screenshot_path
+                )
+                if redirect_brand_result:
+                    signals.append(redirect_brand_result)
+                    matched_cse_domain = redirect_brand_result.get('matched_cse')
 
         # Priority 1: Favicon match (highest confidence)
         result = self.check_favicon_match(favicon_md5, domain)

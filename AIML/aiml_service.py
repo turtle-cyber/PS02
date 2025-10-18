@@ -98,18 +98,104 @@ class AIMlService:
             with open(self.processed_log, 'a') as f:
                 f.write(f"{domain}\n")
 
+    def check_inactive_status(self, domain: str) -> Optional[Dict]:
+        """
+        Check if domain is inactive/unregistered in ChromaDB
+
+        Args:
+            domain: Domain name to check
+
+        Returns:
+            Dict with status info if inactive/unregistered, None otherwise
+        """
+        try:
+            # Query ChromaDB by registrable domain
+            results = self.collection.get(
+                where={"registrable": domain},
+                include=['metadatas']
+            )
+
+            if not results or not results.get('metadatas'):
+                return None
+
+            # Check first match
+            metadata = results['metadatas'][0]
+
+            # Check if domain is marked as inactive
+            is_inactive = metadata.get('is_inactive', False)
+            inactive_status = metadata.get('inactive_status')
+            inactive_reason = metadata.get('inactive_reason', 'Unknown')
+            record_type = metadata.get('record_type')
+
+            if is_inactive or record_type == 'inactive':
+                return {
+                    'status': inactive_status,  # "inactive" or "unregistered"
+                    'reason': inactive_reason,
+                    'is_inactive': True,
+                    'record_type': record_type
+                }
+
+            return None
+
+        except Exception as e:
+            logger.warning(f"Failed to check inactive status for {domain}: {e}")
+            return None
+
+    def _create_inactive_verdict(self, domain: str, inactive_info: Dict, error_context: str = None) -> Dict:
+        """
+        Create a verdict for inactive/unregistered domains
+
+        Args:
+            domain: Domain name
+            inactive_info: Dict from check_inactive_status()
+            error_context: Optional error message that triggered this check
+
+        Returns:
+            Verdict dict
+        """
+        status = inactive_info['status']  # "inactive" or "unregistered"
+
+        if status == 'unregistered':
+            verdict = 'UNREGISTERED'
+            reason = f"Domain not registered in DNS. {inactive_info['reason']}"
+            confidence = 0.95
+        elif status == 'inactive':
+            verdict = 'INACTIVE'
+            reason = f"Domain registered but HTTP probe failed. {inactive_info['reason']}"
+            confidence = 0.90
+        else:
+            verdict = 'INACTIVE'
+            reason = f"Domain inactive: {inactive_info['reason']}"
+            confidence = 0.85
+
+        result = {
+            'domain': domain,
+            'verdict': verdict,
+            'confidence': confidence,
+            'reason': reason,
+            'inactive_status': status,
+            'timestamp': datetime.now().isoformat()
+        }
+
+        if error_context:
+            result['error_context'] = error_context
+
+        logger.info(f"Domain {domain} identified as {verdict}: {reason}")
+        return result
+
     def fetch_unprocessed_domains(self) -> List[Dict]:
         """Fetch domains from ChromaDB that haven't been processed by AIML"""
         try:
-            # Query ChromaDB for domains
-            # We'll get domains that have features but may not have AIML verdicts yet
+            # Query ChromaDB for ALL domains (no limit)
             results = self.collection.get(
-                limit=self.batch_size,
                 include=['metadatas', 'documents']
             )
 
             if not results or not results.get('metadatas'):
                 return []
+
+            total_domains = len(results['metadatas'])
+            logger.info(f"Fetched {total_domains} total domains from ChromaDB")
 
             # Filter unprocessed domains
             unprocessed = []
@@ -118,20 +204,63 @@ class AIMlService:
                 if not domain or domain in self.processed_domains:
                     continue
 
-                # Only process domains with features
-                if metadata.get('has_features') or metadata.get('html_size', 0) > 0:
+                # Get domain metadata
+                record_type = metadata.get('record_type', '')
+                enrichment_level = metadata.get('enrichment_level', 0)
+                has_features = metadata.get('has_features', False)
+
+                # Include inactive/unregistered domains for verdict generation
+                # They won't go through full model analysis but will get proper status verdicts
+                if record_type == 'inactive':
                     unprocessed.append({
                         'domain': domain,
                         'metadata': metadata,
                         'document': results['documents'][i] if results.get('documents') else ''
                     })
+                    continue
 
-            logger.info(f"Found {len(unprocessed)} unprocessed domains with features")
+                # Process if domain has features OR enrichment level >= 1
+                # This includes: verdict_only, features_only, fully_enriched, with_features
+                if has_features or enrichment_level >= 1:
+                    unprocessed.append({
+                        'domain': domain,
+                        'metadata': metadata,
+                        'document': results['documents'][i] if results.get('documents') else ''
+                    })
+                else:
+                    logger.debug(f"Skipping {domain}: no features (record_type={record_type}, level={enrichment_level})")
+
+            logger.info(f"Found {len(unprocessed)} unprocessed domains with features (already processed: {len(self.processed_domains)})")
             return unprocessed
 
         except Exception as e:
             logger.error(f"Error fetching domains from ChromaDB: {e}")
             return []
+
+    def calculate_feature_quality(self, metadata: Dict) -> float:
+        """
+        Calculate feature quality score (0-1) based on how many features are available
+
+        Args:
+            metadata: Domain metadata from ChromaDB
+
+        Returns:
+            Float between 0 and 1 indicating feature completeness
+        """
+        important_features = [
+            'url_length', 'domain_age_days', 'a_count', 'form_count', 'html_size',
+            'registrar', 'country', 'mx_count', 'ns_count', 'external_links',
+            'is_self_signed', 'cert_age_days', 'keyword_count'
+        ]
+
+        available_count = 0
+        for feature in important_features:
+            val = metadata.get(feature)
+            # Consider feature available if it exists and is not None/NaN/empty string
+            if val is not None and val != '' and not (isinstance(val, float) and pd.isna(val)):
+                available_count += 1
+
+        return available_count / len(important_features)
 
     def run_detection(self, domain_data: Dict) -> Dict:
         """Run AIML phishing detection on a single domain"""
@@ -140,9 +269,20 @@ class AIMlService:
 
         logger.info(f"Running AIML detection on: {domain}")
 
+        # Extract crawler verdict for potential fallback
+        crawler_verdict = metadata.get('verdict')
+        crawler_confidence = metadata.get('confidence', 0.75)
+
         try:
-            # Check if crawler already identified as parked (fast path)
-            crawler_verdict = metadata.get('verdict')
+            # FAST PATH 1: Check if domain is inactive/unregistered (from metadata)
+            record_type = metadata.get('record_type', '')
+            if record_type == 'inactive':
+                inactive_info = self.check_inactive_status(domain)
+                if inactive_info:
+                    logger.info(f"Domain {domain} is inactive/unregistered - generating status verdict")
+                    return self._create_inactive_verdict(domain, inactive_info)
+
+            # FAST PATH 2: Check if crawler already identified as parked
             if crawler_verdict and crawler_verdict.lower() == 'parked':
                 logger.info(f"Domain {domain} already identified as PARKED by crawler")
                 return {
@@ -154,12 +294,72 @@ class AIMlService:
                     'timestamp': datetime.now().isoformat()
                 }
 
+            # If domain has crawler verdict but no features, trust the crawler
+            has_form_features = metadata.get('form_count') is not None
+            has_html_features = metadata.get('html_size', 0) > 0
+            if crawler_verdict and not has_form_features and not has_html_features:
+                logger.info(f"Domain {domain} has crawler verdict '{crawler_verdict}' but no features - respecting crawler")
+                return {
+                    'domain': domain,
+                    'verdict': crawler_verdict.upper(),
+                    'confidence': metadata.get('confidence', 0.80),
+                    'reason': f'Verdict from pipeline crawler (no page features for AIML analysis)',
+                    'source': 'crawler',
+                    'timestamp': datetime.now().isoformat()
+                }
+
+            # Calculate feature quality score
+            feature_quality = self.calculate_feature_quality(metadata)
+            logger.info(f"Domain {domain} feature quality: {feature_quality:.2%}")
+
+            # If feature quality is low (<30%), fall back to crawler verdict
+            if feature_quality < 0.30:
+                logger.info(f"Domain {domain} has low feature quality ({feature_quality:.2%}) - using crawler verdict")
+
+                if crawler_verdict:
+                    # Trust crawler verdict when features are insufficient
+                    # If crawler says PHISHING, trust it even without full AIML analysis
+                    return {
+                        'domain': domain,
+                        'verdict': crawler_verdict.upper(),
+                        'confidence': crawler_confidence,
+                        'reason': f'Verdict from crawler (insufficient features for AIML: {feature_quality:.0%} complete)',
+                        'source': 'crawler',
+                        'feature_quality': feature_quality,
+                        'timestamp': datetime.now().isoformat()
+                    }
+                else:
+                    # No verdict and low features - mark as insufficient data
+                    logger.warning(f"Domain {domain} has low features and no crawler verdict")
+                    return {
+                        'domain': domain,
+                        'verdict': 'INSUFFICIENT_DATA',
+                        'confidence': 0.0,
+                        'reason': f'Insufficient features for analysis ({feature_quality:.0%} complete, no crawler verdict)',
+                        'feature_quality': feature_quality,
+                        'timestamp': datetime.now().isoformat()
+                    }
+
             # Extract features from ChromaDB metadata with proper NaN handling
             def safe_get(key, default=0):
-                """Safely extract value, handling NaN/None"""
-                val = metadata.get(key, default)
-                if val is None or (isinstance(val, float) and pd.isna(val)):
+                """Safely extract value, handling NaN/None/missing"""
+                val = metadata.get(key)
+
+                # Missing key
+                if val is None:
                     return default
+
+                # String fields - return empty string if default is 0
+                string_fields = ['registrar', 'country', 'favicon_md5', 'favicon_sha256',
+                               'document_text', 'doc_verdict', 'doc_submit_buttons',
+                               'screenshot_phash', 'ocr_text']
+                if key in string_fields:
+                    return val if isinstance(val, str) else (str(default) if default else '')
+
+                # NaN float check
+                if isinstance(val, float) and pd.isna(val):
+                    return default
+
                 return val
 
             features = {
@@ -241,16 +441,52 @@ class AIMlService:
             # Get screenshot path if available
             screenshot_path = metadata.get('screenshot_path')
             if screenshot_path and not Path(screenshot_path).exists():
+                logger.warning(f"Screenshot not found: {screenshot_path}")
                 screenshot_path = None
 
-            # Run detection
-            result = self.detector.detect(
-                domain=domain,
-                features=features,
-                screenshot_path=screenshot_path,
-                favicon_md5=metadata.get('favicon_md5'),
-                registrar=metadata.get('registrar')
-            )
+            # Run detection with error handling for individual components
+            try:
+                result = self.detector.detect(
+                    domain=domain,
+                    features=features,
+                    screenshot_path=screenshot_path,
+                    favicon_md5=metadata.get('favicon_md5'),
+                    registrar=metadata.get('registrar')
+                )
+            except ValueError as ve:
+                # Handle NaN/inf errors in model input
+                error_msg = str(ve)
+                if 'NaN' in error_msg or 'infinity' in error_msg or 'inf' in error_msg:
+                    logger.warning(f"Model input validation error for {domain}: {error_msg}")
+
+                    # Check if domain is inactive/unregistered first
+                    inactive_info = self.check_inactive_status(domain)
+                    if inactive_info:
+                        return self._create_inactive_verdict(domain, inactive_info, error_msg)
+
+                    # Fall back to crawler verdict if available
+                    if crawler_verdict:
+                        logger.info(f"Falling back to crawler verdict due to model input error")
+                        return {
+                            'domain': domain,
+                            'verdict': crawler_verdict.upper(),
+                            'confidence': max(0.70, crawler_confidence - 0.10),  # Slightly lower confidence
+                            'reason': f'Verdict from crawler (AIML model input error: {error_msg[:100]})',
+                            'source': 'crawler_fallback',
+                            'error_context': error_msg,
+                            'timestamp': datetime.now().isoformat()
+                        }
+                    else:
+                        # No crawler verdict - return error
+                        return {
+                            'domain': domain,
+                            'verdict': 'ERROR',
+                            'confidence': 0.0,
+                            'error': f'Model input validation failed: {error_msg[:200]}',
+                            'timestamp': datetime.now().isoformat()
+                        }
+                else:
+                    raise  # Re-raise if not a NaN/inf error
 
             # Add metadata to result
             result['timestamp'] = datetime.now().isoformat()
@@ -266,12 +502,33 @@ class AIMlService:
             return result
 
         except Exception as e:
-            logger.error(f"Detection failed for {domain}: {e}")
+            logger.error(f"Detection failed for {domain}: {e}", exc_info=True)
+            error_msg = str(e)
+
+            # Step 1: Check if domain is inactive/unregistered
+            inactive_info = self.check_inactive_status(domain)
+            if inactive_info:
+                return self._create_inactive_verdict(domain, inactive_info, error_msg)
+
+            # Step 2: Fall back to crawler verdict if available
+            if crawler_verdict:
+                logger.info(f"Detection failed for {domain}, falling back to crawler verdict: {crawler_verdict}")
+                return {
+                    'domain': domain,
+                    'verdict': crawler_verdict.upper(),
+                    'confidence': max(0.65, crawler_confidence - 0.15),  # Lower confidence due to error
+                    'reason': f'Verdict from crawler (AIML detection failed: {error_msg[:100]})',
+                    'source': 'crawler_fallback',
+                    'error_context': error_msg,
+                    'timestamp': datetime.now().isoformat()
+                }
+
+            # Step 3: No fallback available - return error
             return {
                 'domain': domain,
                 'verdict': 'ERROR',
                 'confidence': 0.0,
-                'error': str(e),
+                'error': error_msg[:500],  # Limit error message length
                 'timestamp': datetime.now().isoformat()
             }
 

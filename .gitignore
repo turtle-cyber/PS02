@@ -49,3 +49,6 @@ docker-compose.override.yml
 ehthumbs.db
 Thumbs.db
 
+NCIIPC_Critical_Sectors_Organisations.xlsx
+
+NCIIPC_Critical_Sectors_Organisations.csv

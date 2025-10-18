@@ -89,18 +89,47 @@ def extract_cse_features(records):
     return pd.DataFrame(features), pd.DataFrame(text_data)
 
 def main():
-    # Load CSE data
-    cse_jsonl = Path("CSE/dump_all.jsonl")
-    if not cse_jsonl.exists():
-        print(f"Error: {cse_jsonl} not found")
+    # Try multiple locations for CSE data
+    possible_paths = [
+        Path("../dump_all.jsonl"),  # New location (project root)
+        Path("CSE/dump_all.jsonl"),  # Old location
+    ]
+
+    cse_jsonl = None
+    for path in possible_paths:
+        if path.exists():
+            cse_jsonl = path
+            break
+
+    if cse_jsonl is None:
+        print(f"Error: dump_all.jsonl not found in any of: {possible_paths}")
         return
 
+    print(f"Loading CSE data from: {cse_jsonl}")
     records = load_cse_metadata(cse_jsonl)
     print(f"Loaded {len(records)} CSE records")
 
     # Extract features
     df_benign, df_text = extract_cse_features(records)
     print(f"Extracted features for {len(df_benign)} benign samples")
+
+    # Load existing data if available and merge
+    existing_benign = Path("data/cse_benign.csv")
+    existing_text = Path("data/cse_text.csv")
+
+    if existing_benign.exists():
+        old_benign = pd.read_csv(existing_benign)
+        print(f"Found existing data: {len(old_benign)} records")
+
+        # Merge and deduplicate by registrable domain
+        df_benign = pd.concat([old_benign, df_benign], ignore_index=True)
+        df_benign = df_benign.drop_duplicates(subset=['registrable'], keep='last')
+        print(f"After merge: {len(df_benign)} unique domains")
+
+    if existing_text.exists():
+        old_text = pd.read_csv(existing_text)
+        df_text = pd.concat([old_text, df_text], ignore_index=True)
+        df_text = df_text.drop_duplicates(subset=['registrable'], keep='last')
 
     # Save features (no label column for anomaly detection)
     Path("data").mkdir(exist_ok=True)
