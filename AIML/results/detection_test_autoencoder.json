@@ -1,0 +1,373 @@
+[
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7262492621529167,
+        "score": 0.11312463107645837,
+        "reason": "Anomaly score: 0.113"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No screenshot or phash available",
+        "method": "none",
+        "details": {}
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ],
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "org",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "sldcdelhi.org",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7007697103816932,
+        "score": 0.10038485519084661,
+        "reason": "Anomaly score: 0.100"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No screenshot or phash available",
+        "method": "none",
+        "details": {}
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "www.adanigreenenergy.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7886030190299557,
+        "score": 0.14430150951497783,
+        "reason": "Anomaly score: 0.144"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No screenshot or phash available",
+        "method": "none",
+        "details": {}
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "www.yesbank.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7941156937310322,
+        "score": 0.1470578468655161,
+        "reason": "Anomaly score: 0.147"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No screenshot or phash available",
+        "method": "none",
+        "details": {}
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.85,
+        "risk_score": 0.15,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "gov.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": true,
+          "pattern_risk_score": 0.3,
+          "pattern_risk_factors": [
+            "Deep subdomain (5)"
+          ]
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "www.drdo.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7999837028196795,
+        "score": 0.14999185140983973,
+        "reason": "Anomaly score: 0.150"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No screenshot or phash available",
+        "method": "none",
+        "details": {}
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "gov.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "email.gov.in",
+    "url": ""
+  }
+]
