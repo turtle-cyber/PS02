@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-# apps/rule-scorer/worker.py
+# apps/rule-scorer/worker.py - Enhanced Version
 import os, asyncio, ujson as json, time, math, re
 from collections import OrderedDict, defaultdict
 from urllib.parse import urlparse
 from datetime import datetime, timezone
+from typing import Dict, Tuple, List, Optional
 
 from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
 
@@ -30,7 +31,7 @@ MONITOR_PARKED = os.getenv("MONITOR_PARKED", "true").lower() == "true"
 MONITOR_DAYS = int(os.getenv("MONITOR_DAYS", "90"))
 
 RISKY_TLDS = set(os.getenv(
-    "RISKY_TLDS", "tk,ml,ga,cf,gq,xyz,top,club,info,online,site,website,space,tech"
+    "RISKY_TLDS", "tk,ml,ga,cf,gq,xyz,top,club,info,online,site,website,space,tech,zip,click,download"
 ).replace(" ", "").split(","))
 
 # Protected TLDs that should not appear in subdomains (impersonation detection)
@@ -65,13 +66,112 @@ SUSPICIOUS_NAMESERVERS = set(os.getenv(
 # DNS anomaly thresholds
 MIN_TTL_THRESHOLD = int(os.getenv("MIN_TTL_THRESHOLD", "60"))  # Flag TTLs below this (fast-flux)
 
-# Known parking providers (DNS nameservers)
+# High-risk hosting providers with risk scores
+HIGH_RISK_HOSTING = {
+    "namecheap": 8,
+    "hostinger": 10,
+    "bluehost": 6,
+    "godaddy": 5,
+    "ovh": 7,
+    "digitalocean": 5,
+    "contabo": 12,
+    "shinjiru": 15,
+    "flokinet": 18,
+    "njalla": 20,
+    "1984hosting": 15,
+    "cyberbunker": 25,
+    "ecatel": 20,
+    "bulletproof": 30,
+    "offshore": 25
+}
+
+# Country risk scores for phishing
+COUNTRY_RISK_SCORES = {
+    # Very High Risk
+    "NG": 20, "RU": 18, "CN": 15, "KP": 25,
+    # High Risk
+    "RO": 12, "UA": 12, "VN": 10, "ID": 10, "TR": 10,
+    "PK": 10, "BD": 10, "KZ": 10, "BY": 12,
+    # Medium Risk
+    "IN": 5, "BR": 5, "MX": 5, "PH": 5, "TH": 5,
+    # Low Risk (negative scores = safer)
+    "US": -5, "GB": -5, "CA": -5, "AU": -5, "JP": -5,
+    "DE": -5, "FR": -5, "NL": -5, "CH": -5, "SE": -5
+}
+
+# Phishing kit path indicators
+PHISHING_KIT_PATHS = {
+    "/admin/": 10,
+    "/panel/": 10,
+    "/verify/": 12,
+    "/validation/": 12,
+    "/secure/": 8,
+    "/update/": 10,
+    "/confirm/": 10,
+    "/suspended/": 15,
+    "/locked/": 15,
+    "/webscr": 15,  # PayPal phishing
+    "/.well-known/": 8,
+    "/includes/": 8,
+    "/assets/": 5,
+    "/process/": 10,
+    "/submit/": 8,
+    "/redirect/": 10,
+    "/gateway/": 10,
+    "/authentication/": 12,
+    "/2fa/": 12,
+    "/otp/": 12
+}
+
+# Phishing kit filenames
+PHISHING_KIT_FILES = {
+    "index.php": 5,
+    "login.php": 8,
+    "verify.php": 12,
+    "process.php": 10,
+    "submit.php": 10,
+    "confirm.php": 10,
+    "update.php": 10,
+    "secure.php": 10,
+    "validation.php": 12,
+    "authenticate.php": 12,
+    "signin.php": 8,
+    "account.php": 8,
+    "webscr.php": 15
+}
+
+# Parking page content markers (weighted)
+PARKING_CONTENT_MARKERS = {
+    "domain for sale": 15,
+    "buy this domain": 15,
+    "this domain is parked": 20,
+    "make an offer": 12,
+    "inquire about this domain": 12,
+    "sponsored listings": 10,
+    "related searches": 8,
+    "domain may be for sale": 12,
+    "get this domain": 12,
+    "premium domain": 10,
+    "backorder this domain": 10,
+    "register your domain": 8,
+    "this page is parked": 15,
+    "under construction": 8,
+    "coming soon": 6,
+    "website coming soon": 8,
+    "stay tuned": 5
+}
+
+# Known parking providers (DNS nameservers) - Enhanced
 PARKING_NAMESERVERS = {
+    # DNS-based parking
     "sedoparking.com", "parkingcrew.net", "bodis.com", "dns-parking.com",
     "cashparking.com", "dan.com", "undeveloped.com", "afternic.com",
     "hugedomains.com", "sav.com", "epik.com", "dynadot.com",
     "uniregistrymarket.link", "parklogic.com", "above.com", "voodoo.com",
-    "parkweb.com", "parklogic.com", "parkingsolutions.com"
+    "parkweb.com", "domainnameshop.com", "domainmarket.com",
+    # Registrar parking
+    "registrar-servers.com", "domaincontrol.com", "plesk.com",
+    "register.com", "name.com", "fastpark.net", "domain-parking.net"
 }
 
 # Parking provider markers in HTTP/HTML
@@ -220,6 +320,377 @@ class LRUState:
         for k in stale: self.data.pop(k, None)
 
 state = LRUState()
+
+# ------------ Enhanced Temporal Correlation ------------
+def score_temporal_correlation(domain: Dict, http: Dict) -> Tuple[int, List[str]]:
+    """
+    Detect suspicious temporal patterns between domain registration and SSL certificate.
+    Phishing sites often register domain and get SSL cert on same day.
+    """
+    score = 0
+    reasons = []
+
+    try:
+        whois = (domain or {}).get("whois", {})
+        tls = (http or {}).get("tls", {})
+
+        domain_age = whois.get("domain_age_days")
+        cert_age = tls.get("cert_age_days")
+
+        # Both must exist for correlation
+        if not (isinstance(domain_age, (int, float)) and isinstance(cert_age, (int, float))):
+            return score, reasons
+
+        # Calculate the gap between domain registration and cert issuance
+        cert_gap = abs(domain_age - cert_age)
+
+        # CRITICAL: Same-day registration and cert (highest phishing signal)
+        if cert_gap <= 1:
+            score += 35
+            reasons.append("Domain and SSL cert created same day (automation)")
+        # SUSPICIOUS: Same week
+        elif cert_gap <= 7:
+            score += 20
+            reasons.append(f"Domain and cert created within {int(cert_gap)} days")
+        # WARNING: Same month
+        elif cert_gap <= 30:
+            score += 10
+            reasons.append("Domain and cert both new (<30 days)")
+
+        # Check for Let's Encrypt on brand new domain (common in phishing)
+        cert_issuer = tls.get("cert_issuer", "").lower()
+        if domain_age and domain_age < 7 and "let's encrypt" in cert_issuer:
+            score += 15
+            reasons.append("Let's Encrypt cert on very new domain")
+
+        # Check for very short validity periods (suspicious)
+        cert_validity_days = tls.get("cert_validity_days")
+        if cert_validity_days and cert_validity_days < 90:
+            score += 8
+            reasons.append(f"Short cert validity ({cert_validity_days} days)")
+
+    except Exception as e:
+        # Silent fail - don't break scoring on error
+        pass
+
+    return score, reasons
+
+# ------------ Advanced Behavioral Fingerprinting ------------
+def score_behavioral_fingerprints(feat: Dict, http: Dict) -> Tuple[int, List[str]]:
+    """
+    Detect patterns indicating automated phishing kit deployment.
+    Phishing kits have recognizable URL structures and behaviors.
+    """
+    score = 0
+    reasons = []
+
+    try:
+        # Extract URL components
+        url = (feat or {}).get("url") or (http or {}).get("final_url") or ""
+        if not url:
+            return score, reasons
+
+        parsed = urlparse(url.lower())
+        path = parsed.path
+        query = parsed.query
+
+        # Check for phishing kit paths
+        for kit_path, risk_score in PHISHING_KIT_PATHS.items():
+            if kit_path in path:
+                score += risk_score
+                reasons.append(f"Suspicious path pattern: {kit_path}")
+                break  # Only count one path match
+
+        # Check for phishing kit filenames
+        filename = path.split("/")[-1] if "/" in path else path
+        if filename in PHISHING_KIT_FILES:
+            score += PHISHING_KIT_FILES[filename]
+            reasons.append(f"Suspicious file: {filename}")
+
+        # Check for base64 in URL (obfuscation)
+        if "base64" in url or re.search(r"[?&][a-z]=[A-Za-z0-9+/]{20,}={0,2}", url):
+            score += 18
+            reasons.append("Possible base64 encoded payload in URL")
+
+        # Check for multiple suspicious parameters
+        suspicious_params = ["id", "token", "session", "key", "auth", "verify", "confirm"]
+        param_count = sum(1 for param in suspicious_params if param in query.lower())
+        if param_count >= 3:
+            score += 15
+            reasons.append(f"Multiple suspicious parameters ({param_count})")
+        elif param_count >= 2:
+            score += 8
+            reasons.append("Suspicious URL parameters")
+
+        # Check for double extensions (e.g., document.pdf.exe)
+        if re.search(r"\.\w{2,4}\.\w{2,4}$", path):
+            score += 20
+            reasons.append("Double file extension (masquerading)")
+
+        # Check for URL shortener patterns in path
+        if re.search(r"/[a-zA-Z0-9]{5,8}$", path) and len(path) < 15:
+            score += 10
+            reasons.append("URL shortener pattern detected")
+
+        # Check for credential harvesting patterns
+        cred_patterns = [
+            "/signin/", "/login/", "/account/", "/myaccount/",
+            "/banking/", "/secure/", "/auth/", "/portal/"
+        ]
+        cred_count = sum(1 for pattern in cred_patterns if pattern in path)
+        if cred_count >= 2:
+            score += 15
+            reasons.append("Multiple credential-related paths")
+
+        # Check for fake security badges in path
+        security_fake = ["ssl", "secure", "verified", "trusted", "safe"]
+        if any(f"/{word}/" in path or f"-{word}-" in path for word in security_fake):
+            score += 12
+            reasons.append("Fake security indicator in URL")
+
+    except Exception as e:
+        # Silent fail
+        pass
+
+    return score, reasons
+
+# ------------ Infrastructure Risk Scoring ------------
+def score_infrastructure_risk(domain: Dict, http: Dict) -> Tuple[int, List[str]]:
+    """
+    Advanced infrastructure analysis considering hosting provider reputation,
+    geographic anomalies, and network characteristics.
+    """
+    score = 0
+    reasons = []
+
+    try:
+        geoip = (domain or {}).get("geoip", {})
+        dns = (domain or {}).get("dns", {})
+        whois = (domain or {}).get("whois", {})
+
+        # Extract infrastructure data
+        country = (geoip.get("country") or "").upper()
+        asn_org = (geoip.get("asn_organization") or "").lower()
+        registrar = (whois.get("registrar") or "").lower()
+        ns_records = dns.get("NS", [])
+
+        # Score based on hosting provider
+        for provider, risk in HIGH_RISK_HOSTING.items():
+            if provider in asn_org:
+                score += risk
+                reasons.append(f"High-risk hosting: {provider}")
+                break
+
+        # Score based on country risk
+        if country in COUNTRY_RISK_SCORES:
+            country_score = COUNTRY_RISK_SCORES[country]
+
+            if country_score > 0:
+                reasons.append(f"Hosted in suspicious country: {country}")
+            elif country_score < 0:
+                # Legitimate country - reduce score slightly
+                score += country_score
+
+            score += max(0, country_score)  # Don't let it go too negative
+
+        # Check for suspicious nameserver patterns
+        suspicious_ns_patterns = [
+            "afraid.org", "no-ip.com", "dyndns.org",  # Dynamic DNS
+            "cloudflare",  # Often used to hide real host
+            "freenom", "dot.tk",  # Free domain providers
+        ]
+
+        for ns in ns_records:
+            ns_lower = (ns or "").lower()
+            for pattern in suspicious_ns_patterns:
+                if pattern in ns_lower:
+                    score += 8
+                    reasons.append(f"Suspicious nameserver: {pattern}")
+                    break
+
+        # Check for bulletproof hosting indicators
+        bulletproof_indicators = [
+            "offshore", "anonymous", "bulletproof", "dmca ignore",
+            "abuse resistant", "complaint resistant"
+        ]
+
+        asn_desc = (geoip.get("asn_description") or "").lower()
+        for indicator in bulletproof_indicators:
+            if indicator in asn_org or indicator in asn_desc:
+                score += 25
+                reasons.append("Bulletproof hosting detected")
+                break
+
+        # Check for residential IP (suspicious for commercial sites)
+        if any(term in asn_org for term in ["residential", "broadband", "dsl", "cable", "telecom"]):
+            score += 15
+            reasons.append("Hosted on residential IP")
+
+        # Check for free/cheap registrars (higher fraud risk)
+        risky_registrars = [
+            "namecheap", "godaddy", "namesilo", "porkbun",
+            "freenom", "dot.tk", "hostinger", "name.com"
+        ]
+
+        for risky_reg in risky_registrars:
+            if risky_reg in registrar:
+                score += 5
+                reasons.append(f"Budget registrar: {risky_reg}")
+                break
+
+        # Check for IP-only hosting (no reverse DNS)
+        a_records = dns.get("A", [])
+        ptr_records = dns.get("PTR", [])
+        if a_records and not ptr_records:
+            score += 8
+            reasons.append("No reverse DNS configured")
+
+        # Multi-country infrastructure (CDN or suspicious)
+        if isinstance(a_records, list) and len(a_records) > 1:
+            # Would need GeoIP for each IP, but multiple IPs can be suspicious
+            if len(a_records) > 5:
+                score += 10
+                reasons.append(f"Unusual number of IPs ({len(a_records)})")
+
+    except Exception as e:
+        # Silent fail
+        pass
+
+    return score, reasons
+
+# ------------ Improved Parked Domain Detection ------------
+def detect_parked_domain(domain: Dict, http: Dict, feat: Dict) -> Tuple[bool, List[str], int]:
+    """
+    Multi-signal parked domain detection with confidence scoring.
+    Returns: (is_parked, reasons, confidence_score)
+    """
+    signals = []
+    confidence = 0
+
+    try:
+        # Signal 1: DNS nameserver analysis (highest confidence)
+        dns = (domain or {}).get("dns", {})
+        ns_records = dns.get("NS", [])
+
+        for ns in ns_records:
+            ns_lower = (ns or "").lower()
+            for parking_provider in PARKING_NAMESERVERS:
+                if parking_provider in ns_lower:
+                    signals.append(f"NS points to parking: {parking_provider}")
+                    confidence += 40
+                    break
+
+        # Signal 2: HTTP redirect to parking service
+        final_url = (http or {}).get("final_url") or ""
+        if final_url:
+            url_lower = final_url.lower()
+            parking_urls = [
+                "sedo.com", "dan.com", "afternic.com", "hugedomains.com",
+                "godaddy.com/domainfind", "uniregistry.com", "flippa.com",
+                "brandbucket.com", "brandroot.com"
+            ]
+
+            for parking_url in parking_urls:
+                if parking_url in url_lower:
+                    signals.append(f"Redirects to parking: {parking_url}")
+                    confidence += 35
+                    break
+
+        # Signal 3: Page content analysis
+        if feat:
+            title = (feat.get("title") or "").lower()
+            page_text = (feat.get("page_text") or "")[:5000].lower()  # First 5KB
+            combined = title + " " + page_text
+
+            # Check weighted content markers
+            content_score = 0
+            found_markers = []
+            for marker, weight in PARKING_CONTENT_MARKERS.items():
+                if marker in combined:
+                    content_score += weight
+                    found_markers.append(marker)
+
+            if content_score >= 25:
+                signals.append(f"Parking content detected ({len(found_markers)} markers)")
+                confidence += min(30, content_score)
+
+        # Signal 4: Infrastructure indicators
+        mx_count = (domain or {}).get("mx_count") or dns.get("MX_count", 0)
+        a_count = (domain or {}).get("a_count") or len(dns.get("A", []))
+
+        # No email configured
+        if mx_count == 0:
+            signals.append("No MX records")
+            confidence += 10
+
+        # Minimal DNS (just A record)
+        if a_count == 1 and mx_count == 0:
+            signals.append("Minimal DNS configuration")
+            confidence += 10
+
+        # Signal 5: Page characteristics
+        if feat:
+            form_count = feat.get("form_count", 0)
+            external_links = feat.get("external_links", 0)
+            html_size = feat.get("html_size", 0)
+
+            # No forms (no functionality)
+            if form_count == 0:
+                signals.append("No forms on page")
+                confidence += 8
+
+            # Very small page
+            if 0 < html_size < 5000:
+                signals.append(f"Minimal content ({html_size} bytes)")
+                confidence += 12
+
+            # Only external links (ads/affiliates)
+            if external_links > 5 and form_count == 0:
+                signals.append("Multiple external links, no forms")
+                confidence += 15
+
+        # Signal 6: Domain age and registration patterns
+        whois = (domain or {}).get("whois", {})
+        is_newly = whois.get("is_newly_registered", False)
+        days_until_expiry = whois.get("days_until_expiry")
+
+        if is_newly:
+            signals.append("Recently registered")
+            confidence += 5
+
+        # Auto-renew not set (temporary registration)
+        if isinstance(days_until_expiry, int) and days_until_expiry < 60:
+            signals.append(f"Expires soon ({days_until_expiry} days)")
+            confidence += 8
+
+        # Signal 7: HTTP response analysis
+        if http:
+            status = http.get("status_code") or http.get("status")
+            server = (http.get("server") or "").lower()
+
+            # Specific parking server signatures
+            parking_servers = ["parkingcrew", "sedoparking", "bodis", "dan.com"]
+            for park_server in parking_servers:
+                if park_server in server:
+                    signals.append(f"Parking server: {park_server}")
+                    confidence += 30
+                    break
+
+        # Determine if parked based on confidence
+        is_parked = confidence >= 50
+
+        # But not if it's an established domain (>1 year old)
+        domain_age = whois.get("domain_age_days", 0)
+        if is_parked and domain_age > 365:
+            is_parked = False
+            signals.append("(Established domain, not parked)")
+            confidence = max(0, confidence - 40)
+
+    except Exception as e:
+        # Silent fail
+        pass
+
+    return is_parked, signals, confidence
 
 # ------------ Scoring (brand-agnostic) ------------
 def score_bundle(domain: dict, http: dict, feat: dict):
@@ -464,6 +935,248 @@ def score_bundle(domain: dict, http: dict, feat: dict):
 
     return result
 
+# ------------ Enhanced Scoring Function ------------
+def enhanced_score_bundle(domain: dict, http: dict, feat: dict):
+    """Enhanced scoring with all new detection modules"""
+    reasons, cats = [], defaultdict(int)
+    score = 0
+
+    # Get basic identifiers
+    fqdn = (domain.get("canonical_fqdn") if domain else None) or \
+           (http or {}).get("canonical_fqdn") or \
+           (feat or {}).get("canonical_fqdn") or ""
+    registrable = (domain.get("registrable") if domain else None) or \
+                  (http or {}).get("registrable") or \
+                  (feat or {}).get("registrable") or ""
+    url = (http or {}).get("final_url") or \
+          (http or {}).get("url") or \
+          (feat or {}).get("url")
+    host = fqdn or (urlparse(url).hostname if url else registrable)
+    tld = _tld(host)
+
+    # === ORIGINAL SCORING (from score_bundle) ===
+    # Domain WHOIS/age
+    whois = (domain or {}).get("whois") or {}
+    is_very_new = bool(whois.get("is_very_new"))
+    is_newly = bool(whois.get("is_newly_registered"))
+    days_to_exp = whois.get("days_until_expiry")
+    if is_very_new: reasons.append("Domain <7d"); cats["whois"]+=25; score+=25
+    elif is_newly:  reasons.append("Domain <30d"); cats["whois"]+=12; score+=12
+    if isinstance(days_to_exp,int) and days_to_exp < 30:
+        reasons.append("Registration expires soon"); cats["whois"]+=5; score+=5
+
+    # URL/features
+    url_len    = _safe_int((feat or {}).get("url_length") or (feat or {}).get("url_features",{}).get("url_length"))
+    url_ent    = _safe_float((feat or {}).get("url_entropy") or (feat or {}).get("url_features",{}).get("url_entropy"))
+    num_subdom = _safe_int((feat or {}).get("num_subdomains") or (feat or {}).get("url_features",{}).get("num_subdomains"))
+    has_repdig = bool((feat or {}).get("has_repeated_digits") or (feat or {}).get("url_features",{}).get("has_repeated_digits"))
+    idn = (feat or {}).get("idn") or {}
+    is_idn  = bool((feat or {}).get("is_idn") or idn.get("is_idn"))
+    mixed   = bool((feat or {}).get("mixed_script") or idn.get("mixed_script"))
+
+    if _puny(host): reasons.append("IDN/punycode"); cats["url"]+=15; score+=15
+    if is_idn:      reasons.append("IDN (Unicode)"); cats["url"]+=10; score+=10
+    if mixed:       reasons.append("Mixed scripts");  cats["url"]+=10; score+=10
+    if url_len >= 130: reasons.append("Very long URL"); cats["url"]+=10; score+=10
+    elif url_len >= 80: reasons.append("Long URL");     cats["url"]+=5;  score+=5
+    if url_ent and url_ent > 4.5: reasons.append("High URL entropy"); cats["url"]+=15; score+=15
+    elif url_ent and url_ent > 4.0: reasons.append("Elevated URL entropy"); cats["url"]+=10; score+=10
+
+    # Enhanced subdomain depth scoring
+    actual_subdom_depth = _count_subdomain_depth(fqdn) if fqdn else num_subdom
+    if actual_subdom_depth >= 8:
+        reasons.append("Extreme subdomain depth (≥8)"); cats["url"]+=20; score+=20
+    elif actual_subdom_depth >= 6:
+        reasons.append("Very deep subdomains (≥6)"); cats["url"]+=15; score+=15
+    elif actual_subdom_depth >= 5:
+        reasons.append("Many subdomains (≥5)"); cats["url"]+=12; score+=12
+    elif actual_subdom_depth >= 3:
+        reasons.append("Multiple subdomains (≥3)"); cats["url"]+=8; score+=8
+
+    if has_repdig: reasons.append("Repeated digits"); cats["url"]+=6; score+=6
+    if tld in RISKY_TLDS: reasons.append(f"Risky TLD .{tld}"); cats["domain"]+=6; score+=6
+
+    # TLD impersonation detection
+    is_impersonating, impersonated_tld = _detect_tld_impersonation(fqdn, tld)
+    if is_impersonating:
+        if impersonated_tld in PROTECTED_TLDS:
+            reasons.append(f"TLD impersonation: {impersonated_tld} in subdomain")
+            cats["impersonation"]+=40; score+=40
+        else:
+            reasons.append(f"ccTLD in subdomain: {impersonated_tld}")
+            cats["impersonation"]+=30; score+=30
+
+    # Forms/keywords
+    forms = (feat or {}).get("forms") or {}
+    form_count = _safe_int((feat or {}).get("form_count") or forms.get("count"))
+    pw = _safe_int((feat or {}).get("password_fields") or forms.get("password_fields"))
+    em = _safe_int((feat or {}).get("email_fields") or forms.get("email_fields"))
+    has_cred = bool((feat or {}).get("has_credential_form") or (pw>0 and em>0))
+    kw_count = _safe_int((feat or {}).get("keyword_count") or (feat or {}).get("text_keywords_count"))
+
+    if has_cred: reasons.append("Credential form"); cats["forms"]+=22; score+=22
+    if _safe_int((feat or {}).get("suspicious_form_count") or forms.get("suspicious_form_count"))>0:
+        reasons.append("Suspicious forms"); cats["forms"]+=18; score+=18
+    if _safe_int((feat or {}).get("forms_to_ip") or forms.get("forms_to_ip"))>0:
+        reasons.append("Forms submit to IP"); cats["forms"]+=10; score+=10
+    if _safe_int((feat or {}).get("forms_to_suspicious_tld") or forms.get("forms_to_suspicious_tld"))>0:
+        reasons.append("Forms submit to suspicious TLD"); cats["forms"]+=10; score+=10
+    if _safe_int((feat or {}).get("forms_to_private_ip") or forms.get("forms_to_private_ip"))>0:
+        reasons.append("Forms submit to private IP"); cats["forms"]+=10; score+=10
+    if kw_count >= 8: reasons.append("Many phishing keywords"); cats["content"]+=18; score+=18
+    elif kw_count >= 3: reasons.append("Phishing keywords present"); cats["content"]+=12; score+=12
+    elif kw_count >= 1: reasons.append("Keyword hint"); cats["content"]+=8; score+=8
+
+    # JavaScript obfuscation
+    js_obfuscated = bool((feat or {}).get("js_obfuscated"))
+    js_obfuscated_count = _safe_int((feat or {}).get("js_obfuscated_count"))
+    if js_obfuscated or js_obfuscated_count > 0:
+        reasons.append("Obfuscated JavaScript detected"); cats["javascript"]+=15; score+=15
+
+    # TLS
+    tls = (http or {}).get("tls") or {}
+    if tls.get("is_self_signed"):      reasons.append("TLS self-signed"); cats["ssl"]+=40; score+=40
+    if tls.get("has_domain_mismatch"): reasons.append("TLS CN mismatch"); cats["ssl"]+=25; score+=25
+    if tls.get("cert_is_very_new"):    reasons.append("Cert very new (<7d)"); cats["ssl"]+=12; score+=12
+    elif tls.get("is_newly_issued"):   reasons.append("Cert new (<30d)");     cats["ssl"]+=8;  score+=8
+    if _safe_int(tls.get("cert_risk_score")):
+        inc = min(20, int(_safe_int(tls.get("cert_risk_score")) * 0.2))
+        cats["ssl"] += inc; score += inc
+
+    # Redirect cross-registrable
+    if _is_cross_registrable((http or {}).get("original_host") or (http or {}).get("host"),
+                             (http or {}).get("final_url") or (http or {}).get("url")):
+        reasons.append("Redirect crosses registrable"); cats["http"]+=12; score+=12
+
+    # DNS anomaly detection
+    dns = (domain or {}).get("dns") or {}
+    mx_records = dns.get("MX") or []
+    ttls = dns.get("ttls") or {}
+    ns_records = dns.get("NS") or []
+
+    if _check_self_referential_mx(fqdn, mx_records):
+        reasons.append("Self-referential MX record"); cats["dns"]+=10; score+=10
+
+    if _check_low_ttl(ttls):
+        reasons.append("Suspiciously low TTL (fast-flux)"); cats["dns"]+=8; score+=8
+
+    whois_error = whois.get("error")
+    if whois_error and "no output" in str(whois_error).lower():
+        reasons.append("WHOIS data unavailable"); cats["dns"]+=5; score+=5
+
+    for ns in ns_records:
+        ns_lower = (ns or "").lower()
+        for suspicious_provider in SUSPICIOUS_NAMESERVERS:
+            if suspicious_provider in ns_lower:
+                reasons.append(f"Suspicious nameserver ({suspicious_provider})"); cats["dns"]+=12; score+=12
+                break
+
+    # Geographic mismatch detection
+    geoip = (domain or {}).get("geoip") or {}
+    has_geo_mismatch, claimed_tld = _check_geographic_mismatch(fqdn, geoip)
+    if has_geo_mismatch:
+        actual_country = geoip.get("country", "unknown")
+        reasons.append(f"Geographic mismatch: claims {claimed_tld}, hosted in {actual_country}")
+        cats["geo"]+=15; score+=15
+
+    # Typosquatting detection
+    seed_registrable = (domain or {}).get("seed_registrable") or (http or {}).get("seed_registrable") or (feat or {}).get("seed_registrable")
+    is_original_seed = (domain or {}).get("is_original_seed") or (http or {}).get("is_original_seed") or (feat or {}).get("is_original_seed")
+
+    if seed_registrable and not is_original_seed and seed_registrable != registrable:
+        reasons.append(f"Potential typosquat of {seed_registrable}")
+        cats["typosquat"]+=25; score+=25
+
+    # === ENHANCED SCORING MODULES ===
+
+    # 1. Temporal Correlation
+    temp_score, temp_reasons = score_temporal_correlation(domain, http)
+    if temp_score > 0:
+        score += temp_score
+        cats["temporal"] += temp_score
+        reasons.extend(temp_reasons)
+
+    # 2. Behavioral Fingerprinting
+    behavior_score, behavior_reasons = score_behavioral_fingerprints(feat, http)
+    if behavior_score > 0:
+        score += behavior_score
+        cats["behavior"] += behavior_score
+        reasons.extend(behavior_reasons)
+
+    # 3. Infrastructure Risk
+    infra_score, infra_reasons = score_infrastructure_risk(domain, http)
+    if infra_score > 0:
+        score += infra_score
+        cats["infrastructure"] += infra_score
+        reasons.extend(infra_reasons)
+
+    # 4. Enhanced Parked Detection
+    is_parked, parked_signals, parked_confidence = detect_parked_domain(domain, http, feat)
+
+    # === VERDICT DETERMINATION ===
+    monitor_until = None
+    monitor_reason = None
+    requires_monitoring = False
+
+    if is_parked and parked_confidence >= 50:
+        verdict = "parked"
+        conf = min(0.95, 0.5 + parked_confidence / 200)
+        final_score = parked_confidence  # Use confidence as score for parked
+        reasons = parked_signals  # Replace reasons with parking signals
+        cats = {"parked": parked_confidence}
+
+        # Only monitor newly registered parked domains
+        if whois.get("is_newly_registered") and MONITOR_PARKED:
+            monitor_until = int(time.time() + (MONITOR_DAYS * 86400))
+            monitor_reason = "parked"
+            requires_monitoring = True
+    else:
+        final_score = score
+
+        if score >= THRESH_PHISHING:
+            verdict = "phishing"
+            conf = min(0.99, 0.9 + (score - THRESH_PHISHING) / 100.0)
+        elif score >= THRESH_SUSPICIOUS:
+            verdict = "suspicious"
+            conf = 0.65 + (score - THRESH_SUSPICIOUS) / 200.0
+            if MONITOR_SUSPICIOUS:
+                monitor_until = int(time.time() + (MONITOR_DAYS * 86400))
+                monitor_reason = "suspicious"
+                requires_monitoring = True
+        else:
+            verdict = "benign"
+            conf = 0.5
+            requires_monitoring = False
+
+    # Build result
+    result = {
+        "verdict": verdict,
+        "final_verdict": verdict,
+        "confidence": round(conf, 3),
+        "score": final_score,
+        "reasons": reasons[:20],  # Limit to top 20 reasons
+        "categories": dict(cats),
+        "canonical_fqdn": fqdn,
+        "registrable": registrable,
+        "url": url,
+        "requires_monitoring": requires_monitoring,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
+    if monitor_until:
+        result["monitor_until"] = monitor_until
+        result["monitor_reason"] = monitor_reason
+
+    # Add enrichment metadata
+    result["enrichment"] = {
+        "has_temporal_analysis": temp_score > 0,
+        "has_behavioral_analysis": behavior_score > 0,
+        "has_infrastructure_analysis": infra_score > 0,
+        "parked_confidence": parked_confidence if is_parked else 0
+    }
+
+    return result
+
 # ------------ Output shaping for your ingestor ------------
 def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
     """
@@ -585,7 +1298,7 @@ async def main():
             http    = v["parts"].get("http")
             feat    = v["parts"].get("features")
 
-            scored = score_bundle(domain, http, feat)
+            scored = enhanced_score_bundle(domain, http, feat)
             merged = make_merged_record(domain, http, feat, scored)
 
             # Emit to Kafka (no Chroma upsert here)

@@ -186,10 +186,10 @@ router.get('/originals', async (req, res) => {
             offset
         });
 
-        // Format response
+        // Format response with parsed JSON fields
         const domains = results.ids.map((id, idx) => ({
             id: id,
-            metadata: results.metadatas[idx],
+            metadata: parseMetadataJsonFields(results.metadatas[idx]),
             document: results.documents[idx]
         }));
 
@@ -287,10 +287,10 @@ router.get('/variants', async (req, res) => {
             offset
         });
 
-        // Format response
+        // Format response with parsed JSON fields
         const domains = results.ids.map((id, idx) => ({
             id: id,
-            metadata: results.metadatas[idx],
+            metadata: parseMetadataJsonFields(results.metadatas[idx]),
             document: results.documents[idx]
         }));
 
@@ -357,7 +357,7 @@ router.get('/search', async (req, res) => {
 
                 results.originals = originalsResults.ids[0].map((id, idx) => ({
                     id: id,
-                    metadata: originalsResults.metadatas[0][idx],
+                    metadata: parseMetadataJsonFields(originalsResults.metadatas[0][idx]),
                     document: originalsResults.documents[0][idx],
                     distance: originalsResults.distances[0][idx],
                     similarity: (1 - originalsResults.distances[0][idx]).toFixed(4)
@@ -380,7 +380,7 @@ router.get('/search', async (req, res) => {
 
                 results.variants = variantsResults.ids[0].map((id, idx) => ({
                     id: id,
-                    metadata: variantsResults.metadatas[0][idx],
+                    metadata: parseMetadataJsonFields(variantsResults.metadatas[0][idx]),
                     document: variantsResults.documents[0][idx],
                     distance: variantsResults.distances[0][idx],
                     similarity: (1 - variantsResults.distances[0][idx]).toFixed(4)
@@ -415,6 +415,43 @@ router.get('/search', async (req, res) => {
         });
     }
 });
+
+/**
+ * Helper function to parse JSON fields in metadata back to objects
+ * @param {Object} metadata - ChromaDB metadata object
+ * @returns {Object} Metadata with JSON strings parsed to objects
+ */
+function parseMetadataJsonFields(metadata) {
+    if (!metadata) return metadata;
+
+    const parsed = { ...metadata };
+
+    // List of fields that are stored as JSON strings
+    const jsonFields = [
+        'dns', 'whois', 'geoip', 'rdap',
+        'url_features', 'idn', 'forms', 'text_keywords',
+        'tls', 'javascript', 'favicon_color_scheme',
+        'ocr', 'image_ocr', 'image_metadata'
+    ];
+
+    for (const field of jsonFields) {
+        if (parsed[field] && typeof parsed[field] === 'string') {
+            try {
+                parsed[field] = JSON.parse(parsed[field]);
+            } catch (e) {
+                logger.warn(`⚠️ Failed to parse ${field} as JSON: ${e.message}`);
+                // Keep as string if parsing fails
+            }
+        }
+    }
+
+    // Parse reasons if it's a comma-separated string (convert to array)
+    if (parsed.reasons && typeof parsed.reasons === 'string') {
+        parsed.reasons = parsed.reasons.split(',').map(r => r.trim()).filter(r => r);
+    }
+
+    return parsed;
+}
 
 /**
  * GET /api/chroma/domain/:domain
@@ -479,7 +516,7 @@ router.get('/domain/:domain', async (req, res) => {
             if (matchIndex >= 0) {
                 return {
                     id: allItems.ids[matchIndex],
-                    metadata: allItems.metadatas[matchIndex],
+                    metadata: parseMetadataJsonFields(allItems.metadatas[matchIndex]),
                     document: allItems.documents[matchIndex]
                 };
             }

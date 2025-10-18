@@ -463,6 +463,10 @@ def stable_id(r: Dict[str,Any]) -> str:
     Upsert key: Use FULL domain name (FQDN) for merging all records for same domain.
     This ensures subdomains like pnb.bank.in, sbi.bank.in get unique IDs.
     Previously used registrable domain, but tldextract incorrectly treats .bank.in as public suffix.
+
+    Special handling:
+    - Normalizes 'www.' prefix: www.example.com -> example.com (for merging)
+    - Keeps other subdomains: mail.example.com, pnb.bank.in remain separate
     """
     full_domain = None
 
@@ -488,6 +492,14 @@ def stable_id(r: Dict[str,Any]) -> str:
         provided = r.get("registrable")
         if provided:
             full_domain = provided.lower()
+
+    # Normalize 'www.' subdomain to merge www.example.com with example.com
+    # BUT preserve other important subdomains like pnb.bank.in, mail.example.com
+    if full_domain and full_domain.startswith("www."):
+        normalized = full_domain[4:]  # Strip 'www.'
+        # Only normalize if the result has at least one dot (avoid stripping from www.com)
+        if "." in normalized:
+            full_domain = normalized
 
     # Generate stable ID using full domain name
     if full_domain:
@@ -515,14 +527,21 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
         if k in r:
             keep[k] = r[k]
 
-    # Domain-specific metadata
+    # OPTION 1: Store full nested objects as JSON strings
+    # This preserves all enrichment data while remaining ChromaDB-compatible
+
+    # Store full DNS record (includes A, AAAA, MX, NS, CNAME, TXT, etc.)
     if "dns" in r and isinstance(r["dns"], dict):
+        keep["dns"] = json.dumps(r["dns"])
+        # Also keep summary counts for easy filtering
         keep["a_count"] = len(r["dns"].get("A",[]) or [])
         keep["mx_count"] = len(r["dns"].get("MX",[]) or [])
         keep["ns_count"] = len(r["dns"].get("NS",[]) or [])
-    if "geoip" in r:
-        keep["country"] = r["geoip"].get("country")
-    if "whois" in r:
+
+    # Store full WHOIS record
+    if "whois" in r and isinstance(r["whois"], dict):
+        keep["whois"] = json.dumps(r["whois"])
+        # Also keep key fields for filtering
         whois = r["whois"]
         keep["registrar"] = whois.get("registrar")
         if "domain_age_days" in whois:
@@ -531,6 +550,16 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
             keep["is_very_new"] = bool(whois.get("is_very_new", False))
         if "days_until_expiry" in whois:
             keep["days_until_expiry"] = whois["days_until_expiry"]
+
+    # Store full GeoIP record
+    if "geoip" in r and isinstance(r["geoip"], dict):
+        keep["geoip"] = json.dumps(r["geoip"])
+        # Also keep country for filtering
+        keep["country"] = r["geoip"].get("country")
+
+    # Store full RDAP record
+    if "rdap" in r and isinstance(r["rdap"], dict):
+        keep["rdap"] = json.dumps(r["rdap"])
 
     # Determine enrichment level (what data is present)
     # Check for domain data in both nested (dns-collector) and flattened (rule-scorer) formats
@@ -616,11 +645,15 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
     # Feature-specific metadata
     if "url" in r:
         keep["url"] = r["url"]
-        keep["has_features"] = True
 
-    if "url_features" in r:
+    # Set has_features flag based on actual feature data presence
+    keep["has_features"] = has_features
+
+    # Store full URL features as JSON
+    if "url_features" in r and isinstance(r["url_features"], dict):
+        keep["url_features"] = json.dumps(r["url_features"])
+        # Also keep key metrics for filtering
         url_f = r["url_features"]
-        # Basic URL metrics
         keep["url_length"] = url_f.get("url_length", 0)
         keep["url_entropy"] = float(url_f.get("url_entropy", 0))
         keep["num_dots"] = url_f.get("num_dots", 0)
@@ -628,28 +661,28 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
         keep["num_slashes"] = url_f.get("num_slashes", 0)
         keep["num_underscores"] = url_f.get("num_underscores", 0)
         keep["has_repeated_digits"] = bool(url_f.get("has_repeated_digits", False))
-
-        # Domain metrics
         keep["domain_length"] = url_f.get("domain_length", 0)
         keep["domain_entropy"] = float(url_f.get("domain_entropy", 0))
         keep["domain_hyphens"] = url_f.get("domain_hyphens", 0)
-
-        # Subdomain metrics
         keep["num_subdomains"] = url_f.get("num_subdomains", 0)
         keep["avg_subdomain_length"] = url_f.get("avg_subdomain_length", 0)
         keep["subdomain_entropy"] = float(url_f.get("subdomain_entropy", 0))
-
-        # Path metrics
         keep["path_length"] = url_f.get("path_length", 0)
         keep["path_has_query"] = bool(url_f.get("path_has_query", False))
         keep["path_has_fragment"] = bool(url_f.get("path_has_fragment", False))
 
-    if "idn" in r:
+    # Store full IDN analysis as JSON
+    if "idn" in r and isinstance(r["idn"], dict):
+        keep["idn"] = json.dumps(r["idn"])
+        # Also keep key flags for filtering
         idn = r["idn"]
         keep["is_idn"] = bool(idn.get("is_idn", False))
         keep["mixed_script"] = bool(idn.get("mixed_script", False))
 
-    if "forms" in r:
+    # Store full forms analysis as JSON
+    if "forms" in r and isinstance(r["forms"], dict):
+        keep["forms"] = json.dumps(r["forms"])
+        # Also keep key metrics for filtering
         forms = r["forms"]
         keep["form_count"] = forms.get("count", 0)
         keep["password_fields"] = forms.get("password_fields", 0)
@@ -658,10 +691,12 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
             forms.get("password_fields", 0) > 0 and forms.get("email_fields", 0) > 0
         )
 
+    # Store text keywords as JSON array
     if "text_keywords" in r:
         keywords = r.get("text_keywords", [])
         if keywords:
-            keep["phishing_keywords"] = ",".join(keywords)
+            keep["text_keywords"] = json.dumps(keywords)
+            keep["phishing_keywords"] = ",".join(keywords)  # Also keep comma-separated for backward compat
             keep["keyword_count"] = len(keywords)
 
     if "html_length_bytes" in r:
@@ -686,50 +721,54 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
     if "favicon_size" in r:
         keep["favicon_size"] = r["favicon_size"]
 
-    # Favicon color scheme
-    if "favicon_color_scheme" in r:
+    # Store full favicon color scheme as JSON
+    if "favicon_color_scheme" in r and isinstance(r["favicon_color_scheme"], dict):
+        keep["favicon_color_scheme"] = json.dumps(r["favicon_color_scheme"])
+        # Also keep key metrics for filtering
         fav_color = r["favicon_color_scheme"]
-        if fav_color:
-            keep["favicon_color_count"] = fav_color.get("color_count", 0)
-            keep["favicon_color_variance"] = float(fav_color.get("color_variance", 0))
-            keep["favicon_color_entropy"] = float(fav_color.get("color_entropy", 0))
-            keep["favicon_has_transparency"] = bool(fav_color.get("has_transparency", False))
-            keep["favicon_avg_brightness"] = float(fav_color.get("avg_brightness", 0))
-            # Store dominant colors as JSON string
-            dominant = fav_color.get("dominant_colors", [])
-            if dominant:
-                keep["favicon_dominant_color"] = dominant[0].get("hex", "") if len(dominant) > 0 else ""
+        keep["favicon_color_count"] = fav_color.get("color_count", 0)
+        keep["favicon_color_variance"] = float(fav_color.get("color_variance", 0))
+        keep["favicon_color_entropy"] = float(fav_color.get("color_entropy", 0))
+        keep["favicon_has_transparency"] = bool(fav_color.get("has_transparency", False))
+        keep["favicon_avg_brightness"] = float(fav_color.get("avg_brightness", 0))
+        # Store dominant colors as JSON string
+        dominant = fav_color.get("dominant_colors", [])
+        if dominant:
+            keep["favicon_dominant_color"] = dominant[0].get("hex", "") if len(dominant) > 0 else ""
 
-    # OCR from screenshot
-    if "ocr" in r:
+    # Store full OCR data as JSON
+    if "ocr" in r and isinstance(r["ocr"], dict):
+        keep["ocr"] = json.dumps(r["ocr"])
+        # Also keep key fields for filtering
         ocr = r["ocr"]
-        if ocr:
-            keep["ocr_text_length"] = ocr.get("length", 0)
-            keep["ocr_text_excerpt"] = (ocr.get("text_excerpt", "") or "")[:500]
+        keep["ocr_text_length"] = ocr.get("length", 0)
+        keep["ocr_text_excerpt"] = (ocr.get("text_excerpt", "") or "")[:500]
 
-    # OCR from page images
-    if "image_ocr" in r:
+    # Store full image OCR data as JSON
+    if "image_ocr" in r and isinstance(r["image_ocr"], dict):
+        keep["image_ocr"] = json.dumps(r["image_ocr"])
+        # Also keep key metrics for filtering
         img_ocr = r["image_ocr"]
-        if img_ocr:
-            keep["images_with_ocr_text"] = img_ocr.get("images_with_text", 0)
-            keep["images_with_brand_keywords"] = img_ocr.get("images_with_brand_keywords", 0)
-            keep["images_with_suspicious_keywords"] = img_ocr.get("images_with_suspicious_keywords", 0)
-            keep["ocr_total_text_length"] = img_ocr.get("total_text_length", 0)
-            # Store extracted keywords
-            keywords = img_ocr.get("extracted_keywords", [])
-            if keywords:
-                keep["ocr_extracted_keywords"] = ",".join(keywords[:20])
+        keep["images_with_ocr_text"] = img_ocr.get("images_with_text", 0)
+        keep["images_with_brand_keywords"] = img_ocr.get("images_with_brand_keywords", 0)
+        keep["images_with_suspicious_keywords"] = img_ocr.get("images_with_suspicious_keywords", 0)
+        keep["ocr_total_text_length"] = img_ocr.get("total_text_length", 0)
+        # Store extracted keywords
+        keywords = img_ocr.get("extracted_keywords", [])
+        if keywords:
+            keep["ocr_extracted_keywords"] = ",".join(keywords[:20])
 
-    # Image quality metrics
-    if "image_metadata" in r:
+    # Store full image metadata as JSON
+    if "image_metadata" in r and isinstance(r["image_metadata"], dict):
+        keep["image_metadata"] = json.dumps(r["image_metadata"])
+        # Also keep key metrics for filtering
         img_meta = r["image_metadata"]
-        if img_meta:
-            keep["avg_image_sharpness"] = float(img_meta.get("avg_sharpness", 0))
-            keep["avg_image_resolution"] = float(img_meta.get("avg_resolution", 0))
-            keep["image_overall_quality"] = img_meta.get("overall_quality", "unknown")
-            keep["high_quality_images"] = img_meta.get("high_quality_images", 0)
-            keep["medium_quality_images"] = img_meta.get("medium_quality_images", 0)
-            keep["low_quality_images"] = img_meta.get("low_quality_images", 0)
+        keep["avg_image_sharpness"] = float(img_meta.get("avg_sharpness", 0))
+        keep["avg_image_resolution"] = float(img_meta.get("avg_resolution", 0))
+        keep["image_overall_quality"] = img_meta.get("overall_quality", "unknown")
+        keep["high_quality_images"] = img_meta.get("high_quality_images", 0)
+        keep["medium_quality_images"] = img_meta.get("medium_quality_images", 0)
+        keep["low_quality_images"] = img_meta.get("low_quality_images", 0)
 
     # SSL certificate analysis
     # Check multiple possible locations for SSL data
@@ -744,7 +783,10 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
         # SSL data might be nested inside 'final' object from http-fetcher
         ssl = r["final"]["ssl_info"]
 
+    # Store full TLS/SSL record as JSON
     if ssl and isinstance(ssl, dict):
+        keep["tls"] = json.dumps(ssl)
+        # Also keep key fields for filtering
         keep["uses_https"] = bool(ssl.get("uses_https", False))
         keep["is_self_signed"] = bool(ssl.get("is_self_signed", False))
         keep["domain_mismatch"] = bool(ssl.get("domain_mismatch") or ssl.get("has_domain_mismatch", False))
@@ -769,7 +811,10 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
         keep["redirect_count"] = r["redirect_count"]
         keep["had_redirects"] = bool(r.get("had_redirects", False))
 
-    if "javascript" in r:
+    # Store full JavaScript analysis as JSON
+    if "javascript" in r and isinstance(r["javascript"], dict):
+        keep["javascript"] = json.dumps(r["javascript"])
+        # Also keep key flags for filtering
         js = r["javascript"]
         keep["js_obfuscated"] = js.get("obfuscated_scripts", 0) > 0
         keep["js_eval_usage"] = js.get("eval_usage", 0) > 0
@@ -786,7 +831,8 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
         if "obfuscated_scripts" in js:
             keep["js_obfuscated_count"] = js["obfuscated_scripts"]
 
-    if "forms" in r:
+    # Note: forms already stored as JSON above, but keep additional fields
+    if "forms" in r and isinstance(r["forms"], dict):
         forms = r["forms"]
         if "suspicious_form_count" in forms:
             keep["suspicious_form_count"] = forms["suspicious_form_count"]
