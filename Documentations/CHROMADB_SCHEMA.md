@@ -277,16 +277,38 @@ This means:
 **Why it matters**: 90% of phishing domains are less than 30 days old. Newly registered domains mimicking established brands are highly suspicious.
 
 ### Feature-only Fields
+
+#### URL Structure Analysis
 | Field | Type | Description |
 |-------|------|-------------|
 | `url` | string | Full URL that was crawled |
 | `has_features` | bool | Always true for feature records |
 | `url_length` | int | Character count of URL |
-| `url_entropy` | float | Shannon entropy of URL |
-| `num_subdomains` | int | Number of subdomain labels |
+| `url_entropy` | float | Shannon entropy of URL (randomness) |
+| `num_dots` | int | Number of dots in URL |
+| `num_hyphens` | int | Number of hyphens in URL |
+| `num_slashes` | int | Number of slashes in URL |
+| `num_underscores` | int | Number of underscores in URL |
 | `has_repeated_digits` | bool | URL contains repeated digits |
+| `domain_length` | int | Length of domain portion |
+| `domain_entropy` | float | Shannon entropy of domain |
+| `domain_hyphens` | int | Number of hyphens in domain |
+| `num_subdomains` | int | Number of subdomain labels |
+| `avg_subdomain_length` | int | Average subdomain length |
+| `subdomain_entropy` | float | Shannon entropy of subdomain |
+| `path_length` | int | Length of URL path |
+| `path_has_query` | bool | URL has query parameters |
+| `path_has_fragment` | bool | URL has fragment identifier |
+
+#### Internationalization
+| Field | Type | Description |
+|-------|------|-------------|
 | `is_idn` | bool | Uses internationalized domain names |
 | `mixed_script` | bool | Mixes different Unicode scripts |
+
+#### Page Content Analysis
+| Field | Type | Description |
+|-------|------|-------------|
 | `form_count` | int | Number of HTML forms on page |
 | `password_fields` | int | Number of password input fields |
 | `email_fields` | int | Number of email input fields |
@@ -297,36 +319,48 @@ This means:
 | `external_links` | int | Number of outbound links |
 | `iframe_count` | int | Number of iframes (potential embedding) |
 
-#### SSL Certificate Analysis 
+#### SSL Certificate Analysis
 | Field | Type | Description |
 |-------|------|-------------|
+| `uses_https` | bool | Whether site uses HTTPS |
 | `is_self_signed` | bool | 🚨 Certificate is self-signed (not from trusted CA) |
 | `cert_age_days` | int | Days since certificate was issued |
-| `is_newly_issued` | bool | ⚠️ Certificate issued < 30 days ago |
-| `cert_is_very_new` | bool | 🚨 Certificate issued < 7 days ago |
-| `has_domain_mismatch` | bool | Certificate CN doesn't match hostname |
-| `trusted_issuer` | string | Issuer CommonName (e.g., "Let's Encrypt") |
+| `is_newly_issued_cert` | bool | ⚠️ Certificate issued < 30 days ago |
+| `domain_mismatch` | bool | 🚨 Certificate CN doesn't match hostname |
+| `trusted_issuer` | bool | Whether certificate is from trusted CA |
+| `cert_issuer` | string | Certificate issuer CommonName (e.g., "Let's Encrypt") |
+| `cert_subject` | string | Certificate subject CommonName |
 | `cert_risk_score` | int | 0-100 risk score (higher = more suspicious) |
 
 **Why it matters**: Self-signed certificates are the #1 phishing indicator. Legitimate sites use trusted CAs. Newly issued certificates on new domains indicate fresh phishing campaigns.
 
-#### Enhanced Form Analysis 
+**Implementation Status**: ✅ **FULLY IMPLEMENTED** - All SSL fields are now extracted from http-fetcher and stored in ChromaDB metadata.
+
+#### Enhanced Form Analysis
 | Field | Type | Description |
 |-------|------|-------------|
+| `form_count` | int | Total number of forms on page |
+| `password_fields` | int | Number of password input fields |
+| `email_fields` | int | Number of email input fields |
+| `has_credential_form` | bool | ⚠️ Has both password + email fields |
 | `suspicious_form_count` | int | Number of forms with suspicious attributes |
 | `has_suspicious_forms` | bool | ⚠️ Page contains forms submitting to IPs/suspicious TLDs |
-| `forms_to_ip` | int | Forms submitting to IP addresses |
-| `forms_to_suspicious_tld` | int | Forms submitting to .tk/.ml/.ga/.xyz/etc |
-| `forms_to_private_ip` | int | Forms submitting to localhost/private IPs |
+| `forms_to_ip` | int | 🚨 Forms submitting to IP addresses |
+| `forms_to_suspicious_tld` | int | ⚠️ Forms submitting to .tk/.ml/.ga/.xyz/etc |
+| `forms_to_private_ip` | int | 🚨 Forms submitting to localhost/private IPs |
 
 **Why it matters**: Phishing forms often submit credentials to external IP addresses, free TLDs (.tk, .ml), or localhost (for local data harvesting). Legitimate sites submit to their own domain.
 
-**Suspicious TLDs**: `.tk`, `.ml`, `.ga`, `.cf`, `.gq`, `.xyz`, `.top`, `.club`, `.info`, `.online`, `.site`, `.website`, `.space`, `.tech`
+**Suspicious TLDs**: `.tk`, `.ml`, `.ga`, `.cf`, `.gq`, `.xyz`, `.top`, `.club`, `.info`, `.online`, `.site`, `.website`, `.space`, `.tech`, `.work`, `.click`, `.link`, `.zip`, `.icu`, `.loan`, `.download`, `.racing`
 
-#### JavaScript Analysis 
+**Implementation Status**: ✅ **FULLY IMPLEMENTED** - All form submission analysis fields are now extracted and stored in ChromaDB metadata.
+
+#### JavaScript Analysis
 | Field | Type | Description |
 |-------|------|-------------|
 | `js_obfuscated` | bool | ⚠️ JavaScript uses obfuscation techniques |
+| `js_obfuscated_count` | int | Number of obfuscated scripts detected |
+| `js_eval_usage` | bool | Code uses eval() function |
 | `js_eval_count` | int | Number of eval() calls (code execution) |
 | `js_encoding_count` | int | atob/fromCharCode usage (encoded strings) |
 | `js_keylogger` | bool | 🚨 Keylogger patterns detected |
@@ -337,12 +371,22 @@ This means:
 **Why it matters**: Phishing sites heavily obfuscate JavaScript to hide malicious behavior. Keyloggers capture credentials before submission. Form manipulation bypasses browser security warnings.
 
 **Detection patterns**:
-- **Obfuscation**: `eval()`, `atob()`, `String.fromCharCode()`
-- **Keyloggers**: Multiple `addEventListener("keypress")` or `addEventListener("keydown")`
-- **Form manipulation**: `document.createElement("form")`, `form.action = ...`
-- **Redirects**: `window.location.href`, `document.location.replace()`
+- **Obfuscation**: `eval()`, `atob()`, `String.fromCharCode()`, minified code with <5% whitespace
+- **Keyloggers**: Multiple `addEventListener("keypress")` or `addEventListener("keydown")` patterns
+- **Form manipulation**: `document.createElement("form")`, `form.action = ...`, `setAttribute("action")`
+- **Redirects**: `window.location.href`, `document.location.replace()`, `location.href = ...`
 
-#### Favicon Analysis 
+**Risk Scoring**:
+- `eval()` usage: +15 points
+- Base64 decoding: +10 points
+- Keylogger patterns: +25 points
+- Form manipulation: +10 points
+- 3+ obfuscated scripts: +20 points
+- Max score: 100
+
+**Implementation Status**: ✅ **FULLY IMPLEMENTED** - All JavaScript analysis fields are now extracted and stored in ChromaDB metadata.
+
+#### Favicon Analysis
 | Field | Type | Description |
 |-------|------|-------------|
 | `favicon_md5` | string | MD5 hash of favicon image |
@@ -352,17 +396,19 @@ This means:
 
 **Use case**: Build database of legitimate brand favicons, then flag any new suspicious domain using the same hash.
 
-#### Redirect Tracking 
+**Implementation Status**: ✅ **FULLY IMPLEMENTED** - Favicon hashes are extracted by feature-crawler and stored in ChromaDB metadata.
+
+#### Redirect Tracking
 | Field | Type | Description |
 |-------|------|-------------|
 | `redirect_count` | int | Number of redirects before reaching final page |
 | `had_redirects` | bool | Page performed HTTP or JS redirects |
-| `initial_url` | string | Original URL requested |
-| `final_url` | string | Final destination URL after all redirects |
 
 **Why it matters**: Phishing campaigns often use redirect chains to evade detection (e.g., compromised site → URL shortener → phishing page). Tracking the full chain reveals infrastructure.
 
-**Note**: Feature extraction occurs **only on the final destination page**, but the full redirect chain is logged for forensic analysis.
+**Note**: Feature extraction occurs **only on the final destination page**, but the full redirect chain is logged in the document text for forensic analysis.
+
+**Implementation Status**: ✅ **FULLY IMPLEMENTED** - Redirect tracking is performed by feature-crawler and stored in ChromaDB metadata.
 
 ## Important Guarantees
 

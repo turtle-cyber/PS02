@@ -4,3 +4,4 @@ ujson==5.10.0
 idna==3.7
 tldextract==5.1.2
 selectolax==0.3.21
+redis==5.0.1

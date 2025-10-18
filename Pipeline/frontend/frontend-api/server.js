@@ -10,6 +10,7 @@ const urlDetectionRouter = require('./routes/urlDetection/url-detection');
 const monitoringStatsRouter = require('./routes/monitoring/monitoring-stats');
 const dnstwistStatsRouter = require('./routes/dnstwist/dnstwist-stats');
 const fcrawlerStatsRouter = require('./routes/featureCrawler/fcrawler-stats');
+const chromaQueryRouter = require('./routes/chroma/chroma-query');
 
 // ============================================
 // Configuration
@@ -150,6 +151,7 @@ app.use('/api', urlDetectionRouter);
 app.use('/api', monitoringStatsRouter);
 app.use('/api', dnstwistStatsRouter);
 app.use('/api', fcrawlerStatsRouter);
+app.use('/api/chroma', chromaQueryRouter);
 
 /**
  * Health check endpoint
@@ -232,7 +234,9 @@ app.post('/api/submit', async (req, res) => {
         let estimatedTime;
 
         if (useFullPipeline) {
-            // Full pipeline: raw.hosts → DNSTwist → CT-Watcher → Normalizer → ...
+            // Full pipeline: DUAL SUBMISSION
+            // 1. Submit to raw.hosts for DNSTwist variant generation
+            // 2. ALSO submit to domains.candidates to ensure original gets full feature extraction
             targetTopic = 'raw.hosts';
             message = {
                 fqdn: extractedDomain,
@@ -241,7 +245,8 @@ app.post('/api/submit', async (req, res) => {
                 cse_id: cse_id,
                 notes: notes,
                 original_input: inputUrl,
-                submitter_ip: req.ip
+                submitter_ip: req.ip,
+                is_original_seed: true  // Mark as original seed for ChromaDB routing
             };
             pipelineDescription = 'full (includes DNSTwist variant generation)';
             estimatedTime = '3-5 minutes';
@@ -283,8 +288,6 @@ app.post('/api/submit', async (req, res) => {
             ]
         });
 
-        const duration = Date.now() - startTime;
-
         logger.info('✅ Successfully submitted to Kafka', {
             domain: extractedDomain,
             topic: targetTopic,
@@ -292,6 +295,43 @@ app.post('/api/submit', async (req, res) => {
             offset: result[0].offset,
             pipeline: pipelineDescription
         });
+
+        // DUAL SUBMISSION: If using full pipeline, ALSO submit original domain to direct pipeline
+        // This ensures the original seed gets full feature extraction (SSL, JS, forms, etc.)
+        if (useFullPipeline) {
+            const directMessage = {
+                fqdn: extractedDomain,
+                canonical_fqdn: extractedDomain,
+                registrable: extractedDomain,
+                src: "frontend_api",
+                observed_at: Math.floor(Date.now() / 1000),
+                cse_id: cse_id,
+                notes: notes,
+                original_input: inputUrl,
+                submitter_ip: req.ip,
+                is_original_seed: true,  // Mark as original seed
+                reasons: ["user_submission"]
+            };
+
+            await producer.send({
+                topic: 'domains.candidates',
+                messages: [
+                    {
+                        key: extractedDomain,
+                        value: JSON.stringify(directMessage),
+                        timestamp: Date.now().toString()
+                    }
+                ]
+            });
+
+            logger.info('✅ Also submitted original to direct pipeline', {
+                domain: extractedDomain,
+                topic: 'domains.candidates',
+                reason: 'ensure_full_feature_extraction'
+            });
+        }
+
+        const duration = Date.now() - startTime;
 
         logger.info('🎉 Submission successful', {
             domain: extractedDomain,
@@ -441,7 +481,8 @@ app.post('/api/submit-bulk', async (req, res) => {
                         notes: notes,
                         original_input: inputUrl,
                         submitter_ip: req.ip,
-                        bulk_batch_index: i
+                        bulk_batch_index: i,
+                        is_original_seed: true  // Mark as original seed for ChromaDB routing
                     };
                 } else {
                     message = {

@@ -8,7 +8,8 @@ from kafka import KafkaConsumer, KafkaProducer, TopicPartition
 BOOTSTRAP = os.environ.get("KAFKA_BOOTSTRAP") or os.environ.get("KAFKA_BROKERS", "kafka:9092")
 IN_TOPIC  = os.environ.get("IN_TOPIC", "http.probed")
 OUT_TOPIC = os.environ.get("OUT_TOPIC", "phish.urls.crawl")
-INACTIVE_TOPIC = os.environ.get("INACTIVE_TOPIC", "phish.urls.inactive")  # NEW: Inactive domains
+INACTIVE_TOPIC = os.environ.get("INACTIVE_TOPIC", "phish.urls.inactive")  # Inactive domains
+FAILED_TOPIC = os.environ.get("FAILED_TOPIC", "phish.urls.failed")  # NEW: Dead letter queue for failed parsing
 GROUP_ID  = os.environ.get("GROUP_ID", "url-router")
 AUTO_RESET = os.environ.get("AUTO_OFFSET_RESET", "latest")
 FORCE_EARLIEST_ON_START = os.environ.get("FORCE_EARLIEST_ON_START", "0") == "1"
@@ -161,7 +162,11 @@ def build_output(url: str, meta: dict) -> dict:
     # CRITICAL: Always include CSE ID if present
     if "cse_id" in meta:
         out["cse_id"] = meta["cse_id"]
-    
+
+    # Preserve original seed flag
+    if "is_original_seed" in meta:
+        out["is_original_seed"] = meta["is_original_seed"]
+
     # surface helpful hints to feature-crawler
     if "registrable" in meta:
         out["registrable"] = meta["registrable"]
@@ -182,13 +187,17 @@ def build_output(url: str, meta: dict) -> dict:
 
 # In the main loop, add debug logging:
 def main():
-    log.info(f"starting url-router | bootstrap={BOOTSTRAP} in={IN_TOPIC} out={OUT_TOPIC} inactive={INACTIVE_TOPIC}")
+    log.info(f"starting url-router | bootstrap={BOOTSTRAP} in={IN_TOPIC} out={OUT_TOPIC} inactive={INACTIVE_TOPIC} failed={FAILED_TOPIC}")
     consumer = make_consumer()
     producer = make_producer()
 
+    # Detailed counters for tracking
     forwarded = 0
-    dropped = 0
-    inactive_queued = 0  # NEW: Track inactive domains
+    inactive_queued = 0
+    failed_parsing = 0  # NEW: Failed to parse JSON
+    failed_validation = 0  # NEW: Failed URL validation
+    failed_send = 0  # NEW: Failed to send to Kafka
+    last_stats_time = time.time()
 
     log.info(f"url-router ready, waiting for messages...")
 
@@ -201,8 +210,22 @@ def main():
                 try:
                     rec = ujson.loads(msg.value)
                 except Exception as e:
-                    dropped += 1
-                    log.debug(f"DROP decode_error offset={msg.offset}: {e}")
+                    failed_parsing += 1
+                    # Send to dead letter queue with error details
+                    try:
+                        failed_rec = {
+                            "schema_version": "v1",
+                            "failure_type": "json_parse_error",
+                            "error": str(e),
+                            "raw_value": msg.value.decode("utf-8", errors="replace")[:500],  # Truncate to 500 chars
+                            "offset": msg.offset,
+                            "partition": msg.partition,
+                            "ts": int(time.time() * 1000),
+                        }
+                        producer.send(FAILED_TOPIC, value=failed_rec)
+                    except:
+                        pass  # Don't crash on DLQ failures
+                    log.debug(f"FAILED_PARSE offset={msg.offset}: {e}")
                     continue
 
                 url, meta = extract_url_and_meta(rec)
@@ -232,14 +255,42 @@ def main():
                     continue
 
                 if not url:
-                    dropped += 1
-                    log.warning(f"DROP no_url offset={msg.offset} key={msg.key} rec_keys={list(rec.keys())}")
+                    failed_validation += 1
+                    # Send to dead letter queue
+                    try:
+                        failed_rec = {
+                            "schema_version": "v1",
+                            "failure_type": "missing_url",
+                            "error": "No URL found in record",
+                            "record_keys": list(rec.keys()),
+                            "offset": msg.offset,
+                            "partition": msg.partition,
+                            "ts": int(time.time() * 1000),
+                        }
+                        producer.send(FAILED_TOPIC, value=failed_rec)
+                    except:
+                        pass
+                    log.warning(f"FAILED_NO_URL offset={msg.offset} key={msg.key} rec_keys={list(rec.keys())}")
                     continue
 
                 norm = normalize_url(url)
                 if not norm:
-                    dropped += 1
-                    log.debug(f"DROP bad_url offset={msg.offset} url={url!r}")
+                    failed_validation += 1
+                    # Send to dead letter queue
+                    try:
+                        failed_rec = {
+                            "schema_version": "v1",
+                            "failure_type": "invalid_url",
+                            "error": "URL failed normalization",
+                            "url": url,
+                            "offset": msg.offset,
+                            "partition": msg.partition,
+                            "ts": int(time.time() * 1000),
+                        }
+                        producer.send(FAILED_TOPIC, value=failed_rec)
+                    except:
+                        pass
+                    log.debug(f"FAILED_INVALID_URL offset={msg.offset} url={url!r}")
                     continue
 
                 out = build_output(norm, meta)
@@ -261,11 +312,33 @@ def main():
                         seed_info = f" [seed={out.get('seed_registrable')}]" if out.get('seed_registrable') else ""
                         log.info(f"FWD#{forwarded} -> {norm}{cse_info}{seed_info}")
                 except Exception as e:
-                    dropped += 1
-                    log.error(f"ERROR produce offset={msg.offset}: {e}")
+                    failed_send += 1
+                    # Send to dead letter queue
+                    try:
+                        failed_rec = {
+                            "schema_version": "v1",
+                            "failure_type": "kafka_send_error",
+                            "error": str(e),
+                            "url": norm,
+                            "metadata": meta,
+                            "offset": msg.offset,
+                            "partition": msg.partition,
+                            "ts": int(time.time() * 1000),
+                        }
+                        producer.send(FAILED_TOPIC, value=failed_rec)
+                    except:
+                        pass
+                    log.error(f"FAILED_SEND offset={msg.offset}: {e}")
 
         # flush periodically
         producer.flush(timeout=2)
+
+        # Log comprehensive stats every 100 messages or every 60 seconds
+        total_processed = forwarded + inactive_queued + failed_parsing + failed_validation + failed_send
+        if total_processed > 0 and (total_processed % 100 == 0 or (time.time() - last_stats_time) >= 60):
+            log.info(f"📊 STATS: processed={total_processed} | forwarded={forwarded} | inactive={inactive_queued} | "
+                    f"failed_parse={failed_parsing} | failed_validation={failed_validation} | failed_send={failed_send}")
+            last_stats_time = time.time()
 
 if __name__ == "__main__":
     main()
