@@ -294,28 +294,114 @@ class AIMlService:
                     'timestamp': datetime.now().isoformat()
                 }
 
-            # If domain has crawler verdict but no features, trust the crawler
+            # If domain has crawler verdict but no features, check for parked/inactive indicators first
             has_form_features = metadata.get('form_count') is not None
             has_html_features = metadata.get('html_size', 0) > 0
-            if crawler_verdict and not has_form_features and not has_html_features:
-                logger.info(f"Domain {domain} has crawler verdict '{crawler_verdict}' but no features - respecting crawler")
-                return {
-                    'domain': domain,
-                    'verdict': crawler_verdict.upper(),
-                    'confidence': metadata.get('confidence', 0.80),
-                    'reason': f'Verdict from pipeline crawler (no page features for AIML analysis)',
-                    'source': 'crawler',
-                    'timestamp': datetime.now().isoformat()
-                }
+
+            if not has_form_features and not has_html_features:
+                # Before trusting crawler verdict, check if domain appears parked/inactive
+                html_size = metadata.get('html_size', 0)
+                external_links = metadata.get('external_links', 0)
+                mx_count = metadata.get('mx_count', 0)
+                a_count = metadata.get('a_count', 0)
+                cse_id = metadata.get('cse_id', '')
+                registrable = metadata.get('registrable', domain)
+
+                # Safeguard: Don't mark CSE/known benign domains as parked
+                is_cse_domain = bool(cse_id and cse_id != 'BULK_IMPORT')
+                is_gov_domain = any(tld in registrable.lower() for tld in ['.gov.', '.nic.in', '.ac.in', '.edu.'])
+
+                # Strong indicators of parked/inactive domain
+                is_likely_parked = False
+                parking_reason = []
+
+                # Only check parking if NOT a CSE or government domain
+                if not is_cse_domain and not is_gov_domain:
+                    # 1. Minimal HTML content (< 500 bytes) - very likely parked
+                    if html_size > 0 and html_size < 500:
+                        is_likely_parked = True
+                        parking_reason.append(f"minimal HTML ({html_size}B)")
+
+                    # 2. Small page with no external links - likely empty/parked
+                    elif html_size > 0 and html_size < 1000 and external_links == 0:
+                        is_likely_parked = True
+                        parking_reason.append(f"empty page (html={html_size}B, no links)")
+
+                    # 3. No DNS infrastructure - REMOVED (too aggressive, caught government domains)
+                    # This heuristic was catching legitimate .nic.in domains
+
+                # If indicators suggest parking, return PARKED verdict
+                if is_likely_parked:
+                    logger.info(f"Domain {domain} appears parked despite crawler verdict '{crawler_verdict}': {', '.join(parking_reason)}")
+                    return {
+                        'domain': domain,
+                        'verdict': 'PARKED',
+                        'confidence': 0.75,
+                        'reason': f"Parked domain detected: {', '.join(parking_reason)}",
+                        'source': 'aiml_heuristic',
+                        'timestamp': datetime.now().isoformat(),
+                        'original_crawler_verdict': crawler_verdict
+                    }
+
+                # Otherwise, trust crawler verdict if available
+                if crawler_verdict:
+                    logger.info(f"Domain {domain} has crawler verdict '{crawler_verdict}' but no features - respecting crawler")
+                    return {
+                        'domain': domain,
+                        'verdict': crawler_verdict.upper(),
+                        'confidence': metadata.get('confidence', 0.80),
+                        'reason': f'Verdict from pipeline crawler (no page features for AIML analysis)',
+                        'source': 'crawler',
+                        'timestamp': datetime.now().isoformat()
+                    }
 
             # Calculate feature quality score
             feature_quality = self.calculate_feature_quality(metadata)
             logger.info(f"Domain {domain} feature quality: {feature_quality:.2%}")
 
-            # If feature quality is low (<30%), fall back to crawler verdict
+            # If feature quality is low (<30%), check for parking indicators before falling back
             if feature_quality < 0.30:
-                logger.info(f"Domain {domain} has low feature quality ({feature_quality:.2%}) - using crawler verdict")
+                logger.info(f"Domain {domain} has low feature quality ({feature_quality:.2%}) - checking parking indicators")
 
+                # Check for parked/inactive indicators even with low features
+                html_size = metadata.get('html_size', 0)
+                external_links = metadata.get('external_links', 0)
+                mx_count = metadata.get('mx_count', 0)
+                a_count = metadata.get('a_count', 0)
+                cse_id = metadata.get('cse_id', '')
+                registrable = metadata.get('registrable', domain)
+
+                # Safeguard: Don't mark CSE/known benign domains as parked
+                is_cse_domain = bool(cse_id and cse_id != 'BULK_IMPORT')
+                is_gov_domain = any(tld in registrable.lower() for tld in ['.gov.', '.nic.in', '.ac.in', '.edu.'])
+
+                is_likely_parked = False
+                parking_reason = []
+
+                # Only check parking if NOT a CSE or government domain
+                if not is_cse_domain and not is_gov_domain:
+                    # Parking detection with low features
+                    if html_size > 0 and html_size < 500:
+                        is_likely_parked = True
+                        parking_reason.append(f"minimal HTML ({html_size}B)")
+                    elif html_size > 0 and html_size < 1000 and external_links == 0:
+                        is_likely_parked = True
+                        parking_reason.append(f"empty page (html={html_size}B, no links)")
+                    # Removed aggressive DNS infrastructure check
+
+                if is_likely_parked:
+                    logger.info(f"Domain {domain} detected as parked with low features: {', '.join(parking_reason)}")
+                    return {
+                        'domain': domain,
+                        'verdict': 'PARKED',
+                        'confidence': 0.70,
+                        'reason': f"Parked domain detected (low features): {', '.join(parking_reason)}",
+                        'source': 'aiml_heuristic',
+                        'feature_quality': feature_quality,
+                        'timestamp': datetime.now().isoformat()
+                    }
+
+                # Not parked - fall back to crawler verdict
                 if crawler_verdict:
                     # Trust crawler verdict when features are insufficient
                     # If crawler says PHISHING, trust it even without full AIML analysis
@@ -464,7 +550,47 @@ class AIMlService:
                     if inactive_info:
                         return self._create_inactive_verdict(domain, inactive_info, error_msg)
 
-                    # Fall back to crawler verdict if available
+                    # Check for parking indicators before falling back to crawler verdict
+                    html_size = metadata.get('html_size', 0)
+                    external_links = metadata.get('external_links', 0)
+                    mx_count = metadata.get('mx_count', 0)
+                    a_count = metadata.get('a_count', 0)
+                    cse_id = metadata.get('cse_id', '')
+                    registrable = metadata.get('registrable', domain)
+
+                    # Safeguard: Don't mark CSE/known benign domains as parked
+                    is_cse_domain = bool(cse_id and cse_id != 'BULK_IMPORT')
+                    is_gov_domain = any(tld in registrable.lower() for tld in ['.gov.', '.nic.in', '.ac.in', '.edu.'])
+
+                    is_likely_parked = False
+                    parking_reason = []
+
+                    # Only check parking if NOT a CSE or government domain
+                    if not is_cse_domain and not is_gov_domain:
+                        # Parking detection heuristics (same as earlier but adjusted for NaN error context)
+                        if html_size > 0 and html_size < 500:
+                            is_likely_parked = True
+                            parking_reason.append(f"minimal HTML ({html_size}B)")
+                        elif html_size > 0 and html_size < 10000 and external_links <= 1:
+                            # Parking pages typically have minimal content and 0-1 external links
+                            # This catches GoDaddy parking landers and similar
+                            is_likely_parked = True
+                            parking_reason.append(f"parking page pattern (html={html_size}B, links={external_links})")
+                        # Removed aggressive DNS infrastructure check
+
+                    if is_likely_parked:
+                        logger.info(f"Domain {domain} detected as PARKED (NaN fallback): {', '.join(parking_reason)}")
+                        return {
+                            'domain': domain,
+                            'verdict': 'PARKED',
+                            'confidence': 0.75,
+                            'reason': f"Parked domain detected: {', '.join(parking_reason)}",
+                            'source': 'aiml_heuristic_nan_fallback',
+                            'error_context': 'Model input had NaN values',
+                            'timestamp': datetime.now().isoformat()
+                        }
+
+                    # Fall back to crawler verdict if available and not parked
                     if crawler_verdict:
                         logger.info(f"Falling back to crawler verdict due to model input error")
                         return {
@@ -510,7 +636,45 @@ class AIMlService:
             if inactive_info:
                 return self._create_inactive_verdict(domain, inactive_info, error_msg)
 
-            # Step 2: Fall back to crawler verdict if available
+            # Step 2: Check for parking indicators before falling back to crawler verdict
+            html_size = metadata.get('html_size', 0)
+            external_links = metadata.get('external_links', 0)
+            mx_count = metadata.get('mx_count', 0)
+            a_count = metadata.get('a_count', 0)
+            cse_id = metadata.get('cse_id', '')
+            registrable = metadata.get('registrable', domain)
+
+            # Safeguard: Don't mark CSE/known benign domains as parked
+            is_cse_domain = bool(cse_id and cse_id != 'BULK_IMPORT')
+            is_gov_domain = any(tld in registrable.lower() for tld in ['.gov.', '.nic.in', '.ac.in', '.edu.'])
+
+            is_likely_parked = False
+            parking_reason = []
+
+            # Only check parking if NOT a CSE or government domain
+            if not is_cse_domain and not is_gov_domain:
+                # Parking detection heuristics
+                if html_size > 0 and html_size < 500:
+                    is_likely_parked = True
+                    parking_reason.append(f"minimal HTML ({html_size}B)")
+                elif html_size > 0 and html_size < 10000 and external_links <= 1:
+                    is_likely_parked = True
+                    parking_reason.append(f"parking page pattern (html={html_size}B, links={external_links})")
+                # Removed aggressive DNS infrastructure check
+
+            if is_likely_parked:
+                logger.info(f"Domain {domain} detected as PARKED (exception fallback): {', '.join(parking_reason)}")
+                return {
+                    'domain': domain,
+                    'verdict': 'PARKED',
+                    'confidence': 0.70,
+                    'reason': f"Parked domain detected: {', '.join(parking_reason)}",
+                    'source': 'aiml_heuristic_exception_fallback',
+                    'error_context': f'AIML detection failed: {error_msg[:100]}',
+                    'timestamp': datetime.now().isoformat()
+                }
+
+            # Step 3: Fall back to crawler verdict if available and not parked
             if crawler_verdict:
                 logger.info(f"Detection failed for {domain}, falling back to crawler verdict: {crawler_verdict}")
                 return {
@@ -523,7 +687,7 @@ class AIMlService:
                     'timestamp': datetime.now().isoformat()
                 }
 
-            # Step 3: No fallback available - return error
+            # Step 4: No fallback available - return error
             return {
                 'domain': domain,
                 'verdict': 'ERROR',

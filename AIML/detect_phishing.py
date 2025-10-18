@@ -1,6 +1,7 @@
 """
 Unified Multi-Modal Phishing Detection System
 Combines: Tabular Anomaly + Screenshot Phash + Favicon Hash + CLIP Similarity + Autoencoder
+ENHANCED: Now includes content-based risk classification and domain reputation checks
 """
 
 import argparse
@@ -17,6 +18,16 @@ import open_clip
 from torchvision import transforms, models
 from urllib.parse import urlparse
 from difflib import SequenceMatcher
+import sys
+
+# Import new modules for non-CSE threat detection
+try:
+    from models.content.risk_classifier import ContentRiskClassifier
+    from models.domain.reputation_checker import DomainReputationChecker
+    HAS_CONTENT_MODULES = True
+except ImportError as e:
+    print(f"⚠ Warning: Content/reputation modules not available: {e}")
+    HAS_CONTENT_MODULES = False
 
 def extract_domain_from_url(url_or_domain):
     """Extract clean domain from URL or domain string"""
@@ -76,13 +87,23 @@ class UnifiedPhishingDetector:
                 'ViT-B-32', pretrained='laion2b_s34b_b79k'
             )
             self.clip_model.eval()
+
+            # Move to GPU if available for faster inference
+            self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            if torch.cuda.is_available():
+                self.clip_model = self.clip_model.cuda()
+                print(f"✓ CLIP model loaded on GPU ({len(self.cse_embeddings) if hasattr(self, 'cse_embeddings') else '?'} CSE embeddings)")
+            else:
+                print(f"⚠ CLIP model loaded on CPU (GPU not available)")
+
             self.cse_embeddings = np.load(self.model_dir / "vision/cse_index/cse_embeddings.npy")
             with open(self.model_dir / "vision/cse_index/cse_metadata.json") as f:
                 self.cse_metadata = json.load(f)
-            print(f"✓ CLIP model loaded ({len(self.cse_embeddings)} CSE embeddings)")
+            print(f"✓ CLIP index loaded ({len(self.cse_embeddings)} CSE embeddings)")
         except Exception as e:
             print(f"⚠ CLIP model not available: {e}")
             self.clip_model = None
+            self.device = torch.device('cpu')
 
         # 3. Load vision autoencoder
         try:
@@ -117,6 +138,17 @@ class UnifiedPhishingDetector:
             print("⚠ legitimate_domains.csv not found, skipping similar-name protection")
             self.legitimate_domains = set()
             self.legitimate_domains_df = pd.DataFrame()
+
+        # 8. Initialize content-based risk classifier (for non-CSE threats)
+        if HAS_CONTENT_MODULES:
+            self.content_classifier = ContentRiskClassifier()
+            self.domain_reputation_checker = DomainReputationChecker()
+            print(f"✓ Content risk classifier loaded (phishing, gambling, malware, adult)")
+            print(f"✓ Domain reputation checker loaded (TLD risk, age, registrar)")
+        else:
+            self.content_classifier = None
+            self.domain_reputation_checker = None
+            print("⚠ Content/reputation modules not loaded")
 
         print("\nAll models loaded successfully!\n")
 
@@ -221,18 +253,23 @@ class UnifiedPhishingDetector:
                 test_img = Image.open(screenshot_path).convert('RGB')
                 test_img_tensor = self.clip_preprocess(test_img).unsqueeze(0)
 
+                # Move to GPU if available
+                if hasattr(self, 'device') and self.device.type == 'cuda':
+                    test_img_tensor = test_img_tensor.cuda()
+
                 with torch.no_grad():
-                    test_embedding = self.clip_model.encode_image(test_img_tensor).cpu().numpy()[0]
+                    test_embedding = self.clip_model.encode_image(test_img_tensor)
+                    # Normalize embedding for consistent similarity calculation
+                    test_embedding = test_embedding / test_embedding.norm(dim=-1, keepdim=True)
+                    test_embedding = test_embedding.cpu().numpy()[0]
 
                 # Find CSE domain embedding
                 for i, meta in enumerate(self.cse_metadata):
                     if meta['registrable'] == matched_cse_domain:
                         cse_embedding = self.cse_embeddings[i]
 
-                        # Calculate cosine similarity
-                        similarity = np.dot(test_embedding, cse_embedding) / (
-                            np.linalg.norm(test_embedding) * np.linalg.norm(cse_embedding)
-                        )
+                        # Calculate cosine similarity (both embeddings are normalized)
+                        similarity = float(np.dot(test_embedding, cse_embedding))
 
                         # If similarity < 0.70, visually very different
                         if similarity < 0.70:
@@ -340,6 +377,10 @@ class UnifiedPhishingDetector:
         img = Image.open(screenshot_path).convert('RGB')
         img_tensor = self.clip_preprocess(img).unsqueeze(0)
 
+        # Move to GPU if available
+        if hasattr(self, 'device') and self.device.type == 'cuda':
+            img_tensor = img_tensor.cuda()
+
         with torch.no_grad():
             query_emb = self.clip_model.encode_image(img_tensor)
             query_emb = query_emb / query_emb.norm(dim=-1, keepdim=True)
@@ -352,20 +393,26 @@ class UnifiedPhishingDetector:
         max_idx = similarities.argmax()
         max_sim = float(similarities[max_idx])
         matched_meta = self.cse_metadata[max_idx]
-        matched_domain_raw = matched_meta['domain']
+        matched_domain = matched_meta['domain']  # Already clean from metadata
 
-        # Normalize domain (strip filename suffixes like _99dd5fbe)
-        matched_domain = matched_domain_raw.split('_')[0]
+        # High similarity threshold for phishing detection
+        if max_sim > 0.85:
+            # Check if domains are related (same organization)
+            # This prevents false positives for legitimate subdomains
+            if self.domains_are_related(domain, matched_domain):
+                # High similarity + related domains = legitimate (e.g., api.sbi.co.in vs www.sbi.co.in)
+                return None
 
-        if max_sim > 0.85 and domain != matched_domain:
-            return {
-                'signal': 'clip_similarity',
-                'verdict': 'PHISHING',
-                'confidence': 0.88,
-                'reason': f"High visual similarity to {matched_domain} (sim={max_sim:.3f})",
-                'matched_cse': matched_domain,
-                'similarity': max_sim
-            }
+            # High similarity + unrelated domains = potential phishing
+            if domain != matched_domain:
+                return {
+                    'signal': 'clip_similarity',
+                    'verdict': 'PHISHING',
+                    'confidence': 0.88,
+                    'reason': f"High visual similarity to {matched_domain} (sim={max_sim:.3f})",
+                    'matched_cse': matched_domain,
+                    'similarity': max_sim
+                }
 
         return None
 
@@ -493,13 +540,23 @@ class UnifiedPhishingDetector:
                 parking_score += 2
                 indicators.append(f"Parking keywords detected ({keyword_count} matches)")
 
-        # 4. No forms (parked domains rarely have forms)
+        # 4. OCR text with parking keywords (ENHANCED)
+        ocr_text = (features.get('ocr_text', '') or '').lower()
+        if ocr_text:
+            ocr_parking_keywords = ['domain for sale', 'buy this domain', 'parked', 'make an offer',
+                                   'sedo', 'afternic', 'premium domain']
+            ocr_keyword_count = sum(1 for kw in ocr_parking_keywords if kw in ocr_text)
+            if ocr_keyword_count >= 1:
+                parking_score += 2
+                indicators.append(f"OCR parking keywords detected ({ocr_keyword_count} matches)")
+
+        # 5. No forms (parked domains rarely have forms)
         form_count = features.get('form_count', 0) or 0
         if form_count == 0 and html_size > 0:
             parking_score += 1
 
-        # Decision: Score ≥ 4 indicates parking
-        if parking_score >= 4:
+        # Decision: Score ≥ 3 indicates parking (lowered from 4 for better detection)
+        if parking_score >= 3:
             return {
                 'signal': 'parking_detection',
                 'verdict': 'PARKED',
@@ -510,8 +567,51 @@ class UnifiedPhishingDetector:
 
         return None
 
+    def check_feature_completeness(self, features):
+        """
+        Check if enough features are available for reliable ML prediction
+
+        Returns:
+            (completeness_score, missing_features) tuple
+            completeness_score: float 0-1 indicating % of features present
+            missing_features: list of feature names that are missing/invalid
+        """
+        if not features:
+            return (0.0, self.feature_names)
+
+        available_count = 0
+        missing_features = []
+
+        for fname in self.feature_names:
+            val = features.get(fname)
+
+            # Check if feature is present and valid
+            is_valid = (
+                val is not None and
+                not (isinstance(val, float) and pd.isna(val)) and
+                not (isinstance(val, str) and val == '') and
+                not (isinstance(val, float) and np.isinf(val))
+            )
+
+            if is_valid:
+                available_count += 1
+            else:
+                missing_features.append(fname)
+
+        completeness = available_count / len(self.feature_names)
+        return (completeness, missing_features)
+
     def check_tabular_anomaly(self, features):
-        """Check tabular feature anomaly"""
+        """Check tabular feature anomaly with feature completeness validation"""
+        # Check feature completeness FIRST
+        completeness, missing_features = self.check_feature_completeness(features)
+
+        # Require at least 50% of features to be present
+        if completeness < 0.50:
+            print(f"⚠ Warning: Feature completeness too low ({completeness:.1%}), skipping tabular anomaly detection")
+            print(f"   Missing features ({len(missing_features)}): {missing_features[:10]}...")
+            return None  # Skip tabular model if data quality is poor
+
         # Prepare features - convert strings to category codes
         feature_dict = {}
         for fname in self.feature_names:
@@ -552,9 +652,13 @@ class UnifiedPhishingDetector:
             print(f"⚠ Warning: Cannot convert feature vector to numeric: {e}")
             return None  # Cannot process this domain
 
-        # Predict
-        score = self.tabular_model.decision_function([feature_vector])[0]
-        prediction = self.tabular_model.predict([feature_vector])[0]
+        # Predict (Pipeline with SimpleImputer will handle any remaining NaN)
+        try:
+            score = self.tabular_model.decision_function([feature_vector])[0]
+            prediction = self.tabular_model.predict([feature_vector])[0]
+        except Exception as e:
+            print(f"⚠ Warning: Model prediction failed: {e}")
+            return None
 
         # Only flag if strongly anomalous (stricter threshold)
         if prediction == -1 and score < -0.10:  # Added score threshold
@@ -563,7 +667,8 @@ class UnifiedPhishingDetector:
                 'verdict': 'SUSPICIOUS',
                 'confidence': 0.65,
                 'reason': f"Features deviate from CSE baseline (score={score:.3f})",
-                'anomaly_score': score
+                'anomaly_score': score,
+                'feature_completeness': completeness
             }
 
         return None
@@ -680,8 +785,38 @@ class UnifiedPhishingDetector:
                     'signal_count': 0
                 }
 
+        # STAGE 2.5: Content-Based Risk Classification (NEW - for non-CSE threats)
+        if self.content_classifier and features:
+            content_signals = self.content_classifier.classify(features)
+
+            # Check for high-confidence content-based verdicts
+            for signal in content_signals:
+                # If we have a strong content-based signal (gambling, adult, malware, phishing)
+                # Return immediately without CSE similarity checks
+                if signal['verdict'] in ['GAMBLING', 'ADULT_CONTENT', 'MALWARE']:
+                    return {
+                        'domain': domain,
+                        'verdict': signal['verdict'],
+                        'confidence': signal['confidence'],
+                        'signals': [signal],
+                        'signal_count': 1
+                    }
+                # For phishing signals, continue to collect more evidence
+                # (will be combined with other signals later)
+
+        # STAGE 2.6: Domain Reputation Checks (NEW - for suspicious indicators)
+        reputation_signals = []
+        if self.domain_reputation_checker:
+            reputation_signals = self.domain_reputation_checker.check_reputation(domain, features)
+
         # STAGE 3: Similarity Detection (slow path)
         signals = []
+
+        # Add content and reputation signals to the overall signal list
+        if self.content_classifier and features:
+            signals.extend(content_signals if 'content_signals' in locals() else [])
+        if reputation_signals:
+            signals.extend(reputation_signals)
         matched_cse_domain = None  # Track which CSE domain was matched
 
         # Check for redirected brand impersonation FIRST
@@ -752,17 +887,34 @@ class UnifiedPhishingDetector:
             if result:
                 signals.append(result)
 
-        # Determine final verdict (priority: PHISHING > PARKED > SUSPICIOUS > BENIGN)
-        if any(s['verdict'] == 'PHISHING' for s in signals):
-            verdict = 'PHISHING'
-            confidence = max(s['confidence'] for s in signals if s['verdict'] == 'PHISHING')
-        elif any(s['verdict'] == 'PARKED' for s in signals):
-            verdict = 'PARKED'
-            confidence = max(s['confidence'] for s in signals if s['verdict'] == 'PARKED')
-        elif any(s['verdict'] == 'SUSPICIOUS' for s in signals):
-            verdict = 'SUSPICIOUS'
-            confidence = max(s['confidence'] for s in signals)
-        else:
+        # Determine final verdict (priority order for multi-category system)
+        # Priority: GAMBLING > ADULT_CONTENT > MALWARE > PHISHING_* > PARKED > SUSPICIOUS > BENIGN
+        verdict_priority = [
+            'GAMBLING',
+            'ADULT_CONTENT',
+            'MALWARE',
+            'PHISHING_FINANCIAL',
+            'PHISHING_CRYPTO',
+            'PHISHING_GENERIC',
+            'PHISHING',  # CSE phishing
+            'PARKED',
+            'SUSPICIOUS',
+            'BENIGN'
+        ]
+
+        # Find highest priority verdict
+        verdict = None
+        confidence = 0.0
+
+        for priority_verdict in verdict_priority:
+            matching_signals = [s for s in signals if s['verdict'] == priority_verdict]
+            if matching_signals:
+                verdict = priority_verdict
+                confidence = max(s['confidence'] for s in matching_signals)
+                break
+
+        # If no signals detected, mark as BENIGN
+        if verdict is None:
             verdict = 'BENIGN'
             confidence = 0.85
             signals.append({

@@ -6,6 +6,7 @@ import joblib
 from pathlib import Path
 from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 
 def main():
@@ -35,9 +36,10 @@ def main():
     print(f"Training on {X.shape[1]} features")
     print(f"Features: {list(X.columns)}")
 
-    # Train IsolationForest
+    # Train IsolationForest with imputation for missing values
     # Score: -1 = anomaly (phishing), 1 = normal (benign)
     model = Pipeline([
+        ('imputer', SimpleImputer(strategy='constant', fill_value=0)),
         ('scaler', StandardScaler()),
         ('detector', IsolationForest(
             n_estimators=200,
