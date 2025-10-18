@@ -30,6 +30,7 @@ import {
   GET_ORIGINATING_COUNTRIES,
   GET_OVERVIEW,
   GET_PARKED_INSIGHTS,
+  GET_THREAT_LANDSCAPE,
   GET_URL_INSIGHTS,
   GET_URL_WATCH_GRAPH,
 } from "@/endpoints/dashboard.endpoints";
@@ -184,6 +185,32 @@ const useGetDomains = () => {
   };
 };
 
+const useGetThreatLandscape = () => {
+  const [threatLandscapeData, setThreatLandscapeData] = useState({});
+  const [threatLandscapeLoading, setThreatLandscapeLoading] = useState(false);
+
+  const fetchThreatLandscape = useCallback(async () => {
+    setThreatLandscapeLoading(true);
+    try {
+      const response = await http.get(GET_THREAT_LANDSCAPE);
+      setThreatLandscapeData(response?.data?.data);
+    } catch (error) {
+      console.error("Error Fetching Threat Landscape Data with error: ", error);
+    } finally {
+      setThreatLandscapeLoading(false);
+    }
+  }, []);
+  useEffect(() => {
+    fetchThreatLandscape();
+  }, [fetchThreatLandscape]);
+
+  return {
+    threatLandscapeData,
+    threatLandscapeLoading,
+    refetch: fetchThreatLandscape,
+  };
+};
+
 const Dashboard = () => {
   const location = useLocation();
   const [reportsAnchorEl, setReportsAnchorEl] = useState<null | HTMLElement>(
@@ -206,6 +233,8 @@ const Dashboard = () => {
   const { parkedInsightData, parkedInsightLoading } = useGetParkedInsight();
   const { overviewData, overviewLoading } = useGetOverview();
   const { domainsData, domainsLoading } = useGetDomains();
+  const { threatLandscapeData, threatLandscapeLoading } =
+    useGetThreatLandscape();
 
   return (
     <Box
@@ -296,8 +325,15 @@ const Dashboard = () => {
 
         {/* Threat Landscape Bar */}
         <div className="mb-6">
+          <Typography
+            variant="h6"
+            sx={{ color: "#EEEEEE", fontWeight: 600, mb: 3 }}
+          >
+            Threat Landscape
+          </Typography>
           <ThreatLandscapeBar
-            segments={mockDashboard.threatLandscapeSegments}
+            apiData={threatLandscapeData}
+            loading={threatLandscapeLoading}
           />
         </div>
 
@@ -310,7 +346,10 @@ const Dashboard = () => {
             >
               Top CSE By Risk
             </Typography>
-            <TopCseByRisk data={mockDashboard.topCseByRisk} />
+            <TopCseByRisk
+              apiData={threatLandscapeData}
+              loading={threatLandscapeLoading}
+            />
           </div>
           <div className="xl:col-span-6">
             <Typography

@@ -28,6 +28,7 @@ import {
   GET_LIVE_URL,
   GET_TAGGING_DISTRIBUTION,
   GET_UNIQUE_DOMAINS_COUNT,
+  GET_URL_PROCESSES,
 } from "@/endpoints/liveMonitoring.endpoints";
 import { toast } from "sonner";
 
@@ -151,6 +152,36 @@ const useGetUrlTagging = () => {
   };
 };
 
+const useGetUrlProcess = () => {
+  const [urlProcessData, setUrlProcessData] = useState<any>({});
+  const [urlProcessLoading, setUrlProcessLoading] = useState(false);
+
+  const fetchUrlProcessData = useCallback(async () => {
+    setUrlProcessLoading(true);
+    try {
+      const response = await http.get(GET_URL_PROCESSES);
+      console.log(response?.data);
+      setUrlProcessData(response?.data?.data);
+    } catch (error) {
+      console.error("Error Fetching URL Process Data with error: ", error);
+    } finally {
+      setUrlProcessLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUrlProcessData();
+  }, [fetchUrlProcessData]);
+
+  return {
+    urlProcessData,
+    urlProcessLoading,
+    refetch: fetchUrlProcessData,
+  };
+};
+
+/* ---------- PAGE ---------- */
+
 const LiveMonitoring: React.FC = () => {
   const [timeRange, setTimeRange] = useState<TimeRange>("5m");
   const [reportsAnchorEl, setReportsAnchorEl] = useState<null | HTMLElement>(
@@ -166,6 +197,8 @@ const LiveMonitoring: React.FC = () => {
     useGetUniqueDomainCount();
 
   const { urlTaggingData, urlTaggingLoading } = useGetUrlTagging();
+
+  const { urlProcessData, urlProcessLoading } = useGetUrlProcess();
 
   /* ------- Helpers For Graph ------- */
   const seriesCount = useMemo<[number, number][]>(() => {
@@ -390,9 +423,11 @@ const LiveMonitoring: React.FC = () => {
               <h2 className="text-xl font-semibold text-white">
                 URL Processes
               </h2>
-              <LiveDot />
             </div>
-            <URLProcessTable />
+            <URLProcessTable
+              data={urlProcessData}
+              loading={urlProcessLoading}
+            />
           </LiquidCard>
 
           {/* Live URL Scan - plain dark card */}

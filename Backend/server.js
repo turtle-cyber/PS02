@@ -26,6 +26,7 @@ const liveUrlScanRouter = require('./routes/liveMonitoring/live-url-scan');
 const currentScanRouter = require('./routes/liveMonitoring/current-scan');
 const taggingDistributionRouter = require('./routes/liveMonitoring/tagging-distribution');
 const uniqueDomainCountRouter = require('./routes/liveMonitoring/unique-domain-count');
+const urlProcessesRouter = require('./routes/liveMonitoring/url-processes');
 
 // ============================================
 // Configuration
@@ -180,6 +181,7 @@ app.use('/api', liveUrlScanRouter);
 app.use('/api', currentScanRouter);
 app.use('/api', taggingDistributionRouter);
 app.use('/api', uniqueDomainCountRouter);
+app.use('/api', urlProcessesRouter);
 
 /**
  * Health check endpoint

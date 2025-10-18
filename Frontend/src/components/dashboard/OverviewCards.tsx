@@ -24,9 +24,9 @@ export const OverviewCards: React.FC<any> = ({ data, loading }) => {
         <LiquidCard variant="glass" className="p-6 flex-1">
           <div className="space-y-4">
             <p className="text-slate-400 text-sm mb-1">Confidence Score</p>
-            <p className="text-white text-3xl font-semibold">
+            <p className="text-white text-3xl font-semibold flex">
               {loading ? (
-                <Skeleton sx={{ width: 100, borderRadius: 2 }} />
+                <Skeleton sx={{ width: 50, borderRadius: 2 }} />
               ) : data ? (
                 53
               ) : (
