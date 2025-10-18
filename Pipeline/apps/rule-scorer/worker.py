@@ -33,6 +33,38 @@ RISKY_TLDS = set(os.getenv(
     "RISKY_TLDS", "tk,ml,ga,cf,gq,xyz,top,club,info,online,site,website,space,tech"
 ).replace(" ", "").split(","))
 
+# Protected TLDs that should not appear in subdomains (impersonation detection)
+PROTECTED_TLDS = set(os.getenv(
+    "PROTECTED_TLDS", "gov,edu,mil,ac,org,gov.in,gov.uk,gov.au,gov.ca,gov.sg,ac.uk,edu.au,mil.uk"
+).replace(" ", "").split(","))
+
+# Country-code TLDs for detection
+CCTLDS = set(os.getenv(
+    "CCTLDS", "in,uk,au,de,fr,cn,ru,br,jp,kr,sg,nz,za,nl,se,no,dk,fi,es,it,pl,ch,at,be,gr,ie,pt,cz"
+).replace(" ", "").split(","))
+
+# Sensitive TLDs requiring geographic validation (country code -> expected countries)
+GEO_SENSITIVE_TLDS = {
+    "gov.in": ["IN"],
+    "gov.uk": ["GB", "UK"],
+    "gov.au": ["AU"],
+    "gov.ca": ["CA"],
+    "gov.sg": ["SG"],
+    "gov": ["US"],
+    "mil": ["US"],
+    "ac.uk": ["GB", "UK"],
+    "edu.au": ["AU"],
+    "mil.uk": ["GB", "UK"],
+}
+
+# Suspicious nameserver providers (bullet-proof hosting, etc.)
+SUSPICIOUS_NAMESERVERS = set(os.getenv(
+    "SUSPICIOUS_NAMESERVERS", "freenom,njalla,1984hosting,shinjiru,flokinet,cyberbunker,ecatel"
+).replace(" ", "").split(","))
+
+# DNS anomaly thresholds
+MIN_TTL_THRESHOLD = int(os.getenv("MIN_TTL_THRESHOLD", "60"))  # Flag TTLs below this (fast-flux)
+
 # Known parking providers (DNS nameservers)
 PARKING_NAMESERVERS = {
     "sedoparking.com", "parkingcrew.net", "bodis.com", "dns-parking.com",
@@ -77,6 +109,96 @@ def _is_cross_registrable(orig_host, final_url):
         return orig_host.split(".",1)[-1].lower() != fhost.split(".",1)[-1].lower()
     except Exception:
         return False
+
+def _extract_subdomain_labels(fqdn):
+    """Extract all subdomain labels from FQDN as a list.
+    Example: 'dc.crsorgi.gov.in.web.index.dc-verify.info' -> ['dc', 'crsorgi', 'gov', 'in', 'web', 'index', 'dc-verify']
+    """
+    if not fqdn or "." not in fqdn:
+        return []
+    parts = fqdn.lower().split(".")
+    # Return all parts except the last 2 (assuming last 2 are TLD or registrable)
+    # But for multi-part TLDs like .co.uk, this is approximate
+    return parts[:-2] if len(parts) > 2 else []
+
+def _detect_tld_impersonation(fqdn, actual_tld):
+    """Detect if protected TLDs (gov, edu, mil, ccTLDs) appear in subdomain labels.
+    Returns (is_impersonating, impersonated_tld)
+    """
+    if not fqdn:
+        return False, None
+
+    subdomain_labels = _extract_subdomain_labels(fqdn)
+
+    # Check for multi-part protected TLDs first (e.g., gov.in, gov.uk)
+    for i in range(len(subdomain_labels) - 1):
+        combined = f"{subdomain_labels[i]}.{subdomain_labels[i+1]}"
+        if combined in PROTECTED_TLDS and combined != actual_tld:
+            return True, combined
+
+    # Check for single-part protected TLDs or ccTLDs
+    for label in subdomain_labels:
+        if label in PROTECTED_TLDS and label != actual_tld:
+            return True, label
+        # Also flag if ccTLD appears in subdomain (e.g., paypal.in.scam.com)
+        if label in CCTLDS and label != actual_tld:
+            return True, label
+
+    return False, None
+
+def _count_subdomain_depth(fqdn):
+    """Count the number of subdomain levels.
+    Example: 'a.b.c.d.example.com' -> 4 subdomains
+    """
+    if not fqdn or "." not in fqdn:
+        return 0
+    parts = fqdn.split(".")
+    # Subdomains = total parts - 2 (for domain.tld)
+    # This is approximate for multi-part TLDs but good enough for scoring
+    return max(0, len(parts) - 2)
+
+def _check_self_referential_mx(fqdn, mx_records):
+    """Check if MX records point to the same domain (suspicious)."""
+    if not fqdn or not mx_records:
+        return False
+    fqdn_lower = fqdn.lower().rstrip(".")
+    for mx in mx_records:
+        mx_lower = (mx or "").lower().rstrip(".")
+        if mx_lower == fqdn_lower:
+            return True
+    return False
+
+def _check_low_ttl(ttls_dict):
+    """Check if any TTL values are suspiciously low (fast-flux indicator)."""
+    if not ttls_dict:
+        return False
+    for record_type, ttl in ttls_dict.items():
+        if isinstance(ttl, int) and 0 <= ttl < MIN_TTL_THRESHOLD:
+            return True
+    return False
+
+def _check_geographic_mismatch(fqdn, geoip_data):
+    """Check if claimed geographic identity (TLD) mismatches hosting location."""
+    if not fqdn or not geoip_data:
+        return False, None
+
+    # Extract country from geoip
+    actual_country = geoip_data.get("country")
+    if not actual_country:
+        return False, None
+
+    # Check if domain claims to be from a sensitive TLD
+    for sensitive_tld, expected_countries in GEO_SENSITIVE_TLDS.items():
+        # Check if this sensitive TLD appears in the FQDN
+        if f".{sensitive_tld}." in f".{fqdn.lower()}." or fqdn.lower().endswith(f".{sensitive_tld}"):
+            # If actual TLD matches, this is legitimate
+            if fqdn.lower().endswith(f".{sensitive_tld}"):
+                continue
+            # TLD is in subdomain - check if hosting country matches
+            if actual_country.upper() not in expected_countries:
+                return True, sensitive_tld
+
+    return False, None
 
 # ------------ Fusion state ------------
 class LRUState:
@@ -137,10 +259,29 @@ def score_bundle(domain: dict, http: dict, feat: dict):
     elif url_len >= 80: reasons.append("Long URL");     cats["url"]+=5;  score+=5
     if url_ent and url_ent > 4.5: reasons.append("High URL entropy"); cats["url"]+=15; score+=15
     elif url_ent and url_ent > 4.0: reasons.append("Elevated URL entropy"); cats["url"]+=10; score+=10
-    if num_subdom >= 5: reasons.append("Many subdomains (≥5)"); cats["url"]+=12; score+=12
-    elif num_subdom >= 3: reasons.append("Multiple subdomains (≥3)"); cats["url"]+=8; score+=8
+    # Enhanced subdomain depth scoring
+    actual_subdom_depth = _count_subdomain_depth(fqdn) if fqdn else num_subdom
+    if actual_subdom_depth >= 8:
+        reasons.append("Extreme subdomain depth (≥8)"); cats["url"]+=20; score+=20
+    elif actual_subdom_depth >= 6:
+        reasons.append("Very deep subdomains (≥6)"); cats["url"]+=15; score+=15
+    elif actual_subdom_depth >= 5:
+        reasons.append("Many subdomains (≥5)"); cats["url"]+=12; score+=12
+    elif actual_subdom_depth >= 3:
+        reasons.append("Multiple subdomains (≥3)"); cats["url"]+=8; score+=8
+
     if has_repdig: reasons.append("Repeated digits"); cats["url"]+=6; score+=6
     if tld in RISKY_TLDS: reasons.append(f"Risky TLD .{tld}"); cats["domain"]+=6; score+=6
+
+    # TLD impersonation detection (CRITICAL for phishing)
+    is_impersonating, impersonated_tld = _detect_tld_impersonation(fqdn, tld)
+    if is_impersonating:
+        if impersonated_tld in PROTECTED_TLDS:
+            reasons.append(f"TLD impersonation: {impersonated_tld} in subdomain")
+            cats["impersonation"]+=40; score+=40
+        else:
+            reasons.append(f"ccTLD in subdomain: {impersonated_tld}")
+            cats["impersonation"]+=30; score+=30
 
     # Forms/keywords
     forms = (feat or {}).get("forms") or {}
@@ -163,6 +304,12 @@ def score_bundle(domain: dict, http: dict, feat: dict):
     elif kw_count >= 3: reasons.append("Phishing keywords present"); cats["content"]+=12; score+=12
     elif kw_count >= 1: reasons.append("Keyword hint"); cats["content"]+=8; score+=8
 
+    # JavaScript obfuscation / suspicious behavior
+    js_obfuscated = bool((feat or {}).get("js_obfuscated"))
+    js_obfuscated_count = _safe_int((feat or {}).get("js_obfuscated_count"))
+    if js_obfuscated or js_obfuscated_count > 0:
+        reasons.append("Obfuscated JavaScript detected"); cats["javascript"]+=15; score+=15
+
     # TLS (from http.probed)
     tls = (http or {}).get("tls") or {}
     if tls.get("is_self_signed"):      reasons.append("TLS self-signed"); cats["ssl"]+=40; score+=40
@@ -177,6 +324,56 @@ def score_bundle(domain: dict, http: dict, feat: dict):
     if _is_cross_registrable((http or {}).get("original_host") or (http or {}).get("host"),
                              (http or {}).get("final_url") or (http or {}).get("url")):
         reasons.append("Redirect crosses registrable"); cats["http"]+=12; score+=12
+
+    # DNS anomaly detection
+    dns = (domain or {}).get("dns") or {}
+    mx_records = dns.get("MX") or []
+    ttls = dns.get("ttls") or {}
+    ns_records = dns.get("NS") or []
+
+    # Self-referential MX (email configuration pointing to itself - suspicious)
+    if _check_self_referential_mx(fqdn, mx_records):
+        reasons.append("Self-referential MX record"); cats["dns"]+=10; score+=10
+
+    # Low/zero TTL values (fast-flux DNS indicator)
+    if _check_low_ttl(ttls):
+        reasons.append("Suspiciously low TTL (fast-flux)"); cats["dns"]+=8; score+=8
+
+    # Missing WHOIS data (domain registration hidden)
+    whois_error = whois.get("error")
+    if whois_error and "no output" in str(whois_error).lower():
+        reasons.append("WHOIS data unavailable"); cats["dns"]+=5; score+=5
+
+    # Suspicious nameserver providers
+    for ns in ns_records:
+        ns_lower = (ns or "").lower()
+        for suspicious_provider in SUSPICIOUS_NAMESERVERS:
+            if suspicious_provider in ns_lower:
+                reasons.append(f"Suspicious nameserver ({suspicious_provider})"); cats["dns"]+=12; score+=12
+                break
+
+    # Geographic mismatch detection
+    geoip = (domain or {}).get("geoip") or {}
+    has_geo_mismatch, claimed_tld = _check_geographic_mismatch(fqdn, geoip)
+    if has_geo_mismatch:
+        actual_country = geoip.get("country", "unknown")
+        reasons.append(f"Geographic mismatch: claims {claimed_tld}, hosted in {actual_country}")
+        cats["geo"]+=15; score+=15
+
+    # Typosquatting / Lookalike detection
+    # Check if domain is flagged as a lookalike of seed domain
+    seed_registrable = (domain or {}).get("seed_registrable") or (http or {}).get("seed_registrable") or (feat or {}).get("seed_registrable")
+    is_original_seed = (domain or {}).get("is_original_seed") or (http or {}).get("is_original_seed") or (feat or {}).get("is_original_seed")
+
+    # If domain has a seed but is NOT the original seed, it's a potential typosquat
+    if seed_registrable and not is_original_seed and seed_registrable != registrable:
+        # Basic lookalike detection - domain differs from seed
+        reasons.append(f"Potential typosquat of {seed_registrable}")
+        cats["typosquat"]+=25; score+=25
+
+        # TODO: Integrate DNSTwist similarity score from Redis for more precise scoring
+        # Redis keys: dnstwist:variants:{domain}, dnstwist:similarity:{domain}
+        # Higher similarity (closer to seed) = higher score
 
     # Accurate parked domain detection
     is_parked = False

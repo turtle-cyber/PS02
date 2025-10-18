@@ -101,8 +101,9 @@ services:
       KAFKA_BOOTSTRAP: "kafka:9092"
       KAFKA_INPUT_TOPIC: "raw.hosts"   # Listen to user submissions
       KAFKA_OUTPUT_TOPIC: "raw.hosts"  # Emit variants back to raw.hosts
-      KAFKA_INACTIVE_TOPIC: "phish.urls.inactive"  # NEW: Unregistered variants
-      TRACK_UNREGISTERED: "true"  # NEW: Monitor unregistered variants
+      KAFKA_INACTIVE_TOPIC: "phish.urls.inactive"  # Unregistered variants
+      KAFKA_CRAWL_TOPIC: "phish.urls.crawl"  # CRITICAL: Original seeds go here for full feature extraction
+      TRACK_UNREGISTERED: "true"  # Monitor unregistered variants
       THREADS: "16"
       NAMESERVERS: "unbound:5335"  # Fixed: added port
       PROCESS_CSV_ON_STARTUP: "true"  # Process CSV seeds on startup, then continuous
@@ -224,6 +225,8 @@ services:
     environment:
       - IN_TOPIC=http.probed              # MUST match http-fetcher OUTPUT_TOPIC
       - OUT_TOPIC=phish.urls.crawl        # feature-crawler consumes this
+      - INACTIVE_TOPIC=phish.urls.inactive  # Inactive/failed probe domains
+      - FAILED_TOPIC=phish.urls.failed    # NEW: Dead letter queue for parsing failures
       - KAFKA_BOOTSTRAP=kafka:9092
       - KAFKA_BROKERS=kafka:9092          # router.py also accepts this
       - AUTO_OFFSET_RESET=earliest

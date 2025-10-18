@@ -495,25 +495,65 @@ router.get('/domain/:domain', async (req, res) => {
         let found = null;
         let collectionName = null;
 
-        // Search in originals first - try multiple strategies
-        try {
-            const originalsCol = await chromaClient.getCollection({ name: ORIGINALS_COLLECTION });
-
-            // Strategy 1: Get all IDs and find by prefix match (since ID format is "domain:hash")
-            const allOriginals = await originalsCol.get({
-                limit: 10000,  // Get all (reasonable limit)
+        /**
+         * Helper function to search a collection with multiple strategies
+         */
+        const searchCollection = async (collection, name, limit) => {
+            const allItems = await collection.get({
+                limit: limit,
                 include: ['metadatas', 'documents']
             });
 
-            // Find by ID prefix match (ID format: "sbi.bank.in:hash")
-            const matchIndex = allOriginals.ids.findIndex(id => id.startsWith(domain + ':'));
+            // Strategy 1: Exact ID prefix match (domain:hash)
+            let matchIndex = allItems.ids.findIndex(id => id.startsWith(domain + ':'));
+
+            // Strategy 2: If not found, check metadata fields
+            if (matchIndex < 0) {
+                matchIndex = allItems.metadatas.findIndex(meta => {
+                    if (!meta) return false;
+
+                    // Extract hostname from URL and compare
+                    if (meta.url) {
+                        try {
+                            const urlObj = new URL(meta.url);
+                            if (urlObj.hostname === domain || urlObj.hostname === `www.${domain}` || `www.${urlObj.hostname}` === domain) {
+                                return true;
+                            }
+                        } catch (e) {
+                            // Invalid URL, skip
+                        }
+                    }
+
+                    // Check registrable domain field
+                    if (meta.registrable === domain) {
+                        return true;
+                    }
+
+                    // Check seed_registrable field (for variants)
+                    if (meta.seed_registrable === domain) {
+                        return true;
+                    }
+
+                    return false;
+                });
+            }
 
             if (matchIndex >= 0) {
-                found = {
-                    id: allOriginals.ids[matchIndex],
-                    metadata: allOriginals.metadatas[matchIndex],
-                    document: allOriginals.documents[matchIndex]
+                return {
+                    id: allItems.ids[matchIndex],
+                    metadata: allItems.metadatas[matchIndex],
+                    document: allItems.documents[matchIndex]
                 };
+            }
+
+            return null;
+        };
+
+        // Search in originals first
+        try {
+            const originalsCol = await chromaClient.getCollection({ name: ORIGINALS_COLLECTION });
+            found = await searchCollection(originalsCol, ORIGINALS_COLLECTION, 10000);
+            if (found) {
                 collectionName = ORIGINALS_COLLECTION;
             }
         } catch (error) {
@@ -524,22 +564,8 @@ router.get('/domain/:domain', async (req, res) => {
         if (!found) {
             try {
                 const variantsCol = await chromaClient.getCollection({ name: VARIANTS_COLLECTION });
-
-                // Strategy 1: Get all IDs and find by prefix match
-                const allVariants = await variantsCol.get({
-                    limit: 50000,  // Variants collection may be larger
-                    include: ['metadatas', 'documents']
-                });
-
-                // Find by ID prefix match
-                const matchIndex = allVariants.ids.findIndex(id => id.startsWith(domain + ':'));
-
-                if (matchIndex >= 0) {
-                    found = {
-                        id: allVariants.ids[matchIndex],
-                        metadata: allVariants.metadatas[matchIndex],
-                        document: allVariants.documents[matchIndex]
-                    };
+                found = await searchCollection(variantsCol, VARIANTS_COLLECTION, 50000);
+                if (found) {
                     collectionName = VARIANTS_COLLECTION;
                 }
             } catch (error) {

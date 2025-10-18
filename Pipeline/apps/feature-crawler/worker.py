@@ -75,11 +75,10 @@ def utcnow() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 def safe_write_jsonl(path: Path, record: Dict[str,Any]) -> None:
-    tmp = path.with_suffix(path.suffix + ".tmp")
+    """Append a single JSONL record to file (thread-safe append mode)"""
     line = ujson.dumps(record, ensure_ascii=False) + "\n"
-    with open(tmp, "ab") as f:
+    with open(path, "ab") as f:
         f.write(line.encode("utf-8"))
-    os.replace(tmp, path)
 
 def entropy(s: str) -> float:
     if not s:
@@ -574,6 +573,149 @@ def extract_html_features(html: str, base_url: str, favicon_data: Dict = None) -
         "javascript": js_analysis,
     }
 
+def extract_ssl_certificate(url: str) -> Dict[str, Any]:
+    """
+    Extract SSL certificate information from HTTPS URLs.
+    Critical for phishing detection - self-signed certs are a major indicator.
+
+    Returns dict with SSL info or minimal dict for HTTP URLs.
+    """
+    import ssl
+    import socket
+    from datetime import datetime
+    from urllib.parse import urlparse
+
+    if not url.startswith("https://"):
+        return {
+            "uses_https": False,
+            "scheme": "http"
+        }
+
+    ssl_info = {
+        "uses_https": True,
+        "scheme": "https"
+    }
+
+    try:
+        parsed = urlparse(url)
+        hostname = parsed.hostname
+        port = parsed.port or 443
+
+        if not hostname:
+            ssl_info["error"] = "No hostname in URL"
+            return ssl_info
+
+        # Create SSL context that doesn't verify (so we can inspect invalid certs)
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+
+        # Connect and get certificate (with timeout)
+        with socket.create_connection((hostname, port), timeout=5) as sock:
+            with context.wrap_socket(sock, server_hostname=hostname) as ssock:
+                cert = ssock.getpeercert()
+
+                if not cert:
+                    ssl_info["error"] = "No certificate returned"
+                    return ssl_info
+
+                # Issuer information
+                issuer = dict(x[0] for x in cert.get("issuer", []))
+                subject = dict(x[0] for x in cert.get("subject", []))
+
+                issuer_cn = issuer.get("commonName", "")
+                subject_cn = subject.get("commonName", "")
+
+                ssl_info["issuer"] = issuer_cn
+                ssl_info["subject"] = subject_cn
+                ssl_info["issuer_org"] = issuer.get("organizationName", "")
+                ssl_info["subject_org"] = subject.get("organizationName", "")
+
+                # Self-signed detection (issuer == subject)
+                ssl_info["is_self_signed"] = (issuer_cn == subject_cn)
+
+                # Certificate validity dates
+                not_before_str = cert.get("notBefore")
+                not_after_str = cert.get("notAfter")
+
+                if not_before_str:
+                    not_before = datetime.strptime(not_before_str, "%b %d %H:%M:%S %Y %Z")
+                    ssl_info["valid_from"] = not_before.isoformat()
+
+                    # Certificate age (newly issued = suspicious)
+                    cert_age_days = (datetime.utcnow() - not_before).days
+                    ssl_info["cert_age_days"] = cert_age_days
+                    ssl_info["is_newly_issued"] = cert_age_days < 30
+                    ssl_info["is_very_new_cert"] = cert_age_days < 7
+
+                if not_after_str:
+                    not_after = datetime.strptime(not_after_str, "%b %d %H:%M:%S %Y %Z")
+                    ssl_info["valid_until"] = not_after.isoformat()
+
+                    days_until_expiry = (not_after - datetime.utcnow()).days
+                    ssl_info["days_until_cert_expiry"] = days_until_expiry
+
+                # Subject Alternative Names (all domains this cert covers)
+                san_list = []
+                for san in cert.get("subjectAltName", []):
+                    if san[0] == "DNS":
+                        san_list.append(san[1])
+                ssl_info["san_domains"] = san_list
+
+                # Domain mismatch check
+                cert_domains = [subject_cn] + san_list
+                ssl_info["domain_mismatch"] = hostname not in cert_domains
+
+                # Trusted CA check (common legitimate issuers)
+                trusted_issuers = [
+                    "Let's Encrypt", "DigiCert", "GoDaddy", "Comodo", "Sectigo",
+                    "GlobalSign", "Entrust", "Amazon", "Google Trust Services",
+                    "IdenTrust", "Baltimore", "ISRG"  # Internet Security Research Group
+                ]
+                ssl_info["trusted_issuer"] = any(ca in issuer_cn for ca in trusted_issuers)
+                ssl_info["untrusted_issuer"] = not ssl_info["trusted_issuer"] and not ssl_info["is_self_signed"]
+
+                # Risk scoring
+                risk_score = 0
+                risk_reasons = []
+
+                if ssl_info["is_self_signed"]:
+                    risk_score += 30
+                    risk_reasons.append("self_signed_cert")
+
+                if ssl_info.get("domain_mismatch"):
+                    risk_score += 25
+                    risk_reasons.append("domain_mismatch")
+
+                if ssl_info.get("is_very_new_cert"):
+                    risk_score += 15
+                    risk_reasons.append("very_new_cert")
+                elif ssl_info.get("is_newly_issued"):
+                    risk_score += 10
+                    risk_reasons.append("newly_issued_cert")
+
+                if ssl_info.get("untrusted_issuer"):
+                    risk_score += 10
+                    risk_reasons.append("untrusted_issuer")
+
+                ssl_info["cert_risk_score"] = risk_score
+                ssl_info["cert_risk_reasons"] = risk_reasons
+
+    except ssl.SSLError as e:
+        ssl_info["ssl_error"] = True
+        ssl_info["error"] = f"SSLError: {str(e)}"
+        ssl_info["cert_risk_score"] = 20  # SSL errors are suspicious
+        ssl_info["cert_risk_reasons"] = ["ssl_error"]
+    except socket.timeout:
+        ssl_info["error"] = "Connection timeout"
+        ssl_info["cert_risk_score"] = 0  # Timeout isn't necessarily suspicious
+    except socket.gaierror as e:
+        ssl_info["error"] = f"DNS resolution failed: {str(e)}"
+    except Exception as e:
+        ssl_info["error"] = str(e)
+
+    return ssl_info
+
 def pick_url(rec: Dict[str,Any]) -> str:
     return rec.get("url") or rec.get("final_url") or rec.get("final",{}).get("url") or rec.get("input_url") or rec.get("href") or ""
 
@@ -678,6 +820,10 @@ def crawl_once(play, url: str, cse_id: str = None, registrable: str = None, cano
         except Exception:
             pdf_path = None
 
+        # FIX: Extract SSL certificate information from final URL
+        log.debug(f"[ssl] Extracting SSL certificate for {final_url}")
+        ssl_info = extract_ssl_certificate(final_url)
+
         latency_ms = int((time.time() - t0) * 1000)
 
         # Extract redirect summary
@@ -703,6 +849,7 @@ def crawl_once(play, url: str, cse_id: str = None, registrable: str = None, cano
             "latency_ms": latency_ms,
             "redirects": redirect_summary,
             "favicon": favicon_data,
+            "ssl_info": ssl_info,  # FIX: Add SSL certificate info
         }
 
     finally:
@@ -717,7 +864,7 @@ def crawl_once(play, url: str, cse_id: str = None, registrable: str = None, cano
             try: browser.close()
             except: pass
 
-def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registrable: Optional[str], cse_id: Optional[str]) -> Dict[str,Any]:
+def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registrable: Optional[str], cse_id: Optional[str], canonical_fqdn: Optional[str] = None) -> Dict[str,Any]:
     html = ""
     try:
         html = Path(html_path).read_text(encoding="utf-8")
@@ -736,16 +883,61 @@ def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registra
     for kw in ["password","account","login","secure","verify","suspended","urgent"]:
         if kw in txt.lower():
             keywords.append(kw)
-    # OCR placeholder
-    ocr_excerpt = None
+
+    # OCR from screenshot
+    ocr_data = {}
+    screenshot_paths = artifacts.get("screenshot_paths", [])
+    if screenshot_paths:
+        try:
+            from fcrawler.extractors import ocr
+            screenshot_path = screenshot_paths[0]  # Use first screenshot
+            ocr_data = ocr.features(screenshot_path)
+        except Exception as e:
+            log.debug(f"[ocr] Screenshot OCR failed: {e}")
+            ocr_data = {"text_excerpt": "", "length": 0}
+
+    # OCR from page images
+    image_ocr_data = {}
+    if html:
+        try:
+            from fcrawler.extractors import image_ocr
+            image_ocr_data = image_ocr.features(html, url, max_images=10)
+        except Exception as e:
+            log.debug(f"[image_ocr] Image OCR failed: {e}")
+            image_ocr_data = {}
+
+    # Extract image metadata with quality metrics
+    image_metadata = {}
+    if html:
+        try:
+            from fcrawler.extractors import image_metadata as img_meta
+            image_metadata = img_meta.features(html, url, max_images=10)
+        except Exception as e:
+            log.debug(f"[image_metadata] Image metadata extraction failed: {e}")
+            image_metadata = {}
 
     # Extract redirect information
     redirects = artifacts.get("redirects", {})
 
+    # Extract SSL information
+    ssl_info = artifacts.get("ssl_info", {})
+
+    # Extract hostname for fusion key matching in rule-scorer
+    from urllib.parse import urlparse
+    parsed = urlparse(url)
+    hostname = parsed.hostname or ""
+
     return {
         "url": url,
+        "canonical_fqdn": canonical_fqdn,  # For rule-scorer fusion key matching
+        "fqdn": canonical_fqdn,  # Alias for compatibility
+        "domain": canonical_fqdn,  # Alias for compatibility
+        "host": hostname,  # From final URL
+        "final_url": url,  # For fusion key matching
         "cse_id": cse_id,
         "registrable": registrable,
+        "html_path": artifacts.get("html_path"),  # FIX: Added missing html_path
+        "screenshot_paths": artifacts.get("screenshot_paths"),  # FIX: Added missing screenshot_paths
         "pdf_path": artifacts.get("pdf_path"),
         "url_features": ufeat,
         "idn": idnf,
@@ -755,9 +947,13 @@ def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registra
         "favicon_url": htmlf.get("favicon_url"),
         "favicon_md5": htmlf.get("favicon_md5"),
         "favicon_sha256": htmlf.get("favicon_sha256"),
+        "favicon_size": htmlf.get("favicon_size"),  # FIX: Added missing favicon_size
+        "favicon_color_scheme": favicon_data.get("color_scheme") if favicon_data else None,
         "images_count": htmlf.get("images_count", 0),
+        "image_metadata": image_metadata,
         "visual_logo_detected": False,
-        "ocr_excerpt": ocr_excerpt,
+        "ocr": ocr_data,
+        "image_ocr": image_ocr_data,
         "html_length_bytes": htmlf.get("html_length_bytes", 0),
         "external_links": htmlf.get("external_links", 0),
         "internal_links": htmlf.get("internal_links", 0),
@@ -768,6 +964,7 @@ def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registra
         "redirect_chain": redirects.get("redirect_chain", []),
         "had_redirects": redirects.get("had_redirects", False),
         "javascript": htmlf.get("javascript", {}),
+        "ssl_info": ssl_info,  # FIX: Add SSL certificate information
     }
 
 # --------------- main -----------------
@@ -855,7 +1052,7 @@ def main():
                                 filename_base)
 
                         # Features
-                        feat = build_features(art.get("final_url"), Path(art["html_path"]), art, registrable, cse_id)
+                        feat = build_features(art.get("final_url"), Path(art["html_path"]), art, registrable, cse_id, canonical_fqdn)
 
                         # ✅ PRESERVE CRITICAL METADATA FOR CHROMA ROUTING
                         feat["seed_registrable"] = seed_registrable

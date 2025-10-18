@@ -5,6 +5,7 @@ from typing import Dict, Any, Iterable, List
 import chromadb
 from chromadb import HttpClient
 from chromadb.config import DEFAULT_TENANT, DEFAULT_DATABASE, Settings
+from chromadb.utils import embedding_functions
 # --- Embeddings ---
 from sentence_transformers import SentenceTransformer
 
@@ -89,16 +90,23 @@ def get_collections():
     )
     print(f"[ingestor] Getting/creating collections: {COLLECTION} (variants) and {ORIGINAL_COLLECTION} (original seeds)")
 
+    # Create embedding function
+    sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+        model_name=MODEL_NAME
+    )
+
     # Collection for variants/lookalikes
     variants_col = client.get_or_create_collection(
         name=COLLECTION,
-        metadata={"hnsw:space": "cosine"}
+        metadata={"hnsw:space": "cosine"},
+        embedding_function=sentence_transformer_ef
     )
 
     # Collection for original seeds
     originals_col = client.get_or_create_collection(
         name=ORIGINAL_COLLECTION,
-        metadata={"hnsw:space": "cosine"}
+        metadata={"hnsw:space": "cosine"},
+        embedding_function=sentence_transformer_ef
     )
 
     return variants_col, originals_col
@@ -141,7 +149,30 @@ def features_to_text(r: Dict[str, Any]) -> str:
     ext_scripts = r.get("external_scripts", 0)
     favicon = "Yes" if r.get("favicon_present") else "No"
 
+    # Favicon color scheme
+    favicon_color_info = ""
+    fav_color_scheme = r.get("favicon_color_scheme")
+    if fav_color_scheme:
+        color_count = fav_color_scheme.get("color_count", 0)
+        avg_brightness = fav_color_scheme.get("avg_brightness", 0)
+        favicon_color_info = f", Colors: {color_count}, Brightness: {avg_brightness}"
+
     keywords = ", ".join(r.get("text_keywords", []))
+
+    # OCR data
+    ocr = r.get("ocr", {})
+    ocr_text_len = ocr.get("length", 0)
+    ocr_excerpt = ocr.get("text_excerpt", "")[:100] if ocr else ""
+
+    # Image OCR data
+    img_ocr = r.get("image_ocr", {})
+    images_with_text = img_ocr.get("images_with_text", 0)
+    ocr_keywords = ", ".join(img_ocr.get("extracted_keywords", [])[:10])
+
+    # Image quality metadata
+    img_meta = r.get("image_metadata", {})
+    img_quality = img_meta.get("overall_quality", "unknown")
+    avg_sharpness = img_meta.get("avg_sharpness", 0)
 
     parts = [
         f"URL: {url}",
@@ -152,9 +183,12 @@ def features_to_text(r: Dict[str, Any]) -> str:
         f"IDN -> Is IDN: {is_idn}, Mixed Script: {mixed_script}, Confusables: {confusable}" if is_idn or mixed_script else "",
         f"Forms -> Count: {form_count}, Password Fields: {pw_fields}, Email Fields: {email_fields}",
         f"Form Buttons: {submit_texts}" if submit_texts else "",
-        f"HTML Content -> Size: {html_len} bytes, Images: {images}, Favicon: {favicon}",
+        f"HTML Content -> Size: {html_len} bytes, Images: {images}, Favicon: {favicon}{favicon_color_info}",
+        f"Image Quality -> Overall: {img_quality}, Avg Sharpness: {avg_sharpness}" if img_quality != "unknown" else "",
         f"Links -> Internal: {int_links}, External: {ext_links}, IFrames: {iframes}, External Scripts: {ext_scripts}",
         f"Phishing Keywords: {keywords}" if keywords else "",
+        f"OCR Text Length: {ocr_text_len}, Excerpt: {ocr_excerpt}" if ocr_text_len > 0 else "",
+        f"Images with Text: {images_with_text}, OCR Keywords: {ocr_keywords}" if images_with_text > 0 else "",
     ]
     return "\n".join([p for p in parts if p])
 
@@ -426,38 +460,39 @@ def extract_registrable(domain_or_url: str) -> str:
 
 def stable_id(r: Dict[str,Any]) -> str:
     """
-    Upsert key: Use URL hash for unique per-URL tracking with FULL FQDN.
-    Each unique URL gets its own record, even on the same domain.
-    Domain-only records generate a canonical URL to ensure unified IDs.
+    Upsert key: Use FULL domain name (FQDN) for merging all records for same domain.
+    This ensures subdomains like pnb.bank.in, sbi.bank.in get unique IDs.
+    Previously used registrable domain, but tldextract incorrectly treats .bank.in as public suffix.
     """
-    # Get URL or generate canonical URL for domain-only records
+    full_domain = None
+
+    # Priority 1: Extract full hostname from URL
     url = r.get("url") or r.get("final_url")
-
-    # If no URL but we have domain info, generate canonical URL using FULL FQDN
-    if not (url and isinstance(url, str) and url.strip()):
-        fqdn = r.get("canonical_fqdn") or r.get("fqdn") or r.get("host")
-        if fqdn:
-            # Generate canonical URL with FULL FQDN (not registrable)
-            url = f"https://{fqdn}/"
-
-    # URL-based ID generation (now handles both explicit URLs and canonical URLs)
-    if url and isinstance(url, str) and url.strip():
-        # Normalize URL: lowercase, strip trailing slash, remove fragments
-        normalized_url = url.lower().rstrip('/').split('#')[0].split('?')[0]
-        # Create stable hash from normalized URL
-        url_hash = hashlib.sha1(normalized_url.encode()).hexdigest()[:16]
-
-        # Extract FULL hostname (FQDN) for ID prefix, not just registrable
+    if url:
         from urllib.parse import urlparse
         try:
-            hostname = urlparse(normalized_url).hostname
+            hostname = urlparse(url).hostname
             if hostname:
-                return f"{hostname}:{url_hash}"
+                full_domain = hostname.lower()
         except:
             pass
 
-        # Fallback to URL hash only
-        return f"url-{url_hash}"
+    # Priority 2: Extract from FQDN fields
+    if not full_domain:
+        fqdn = r.get("canonical_fqdn") or r.get("fqdn") or r.get("host")
+        if fqdn:
+            full_domain = fqdn.lower()
+
+    # Priority 3: Use provided registrable as fallback
+    if not full_domain:
+        provided = r.get("registrable")
+        if provided:
+            full_domain = provided.lower()
+
+    # Generate stable ID using full domain name
+    if full_domain:
+        domain_hash = hashlib.sha1(full_domain.encode()).hexdigest()[:16]
+        return f"{full_domain}:{domain_hash}"
 
     # Fallback: content hash
     h = hashlib.sha1(json.dumps(r, sort_keys=True).encode()).hexdigest()
@@ -498,7 +533,16 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
             keep["days_until_expiry"] = whois["days_until_expiry"]
 
     # Determine enrichment level (what data is present)
-    has_domain = bool(r.get("dns") or r.get("whois"))
+    # Check for domain data in both nested (dns-collector) and flattened (rule-scorer) formats
+    has_domain = bool(
+        r.get("dns") or
+        r.get("whois") or
+        r.get("a_count") is not None or
+        r.get("mx_count") is not None or
+        r.get("ns_count") is not None or
+        r.get("domain_age_days") is not None or
+        r.get("country")
+    )
     has_features = bool(r.get("url_features") or r.get("forms"))
     has_verdict = bool(r.get("verdict") or r.get("score") is not None)
     is_failed = bool("error" in r or r.get("status") == "failed")
@@ -576,10 +620,29 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
 
     if "url_features" in r:
         url_f = r["url_features"]
+        # Basic URL metrics
         keep["url_length"] = url_f.get("url_length", 0)
         keep["url_entropy"] = float(url_f.get("url_entropy", 0))
-        keep["num_subdomains"] = url_f.get("num_subdomains", 0)
+        keep["num_dots"] = url_f.get("num_dots", 0)
+        keep["num_hyphens"] = url_f.get("num_hyphens", 0)
+        keep["num_slashes"] = url_f.get("num_slashes", 0)
+        keep["num_underscores"] = url_f.get("num_underscores", 0)
         keep["has_repeated_digits"] = bool(url_f.get("has_repeated_digits", False))
+
+        # Domain metrics
+        keep["domain_length"] = url_f.get("domain_length", 0)
+        keep["domain_entropy"] = float(url_f.get("domain_entropy", 0))
+        keep["domain_hyphens"] = url_f.get("domain_hyphens", 0)
+
+        # Subdomain metrics
+        keep["num_subdomains"] = url_f.get("num_subdomains", 0)
+        keep["avg_subdomain_length"] = url_f.get("avg_subdomain_length", 0)
+        keep["subdomain_entropy"] = float(url_f.get("subdomain_entropy", 0))
+
+        # Path metrics
+        keep["path_length"] = url_f.get("path_length", 0)
+        keep["path_has_query"] = bool(url_f.get("path_has_query", False))
+        keep["path_has_fragment"] = bool(url_f.get("path_has_fragment", False))
 
     if "idn" in r:
         idn = r["idn"]
@@ -610,9 +673,78 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
     if "iframes" in r:
         keep["iframe_count"] = r["iframes"]
 
+    # FIX: Add missing field mappings
+    if "images_count" in r:
+        keep["images_count"] = r["images_count"]
+
+    if "external_scripts" in r:
+        keep["external_scripts"] = r["external_scripts"]
+
+    if "external_stylesheets" in r:
+        keep["external_stylesheets"] = r["external_stylesheets"]
+
+    if "favicon_size" in r:
+        keep["favicon_size"] = r["favicon_size"]
+
+    # Favicon color scheme
+    if "favicon_color_scheme" in r:
+        fav_color = r["favicon_color_scheme"]
+        if fav_color:
+            keep["favicon_color_count"] = fav_color.get("color_count", 0)
+            keep["favicon_color_variance"] = float(fav_color.get("color_variance", 0))
+            keep["favicon_color_entropy"] = float(fav_color.get("color_entropy", 0))
+            keep["favicon_has_transparency"] = bool(fav_color.get("has_transparency", False))
+            keep["favicon_avg_brightness"] = float(fav_color.get("avg_brightness", 0))
+            # Store dominant colors as JSON string
+            dominant = fav_color.get("dominant_colors", [])
+            if dominant:
+                keep["favicon_dominant_color"] = dominant[0].get("hex", "") if len(dominant) > 0 else ""
+
+    # OCR from screenshot
+    if "ocr" in r:
+        ocr = r["ocr"]
+        if ocr:
+            keep["ocr_text_length"] = ocr.get("length", 0)
+            keep["ocr_text_excerpt"] = (ocr.get("text_excerpt", "") or "")[:500]
+
+    # OCR from page images
+    if "image_ocr" in r:
+        img_ocr = r["image_ocr"]
+        if img_ocr:
+            keep["images_with_ocr_text"] = img_ocr.get("images_with_text", 0)
+            keep["images_with_brand_keywords"] = img_ocr.get("images_with_brand_keywords", 0)
+            keep["images_with_suspicious_keywords"] = img_ocr.get("images_with_suspicious_keywords", 0)
+            keep["ocr_total_text_length"] = img_ocr.get("total_text_length", 0)
+            # Store extracted keywords
+            keywords = img_ocr.get("extracted_keywords", [])
+            if keywords:
+                keep["ocr_extracted_keywords"] = ",".join(keywords[:20])
+
+    # Image quality metrics
+    if "image_metadata" in r:
+        img_meta = r["image_metadata"]
+        if img_meta:
+            keep["avg_image_sharpness"] = float(img_meta.get("avg_sharpness", 0))
+            keep["avg_image_resolution"] = float(img_meta.get("avg_resolution", 0))
+            keep["image_overall_quality"] = img_meta.get("overall_quality", "unknown")
+            keep["high_quality_images"] = img_meta.get("high_quality_images", 0)
+            keep["medium_quality_images"] = img_meta.get("medium_quality_images", 0)
+            keep["low_quality_images"] = img_meta.get("low_quality_images", 0)
+
     # SSL certificate analysis
-    if "ssl" in r or "tls" in r or "ssl_info" in r:
-        ssl = r.get("ssl") or r.get("tls") or r.get("ssl_info") or {}
+    # Check multiple possible locations for SSL data
+    ssl = None
+    if "ssl_info" in r:
+        ssl = r["ssl_info"]
+    elif "ssl" in r:
+        ssl = r["ssl"]
+    elif "tls" in r:
+        ssl = r["tls"]
+    elif "final" in r and isinstance(r["final"], dict) and "ssl_info" in r["final"]:
+        # SSL data might be nested inside 'final' object from http-fetcher
+        ssl = r["final"]["ssl_info"]
+
+    if ssl and isinstance(ssl, dict):
         keep["uses_https"] = bool(ssl.get("uses_https", False))
         keep["is_self_signed"] = bool(ssl.get("is_self_signed", False))
         keep["domain_mismatch"] = bool(ssl.get("domain_mismatch") or ssl.get("has_domain_mismatch", False))
