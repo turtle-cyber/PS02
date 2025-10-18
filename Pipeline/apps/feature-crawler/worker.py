@@ -883,8 +883,38 @@ def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registra
     for kw in ["password","account","login","secure","verify","suspended","urgent"]:
         if kw in txt.lower():
             keywords.append(kw)
-    # OCR placeholder
-    ocr_excerpt = None
+
+    # OCR from screenshot
+    ocr_data = {}
+    screenshot_paths = artifacts.get("screenshot_paths", [])
+    if screenshot_paths:
+        try:
+            from fcrawler.extractors import ocr
+            screenshot_path = screenshot_paths[0]  # Use first screenshot
+            ocr_data = ocr.features(screenshot_path)
+        except Exception as e:
+            log.debug(f"[ocr] Screenshot OCR failed: {e}")
+            ocr_data = {"text_excerpt": "", "length": 0}
+
+    # OCR from page images
+    image_ocr_data = {}
+    if html:
+        try:
+            from fcrawler.extractors import image_ocr
+            image_ocr_data = image_ocr.features(html, url, max_images=10)
+        except Exception as e:
+            log.debug(f"[image_ocr] Image OCR failed: {e}")
+            image_ocr_data = {}
+
+    # Extract image metadata with quality metrics
+    image_metadata = {}
+    if html:
+        try:
+            from fcrawler.extractors import image_metadata as img_meta
+            image_metadata = img_meta.features(html, url, max_images=10)
+        except Exception as e:
+            log.debug(f"[image_metadata] Image metadata extraction failed: {e}")
+            image_metadata = {}
 
     # Extract redirect information
     redirects = artifacts.get("redirects", {})
@@ -918,9 +948,12 @@ def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registra
         "favicon_md5": htmlf.get("favicon_md5"),
         "favicon_sha256": htmlf.get("favicon_sha256"),
         "favicon_size": htmlf.get("favicon_size"),  # FIX: Added missing favicon_size
+        "favicon_color_scheme": favicon_data.get("color_scheme") if favicon_data else None,
         "images_count": htmlf.get("images_count", 0),
+        "image_metadata": image_metadata,
         "visual_logo_detected": False,
-        "ocr_excerpt": ocr_excerpt,
+        "ocr": ocr_data,
+        "image_ocr": image_ocr_data,
         "html_length_bytes": htmlf.get("html_length_bytes", 0),
         "external_links": htmlf.get("external_links", 0),
         "internal_links": htmlf.get("internal_links", 0),
