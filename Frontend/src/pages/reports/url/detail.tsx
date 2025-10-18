@@ -61,7 +61,7 @@ const UrlDetailPage = () => {
         verdict: row.verdict || data.verdict,
       }
     : data;
-  console.log(reportDetailData);
+
   return (
     <div className="min-h-screen">
       <main className="px-6 py-4">
@@ -112,7 +112,7 @@ const UrlDetailPage = () => {
         </LiquidCard>
 
         <div className="mt-6">
-          <DetailCards data={displayData} />
+          <DetailCards data={reportDetailData} />
         </div>
       </main>
     </div>
