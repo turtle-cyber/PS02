@@ -161,7 +161,11 @@ def build_output(url: str, meta: dict) -> dict:
     # CRITICAL: Always include CSE ID if present
     if "cse_id" in meta:
         out["cse_id"] = meta["cse_id"]
-    
+
+    # Preserve original seed flag
+    if "is_original_seed" in meta:
+        out["is_original_seed"] = meta["is_original_seed"]
+
     # surface helpful hints to feature-crawler
     if "registrable" in meta:
         out["registrable"] = meta["registrable"]

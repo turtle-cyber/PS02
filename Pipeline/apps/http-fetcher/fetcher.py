@@ -528,6 +528,7 @@ async def probe_host(fqdn: str) -> Dict[str, Any]:
             "redirect_count": redirect_count,
             "parking_detection": parking,
             "phishing_signals": phishing,
+            "ssl_info": final.get("ssl_info") if final else None,  # Include SSL certificate data
         }
 
 # ---------- kafka plumbing with retry ----------
@@ -597,6 +598,7 @@ async def worker(worker_id: int, queue: asyncio.Queue, prod, fobj):
                     "registrable": reg,
                     "seed_registrable": item.get("seed_registrable"),  # Preserve seed for tracking
                     "cse_id": item.get("cse_id"),  # Preserve CSE ID
+                    "is_original_seed": item.get("is_original_seed", False),  # Preserve original seed flag
                     "robots_respected": probe.get("robots_respected"),
                     "redirect_chain": probe.get("redirect_chain"),
                     "redirect_count": probe.get("redirect_count", 0),
@@ -620,6 +622,7 @@ async def worker(worker_id: int, queue: asyncio.Queue, prod, fobj):
                     "registrable": reg,
                     "seed_registrable": item.get("seed_registrable"),  # Preserve seed for tracking
                     "cse_id": item.get("cse_id"),  # Preserve CSE ID
+                    "is_original_seed": item.get("is_original_seed", False),  # Preserve original seed flag
                     "ok": False,
                     "error": f"probe_exception:{type(e).__name__}",
                     "parking_detection": {"is_parked": False, "confidence": "none", "indicators": []},

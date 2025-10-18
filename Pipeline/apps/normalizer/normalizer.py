@@ -93,7 +93,8 @@ async def main():
                 "registrable": registrable(fqdn),
                 "cse_id": data.get("cse_id"),
                 "seed_registrable": data.get("seed_registrable"),
-                "reasons": data.get("reasons", [])
+                "reasons": data.get("reasons", []),
+                "is_original_seed": data.get("is_original_seed", False)  # Preserve original seed flag
             }
             await emit(obj)
     else:

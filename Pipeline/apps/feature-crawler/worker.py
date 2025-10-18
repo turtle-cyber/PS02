@@ -542,6 +542,11 @@ def extract_html_features(html: str, base_url: str, favicon_data: Dict = None) -
     imgs = soup.find_all("img")
     images_count = len(imgs)
 
+    # Calculate form submission breakdown for metadata
+    forms_to_ip = sum(1 for fa in form_actions if fa.get("is_ip_address"))
+    forms_to_suspicious_tld = sum(1 for fa in form_actions if fa.get("is_suspicious_tld"))
+    forms_to_private_ip = sum(1 for fa in form_actions if fa.get("is_private_ip") or fa.get("is_localhost"))
+
     return {
         "favicon_present": fav_present,
         "favicon_url": favicon_url,
@@ -559,6 +564,9 @@ def extract_html_features(html: str, base_url: str, favicon_data: Dict = None) -
             "submit_texts": submit_texts[:10] if submit_texts else [],
             "actions": form_actions[:10] if form_actions else [],
             "suspicious_form_count": suspicious_form_count,
+            "forms_to_ip": forms_to_ip,
+            "forms_to_suspicious_tld": forms_to_suspicious_tld,
+            "forms_to_private_ip": forms_to_private_ip,
         },
         "iframes": iframes,
         "external_scripts": extern_scripts,
@@ -848,6 +856,10 @@ def main():
 
                         # Features
                         feat = build_features(art.get("final_url"), Path(art["html_path"]), art, registrable, cse_id)
+
+                        # ✅ PRESERVE CRITICAL METADATA FOR CHROMA ROUTING
+                        feat["seed_registrable"] = seed_registrable
+                        feat["is_original_seed"] = rec.get("is_original_seed", False)
 
                         # ---- Kafka publish ----
                         producer.send(OUT_TOPIC_RAW, value=art, key=url.encode("utf-8"))

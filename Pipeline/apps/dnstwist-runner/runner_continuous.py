@@ -404,6 +404,21 @@ async def process_csv_seeds(producer, file_handle):
 
         print(f"\n[runner] [{idx}/{len(seeds)}] ===== Processing: {seed_reg} (CSE: {cse_id}) =====")
 
+        # First, emit the original seed domain itself for processing
+        original_seed_record = {
+            "src": "csv_seed",
+            "observed_at": time.time(),
+            "cse_id": cse_id,
+            "seed_registrable": seed_reg,
+            "canonical_fqdn": seed_reg,
+            "registrable": seed_reg,
+            "reasons": ["original_seed"],
+            "is_original_seed": True,  # Mark as original seed for ChromaDB routing
+            "fuzzer": None
+        }
+        await emit(original_seed_record, producer, file_handle)
+        print(f"[runner] ✓ Emitted original seed: {seed_reg}")
+
         # PASS A (wide, common TLDs)
         print("[runner] Running PASS_A (common TLDs)...")
         results_a, unregistered_a = run_dnstwist(seed_reg, PASS_A_FUZZERS, COMMON_TLDS, registered_only=True)
