@@ -79,30 +79,63 @@ export const DetailCards: React.FC<any> = ({ data }) => {
             Feature Metrics
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2 ml-4 mb-4 mr-4">
-            <MetricRow label="URL" value={data?.urlLength} />
-            <MetricRow label="Has Features" value="Yes" />
-            <MetricRow label="URL Length" value={data?.urlLength} />
+            <MetricRow label="URL" value={data?.data?.metadata?.url} />
+            <MetricRow
+              label="Has Features"
+              value={data?.data?.metadata?.has_features}
+            />
+            <MetricRow
+              label="URL Length"
+              value={data?.data?.metadata?.url_length}
+            />
             <MetricRow
               label="URL Entropy"
-              value={data?.urlEntropy?.toFixed(2)}
+              value={data?.data?.metadata?.url_entropy}
             />
             <MetricRow
-              label="Number of Subdomains"
-              value={data?.numSubdomains}
+              label="Subdomains Entropy"
+              value={data?.data?.metadata?.subdomain_entropy}
             />
-            <MetricRow label="Has Repeated Digits" value="No" />
-            <MetricRow label="Mixed Script" value={data?.hasMixedScript} />
-            <MetricRow label="Form Count" value={data?.formCount} />
-            <MetricRow label="Password Fields" value={data?.passwordFields} />
-            <MetricRow label="Email Fields" value={data?.emailFields} />
+            <MetricRow
+              label="Has Repeated Digits"
+              value={data?.data?.metadata?.has_repeated_digits}
+            />
+            <MetricRow
+              label="Mixed Script"
+              value={data?.data?.metadata?.mixed_script}
+            />
+            <MetricRow
+              label="Form Count"
+              value={data?.data?.metadata?.formCount}
+            />
+            <MetricRow
+              label="Password Fields"
+              value={data?.data?.metadata?.password_fields}
+            />
+            <MetricRow
+              label="Email Fields"
+              value={data?.data?.metadata?.email_fields}
+            />
             <MetricRow
               label="Phishing Keywords"
-              value={data?.phishingKeywords}
+              value={data?.data?.metadata?.phishing_keywords}
             />
-            <MetricRow label="Keywords Count" value={data?.phishingKeywords} />
-            <MetricRow label="HTML Size" value={data?.htmlSize} />
-            <MetricRow label="External Links" value={data?.externalLinks} />
-            <MetricRow label="Iframe Count" value={data?.iframeCount} />
+            <MetricRow
+              label="Keywords Count"
+              value={data?.data?.metadata?.keyword_count}
+            />
+            <MetricRow
+              label="HTML Size"
+              value={data?.data?.metadata?.html_size}
+            />
+            <MetricRow
+              label="External Links"
+              value={data?.data?.metadata?.external_links}
+            />
+            <MetricRow
+              label="Iframe Count"
+              value={data?.data?.metadata?.iframe_count}
+            />
           </div>
         </LiquidCard>
       </div>
@@ -114,12 +147,39 @@ export const DetailCards: React.FC<any> = ({ data }) => {
             Favicon Analysis
           </h3>
           <div className="ml-4 mb-4 mr-4">
-            <MetricRow label="Favicon MD5" value={data?.faviconMd5} />
-            <MetricRow label="Favicon SHA256" value={data?.faviconSha256} />
+            <MetricRow
+              label="Favicon MD5"
+              value={data?.data?.metadata?.favicon_md5}
+            />
+            <MetricRow
+              label="Favicon SHA256"
+              value={data?.data?.metadata?.favicon_sha256}
+            />
           </div>
         </LiquidCard>
 
         <LiquidCard variant="glass">
+          <h3 className="text-base font-semibold text-slate-300 mb-4 ml-4 mt-4">
+            SSL Certificate Analysis
+          </h3>
+          <div className="ml-4 mb-4 mr-4 ">
+            <MetricRow
+              label="Suspicious Form Count"
+              value={data?.data?.metadata?.suspicious_form_count}
+            />
+            <MetricRow label="Has Suspicious Form Name" value={"N/A"} />
+            <MetricRow
+              label="Forms to IP"
+              value={data?.data?.metadata?.forms_to_ip}
+            />
+            <MetricRow
+              label="Form to Private IP"
+              value={data?.data?.metadata?.forms_to_private_ip}
+            />
+          </div>
+        </LiquidCard>
+
+        {/* <LiquidCard variant="glass">
           <h3 className="text-base font-semibold text-slate-300 mb-4 ml-4 mt-4">
             Redirect Tracking
           </h3>
@@ -128,11 +188,11 @@ export const DetailCards: React.FC<any> = ({ data }) => {
             <MetricRow label="Redirect Count" value={data?.redirectCount} />
             <MetricRow label="Has Redirects" value={data?.hasRedirects} />
           </div>
-        </LiquidCard>
+        </LiquidCard> */}
       </div>
 
       {/* Row 5: JS Analysis + SSL Certificate */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <LiquidCard variant="glass">
           <h3 className="text-base font-semibold text-slate-300 mb-4 ml-4 mt-4">
             JS Analysis
@@ -153,28 +213,10 @@ export const DetailCards: React.FC<any> = ({ data }) => {
             <MetricRow label="JS Risk Score" value={data?.jsRiskScore} />
           </div>
         </LiquidCard>
-
-        <LiquidCard variant="glass">
-          <h3 className="text-base font-semibold text-slate-300 mb-4 ml-4 mt-4">
-            SSL Certificate Analysis
-          </h3>
-          <div className="ml-4 mb-4 mr-4 ">
-            <MetricRow
-              label="Suspicious Form Count"
-              value={data?.hasSuspiciousForms}
-            />
-            <MetricRow label="Has Suspicious Form Name" value={"N/A"} />
-            <MetricRow label="Forms to IP" value={data?.formsToIp} />
-            <MetricRow
-              label="Form to Private IP"
-              value={data?.formsToPrivateIp}
-            />
-          </div>
-        </LiquidCard>
-      </div>
+      </div> */}
 
       {/* Row 6: Scan Settings */}
-      <div>
+      {/* <div>
         <LiquidCard variant="glass">
           <h3 className="text-base font-semibold text-slate-300 mb-4 ml-4 mt-4">
             Scan Settings
@@ -193,12 +235,11 @@ export const DetailCards: React.FC<any> = ({ data }) => {
               </select>
             </div>
             <p className="text-xs text-slate-500">
-              {/* TODO: Wire up monitoring duration change handler */}
               Adjust monitoring duration for this URL
             </p>
           </div>
         </LiquidCard>
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 mt-6 mb-6">
         <LiquidCard variant="glass">
@@ -206,7 +247,10 @@ export const DetailCards: React.FC<any> = ({ data }) => {
             Screenshots
           </h3>
           <div className="ml-4 mb-4 mr-4">
-            <ScreenshotGrid screenshots={data?.screenshots} />
+            <img
+              src={data?.data?.metadata?.screenshot_path}
+              className="w-full h-full object-cover"
+            />
           </div>
         </LiquidCard>
       </div>
