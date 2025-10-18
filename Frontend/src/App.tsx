@@ -51,7 +51,7 @@ const App = () => (
                 element={<UrlDetailPage />}
               />
               <Route
-                path="/reports/lookalikes/detail"
+                path="/reports/lookalikes/detail/:id"
                 element={<LookalikeDetailPage />}
               />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

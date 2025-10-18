@@ -83,7 +83,7 @@ export const UrlReportsTable: React.FC<UrlReportsTableProps> = ({
   // NEW: navigate to /reports/url/detail/<row.metadata.registrable>
   const handleRowClick = (row: DomainItem) => {
     const raw = row?.id ?? "";
-    const idOnly = raw.includes(":") ? raw.split(":")[0] : raw; // "www.ntpc.co.in"
+    const idOnly = raw.includes(":") ? raw.split(":")[0] : raw;
     navigate(`/reports/url/detail/${encodeURIComponent(idOnly)}`);
   };
 

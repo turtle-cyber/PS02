@@ -20,7 +20,6 @@ const MetricRow: React.FC<{
 );
 
 export const DetailCards: React.FC<any> = ({ data }) => {
-  console.log(data);
   return (
     <>
       {/* Row 1: Domain Analysis + Screenshots */}
