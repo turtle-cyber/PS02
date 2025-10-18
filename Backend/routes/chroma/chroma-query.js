@@ -2,6 +2,7 @@ const express = require('express');
 const { ChromaClient } = require('chromadb');
 const winston = require('winston');
 const redis = require('redis');
+const { formatTimestamp } = require('../../utils/dateFormatter');
 
 const router = express.Router();
 
@@ -60,6 +61,41 @@ try {
     logger.info(`✅ ChromaDB client initialized: ${CHROMA_HOST}:${CHROMA_PORT}`);
 } catch (error) {
     logger.error(`❌ Failed to initialize ChromaDB client: ${error.message}`);
+}
+
+/**
+ * Helper function to extract first IPv4 address from document text
+ * @param {string} document - The document text
+ * @returns {string|null} First IPv4 address or null if not found
+ */
+function extractIPv4(document) {
+    if (!document || typeof document !== 'string') {
+        return null;
+    }
+
+    // Match IPv4 pattern: A (IPv4): 192.168.1.1 or just any IPv4 address
+    const ipv4Match = document.match(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/);
+    return ipv4Match ? ipv4Match[0] : null;
+}
+
+/**
+ * Helper function to extract first nameserver from document text
+ * @param {string} document - The document text
+ * @returns {string|null} First nameserver or null if not found
+ */
+function extractNameserver(document) {
+    if (!document || typeof document !== 'string') {
+        return null;
+    }
+
+    // Match nameserver patterns:
+    // - "NS (Nameservers): ns1.example.com, ns2.example.com"
+    // - "NS: ns1.example.com"
+    // - "Nameserver: ns1.example.com"
+    // - "Name Server: ns1.example.com"
+    const nsMatch = document.match(/NS\s*\(Nameservers\):\s*([a-zA-Z0-9.-]+)/i) ||
+                    document.match(/(?:NS|Nameserver|Name Server):\s*([a-zA-Z0-9.-]+)/i);
+    return nsMatch ? nsMatch[1] : null;
 }
 
 /**
@@ -186,12 +222,38 @@ router.get('/originals', async (req, res) => {
             offset
         });
 
-        // Format response
-        const domains = results.ids.map((id, idx) => ({
-            id: id,
-            metadata: results.metadatas[idx],
-            document: results.documents[idx]
-        }));
+        // Format response - extract IPv4 and nameserver from document
+        const domains = results.ids.map((id, idx) => {
+            const metadata = results.metadatas[idx];
+            const document = results.documents[idx];
+
+            // Extract IPv4 address from document
+            const ipv4 = extractIPv4(document);
+
+            // Extract nameserver from document
+            const nameserver = extractNameserver(document);
+
+            // Format first_seen timestamp to human-readable format
+            const firstSeenFormatted = metadata.first_seen
+                ? formatTimestamp(metadata.first_seen)
+                : null;
+
+            // Create enhanced metadata with extracted fields
+            // Remove first_seen and replace with first_seen_formatted
+            const { first_seen, ...metadataWithoutFirstSeen } = metadata;
+            const enhancedMetadata = {
+                ...metadataWithoutFirstSeen,
+                ipv4: ipv4,
+                nameserver: nameserver,
+                first_seen: firstSeenFormatted
+            };
+
+            return {
+                id: id,
+                metadata: enhancedMetadata,
+                document: document
+            };
+        });
 
         res.json({
             success: true,

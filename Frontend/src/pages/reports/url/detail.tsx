@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { DetailHeader } from "@/components/reports/DetailHeader";
 import { DetailCards } from "@/components/reports/DetailCards";
 import { getMockUrlDetail } from "@/data/mockReportDetails";
@@ -7,9 +7,13 @@ import { LiquidCard } from "@/components/ui/liquid-card";
 
 const UrlDetailPage = () => {
   const location = useLocation();
-  const row = location.state?.row;
+  const params = useParams<{ id?: string }>();
 
-  // TODO: Fetch real data from API based on row.id or URL
+  // If you came from the table with navigate(..., { state: { row } })
+  const row = location.state?.row;
+  const idFromUrl = params.id ? decodeURIComponent(params.id) : undefined;
+
+  // TODO: In the future, fetch real data with `idFromUrl` or row.id
   const data = getMockUrlDetail();
 
   // Use row data if available, otherwise use mock
@@ -25,7 +29,6 @@ const UrlDetailPage = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Main content */}
       <main className="px-6 py-4">
         <LiquidCard variant="glass">
           <DetailHeader
@@ -52,7 +55,6 @@ const UrlDetailPage = () => {
           />
         </LiquidCard>
 
-        {/* Detail cards */}
         <div className="mt-6">
           <DetailCards data={displayData} />
         </div>
