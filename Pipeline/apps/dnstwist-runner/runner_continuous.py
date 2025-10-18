@@ -10,6 +10,7 @@ KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "kafka:9092")
 KAFKA_INPUT_TOPIC = os.getenv("KAFKA_INPUT_TOPIC", "raw.hosts")
 KAFKA_OUTPUT_TOPIC = os.getenv("KAFKA_OUTPUT_TOPIC", "raw.hosts")
 KAFKA_INACTIVE_TOPIC = os.getenv("KAFKA_INACTIVE_TOPIC", "phish.urls.inactive")  # NEW: Unregistered variants
+KAFKA_CRAWL_TOPIC = os.getenv("KAFKA_CRAWL_TOPIC", "phish.urls.crawl")  # NEW: For original seeds to get full feature extraction
 OUTPUT_DIR = Path(os.getenv("OUTPUT_DIR", "/out"))
 THREADS = int(os.getenv("THREADS", "16"))
 NAMESERVERS = os.getenv("NAMESERVERS", "unbound")
@@ -176,7 +177,9 @@ async def kafka_producer():
                 bootstrap_servers=KAFKA_BOOTSTRAP,
                 linger_ms=50,
                 request_timeout_ms=30000,
-                retry_backoff_ms=500
+                acks='all',  # Wait for all replicas to acknowledge
+                max_batch_size=16384,  # Batch messages for efficiency
+                metadata_max_age_ms=5000  # Refresh metadata every 5 seconds to handle leadership changes
             )
             await prod.start()
             print("[kafka] Producer connected successfully!")
@@ -220,18 +223,74 @@ async def kafka_consumer():
                 print(f"[kafka] Consumer failed to connect after {KAFKA_RETRY_ATTEMPTS} attempts")
                 raise
 
-async def emit(record, producer, file_handle=None):
-    """Emit record to Kafka and/or file"""
+async def emit(record, producer, file_handle=None, emit_to_crawl_queue=False):
+    """
+    Emit record to Kafka and/or file with retry logic.
+
+    Args:
+        record: Domain record to emit
+        producer: Kafka producer instance
+        file_handle: Optional file handle for local JSONL output
+        emit_to_crawl_queue: If True, also emit to KAFKA_CRAWL_TOPIC for feature extraction
+                           (used for original seeds to ensure they get full crawling)
+    """
     if producer and KAFKA_ENABLED:
-        try:
-            fqdn = record.get("canonical_fqdn", "")
-            await producer.send(
-                KAFKA_OUTPUT_TOPIC,
-                key=fqdn.encode("utf-8"),
-                value=ujson.dumps(record).encode("utf-8")
-            )
-        except Exception as e:
-            print(f"[kafka] Error sending {fqdn}: {e}")
+        fqdn = record.get("canonical_fqdn", "")
+        max_retries = 3
+        retry_delay = 1.0
+
+        # Primary emission to raw.hosts (for DNS collection)
+        for attempt in range(max_retries):
+            try:
+                # Use send_and_wait() to ensure message is acknowledged
+                await producer.send_and_wait(
+                    KAFKA_OUTPUT_TOPIC,
+                    key=fqdn.encode("utf-8"),
+                    value=ujson.dumps(record).encode("utf-8")
+                )
+                # Success - exit retry loop
+                break
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"[kafka] Send failed for {fqdn} (attempt {attempt + 1}/{max_retries}): {e}")
+                    await asyncio.sleep(retry_delay)
+                    retry_delay *= 2  # Exponential backoff
+                else:
+                    print(f"[kafka] Failed to send {fqdn} after {max_retries} attempts: {e}")
+                    # Still write to file if available
+                    pass
+
+        # CRITICAL: Also emit original seeds to crawl queue for feature extraction
+        # This ensures original seeds get HTML/screenshots/PDFs like directly submitted domains
+        if emit_to_crawl_queue:
+            print(f"[kafka] Emitting original seed {fqdn} to crawl queue for feature extraction")
+            # Build URL-router compatible message format
+            crawl_record = {
+                "schema_version": "v1",
+                "url": f"https://{fqdn}/",  # Convert to URL format for url-router
+                "ts": int(time.time() * 1000),
+                "cse_id": record.get("cse_id"),
+                "is_original_seed": record.get("is_original_seed", False),
+                "registrable": record.get("registrable"),
+                "seed_registrable": record.get("seed_registrable"),
+                "canonical_fqdn": fqdn,
+            }
+            for attempt in range(max_retries):
+                try:
+                    await producer.send_and_wait(
+                        KAFKA_CRAWL_TOPIC,
+                        key=fqdn.encode("utf-8"),
+                        value=ujson.dumps(crawl_record).encode("utf-8")
+                    )
+                    print(f"[kafka] ✓ Original seed {fqdn} sent to crawl queue")
+                    break
+                except Exception as e:
+                    if attempt < max_retries - 1:
+                        print(f"[kafka] Crawl queue send failed for {fqdn} (attempt {attempt + 1}/{max_retries}): {e}")
+                        await asyncio.sleep(retry_delay)
+                        retry_delay *= 2
+                    else:
+                        print(f"[kafka] ERROR: Failed to send {fqdn} to crawl queue after {max_retries} attempts: {e}")
 
     if file_handle:
         file_handle.write(ujson.dumps(record) + "\n")
@@ -266,6 +325,22 @@ async def process_domain(domain, cse_id, producer, file_handle, seen_set, redis_
             })
         except Exception as e:
             print(f"[redis] Error setting processing status: {e}")
+
+    # CRITICAL: First, emit the original seed domain itself for processing
+    # Send to BOTH raw.hosts (DNS) and phish.urls.crawl (features) to ensure full enrichment
+    original_seed_record = {
+        "src": "dnstwist_live",
+        "observed_at": time.time(),
+        "cse_id": cse_id or "UNKNOWN",
+        "seed_registrable": seed_domain,
+        "canonical_fqdn": seed_domain,
+        "registrable": registrable(seed_domain),
+        "reasons": ["original_seed"],
+        "is_original_seed": True,  # Mark as original seed for ChromaDB routing
+        "fuzzer": None
+    }
+    await emit(original_seed_record, producer, file_handle, emit_to_crawl_queue=True)
+    print(f"[dnstwist] ✓ Emitted original seed: {seed_domain} (to DNS pipeline AND crawl queue)")
 
     # PASS A: Comprehensive fuzzing with common TLDs
     if redis_client:
@@ -405,6 +480,7 @@ async def process_csv_seeds(producer, file_handle):
         print(f"\n[runner] [{idx}/{len(seeds)}] ===== Processing: {seed_reg} (CSE: {cse_id}) =====")
 
         # First, emit the original seed domain itself for processing
+        # CRITICAL: Send to BOTH raw.hosts (DNS) and phish.urls.crawl (features)
         original_seed_record = {
             "src": "csv_seed",
             "observed_at": time.time(),
@@ -416,8 +492,8 @@ async def process_csv_seeds(producer, file_handle):
             "is_original_seed": True,  # Mark as original seed for ChromaDB routing
             "fuzzer": None
         }
-        await emit(original_seed_record, producer, file_handle)
-        print(f"[runner] ✓ Emitted original seed: {seed_reg}")
+        await emit(original_seed_record, producer, file_handle, emit_to_crawl_queue=True)
+        print(f"[runner] ✓ Emitted original seed: {seed_reg} (to DNS pipeline AND crawl queue)")
 
         # PASS A (wide, common TLDs)
         print("[runner] Running PASS_A (common TLDs)...")

@@ -277,16 +277,38 @@ This means:
 **Why it matters**: 90% of phishing domains are less than 30 days old. Newly registered domains mimicking established brands are highly suspicious.
 
 ### Feature-only Fields
+
+#### URL Structure Analysis
 | Field | Type | Description |
 |-------|------|-------------|
 | `url` | string | Full URL that was crawled |
 | `has_features` | bool | Always true for feature records |
 | `url_length` | int | Character count of URL |
-| `url_entropy` | float | Shannon entropy of URL |
-| `num_subdomains` | int | Number of subdomain labels |
+| `url_entropy` | float | Shannon entropy of URL (randomness) |
+| `num_dots` | int | Number of dots in URL |
+| `num_hyphens` | int | Number of hyphens in URL |
+| `num_slashes` | int | Number of slashes in URL |
+| `num_underscores` | int | Number of underscores in URL |
 | `has_repeated_digits` | bool | URL contains repeated digits |
+| `domain_length` | int | Length of domain portion |
+| `domain_entropy` | float | Shannon entropy of domain |
+| `domain_hyphens` | int | Number of hyphens in domain |
+| `num_subdomains` | int | Number of subdomain labels |
+| `avg_subdomain_length` | int | Average subdomain length |
+| `subdomain_entropy` | float | Shannon entropy of subdomain |
+| `path_length` | int | Length of URL path |
+| `path_has_query` | bool | URL has query parameters |
+| `path_has_fragment` | bool | URL has fragment identifier |
+
+#### Internationalization
+| Field | Type | Description |
+|-------|------|-------------|
 | `is_idn` | bool | Uses internationalized domain names |
 | `mixed_script` | bool | Mixes different Unicode scripts |
+
+#### Page Content Analysis
+| Field | Type | Description |
+|-------|------|-------------|
 | `form_count` | int | Number of HTML forms on page |
 | `password_fields` | int | Number of password input fields |
 | `email_fields` | int | Number of email input fields |

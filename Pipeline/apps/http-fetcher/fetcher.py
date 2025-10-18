@@ -11,6 +11,7 @@ from typing import Optional, Dict, Any, List, Tuple
 
 import ujson
 import httpx
+import redis
 from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
 from selectolax.parser import HTMLParser
 import tldextract
@@ -28,6 +29,10 @@ TIMEOUT_READ_S  = float(os.getenv("TIMEOUT_READ_S", "6.0"))
 MAX_BODY_BYTES  = int(os.getenv("MAX_BODY_BYTES", "200000"))
 MAX_REDIRECTS   = int(os.getenv("MAX_REDIRECTS", "5"))
 FALLBACK_RESOLVE= os.getenv("FALLBACK_RESOLVE", "false").lower()=="true"
+
+# Redis config for seed tracking
+REDIS_HOST = os.getenv("REDIS_HOST", "redis")
+REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
 
 extract = tldextract.TLDExtract(suffix_list_urls=None)
 
@@ -111,6 +116,35 @@ def now_iso():
 def registrable(host: str) -> str:
     t = extract(host or "")
     return f"{t.domain}.{t.suffix}" if t.suffix else t.domain
+
+def get_redis_client():
+    """Get Redis client for seed tracking"""
+    try:
+        client = redis.Redis(
+            host=REDIS_HOST,
+            port=REDIS_PORT,
+            decode_responses=True,
+            socket_connect_timeout=5
+        )
+        client.ping()  # Test connection
+        return client
+    except Exception as e:
+        print(f"[redis] Warning: Could not connect to Redis: {e}")
+        print(f"[redis] Seed tracking will be disabled")
+        return None
+
+def update_seed_tracking(redis_client, seed_registrable, success=True):
+    """Update seed tracking counters in Redis"""
+    if not redis_client or not seed_registrable:
+        return
+
+    try:
+        if success:
+            redis_client.incr(f"http_fetcher:seed:{seed_registrable}:crawled")
+        else:
+            redis_client.incr(f"http_fetcher:seed:{seed_registrable}:failed")
+    except Exception as e:
+        print(f"[redis] Error updating seed tracking: {e}")
 
 def is_parked(html: str, title: str, url: str) -> Dict[str, Any]:
     """
@@ -575,7 +609,7 @@ async def send_jsonl_line(fobj, obj: dict):
     fobj.flush()
 
 # ---------- main worker ----------
-async def worker(worker_id: int, queue: asyncio.Queue, prod, fobj):
+async def worker(worker_id: int, queue: asyncio.Queue, prod, fobj, redis_client=None):
     print(f"[ic05] Worker {worker_id} started")
     processed = 0
     while True:
@@ -588,7 +622,8 @@ async def worker(worker_id: int, queue: asyncio.Queue, prod, fobj):
                 
             fqdn = item["fqdn"]
             reg  = registrable(fqdn)
-            
+            seed_registrable = item.get("seed_registrable")
+
             try:
                 probe = await probe_host(fqdn)
                 out = {
@@ -610,6 +645,10 @@ async def worker(worker_id: int, queue: asyncio.Queue, prod, fobj):
                 }
                 await prod.send_and_wait(OUTPUT_TOPIC, ujson.dumps(out).encode("utf-8"), key=reg.encode())
                 await send_jsonl_line(fobj, out)
+
+                # Update Redis tracking for successful probe
+                update_seed_tracking(redis_client, seed_registrable, success=True)
+
                 processed += 1
                 if processed % 10 == 0:
                     print(f"[ic05] Worker {worker_id}: {processed} probes completed")
@@ -631,6 +670,9 @@ async def worker(worker_id: int, queue: asyncio.Queue, prod, fobj):
                 try:
                     await prod.send_and_wait(OUTPUT_TOPIC, ujson.dumps(out).encode("utf-8"), key=reg.encode())
                     await send_jsonl_line(fobj, out)
+
+                    # Update Redis tracking for failed probe
+                    update_seed_tracking(redis_client, seed_registrable, success=False)
                 except:
                     pass
         except Exception as e:
@@ -642,18 +684,25 @@ async def main():
     print("[ic05] HTTP Fetcher starting...")
     print(f"[ic05] Concurrency: {CONCURRENCY}, Input: {INPUT_TOPIC}, Output: {OUTPUT_TOPIC}")
     sys.stdout.flush()
-    
+
+    # Initialize Redis for seed tracking
+    redis_client = get_redis_client()
+    if redis_client:
+        print("[redis] Connected successfully for seed tracking")
+    else:
+        print("[redis] Proceeding without seed tracking")
+
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     seg = OUTPUT_DIR / f"http_probed_{now_iso()}.jsonl"
     fobj = seg.open("a", encoding="utf-8", buffering=1)
     print(f"[ic05] Writing to: {seg}")
-    
+
     try:
         prod = await kafka_producer()
         cons = await kafka_consumer(INPUT_TOPIC, group_id="ic05-http-fetcher")
-        
+
         queue: asyncio.Queue = asyncio.Queue(maxsize=CONCURRENCY * 4)
-        workers = [asyncio.create_task(worker(i, queue, prod, fobj)) for i in range(CONCURRENCY)]
+        workers = [asyncio.create_task(worker(i, queue, prod, fobj, redis_client)) for i in range(CONCURRENCY)]
         
         print(f"[ic05] Started {CONCURRENCY} workers, waiting for messages...")
         sys.stdout.flush()

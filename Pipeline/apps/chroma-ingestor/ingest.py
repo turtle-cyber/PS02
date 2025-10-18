@@ -498,7 +498,16 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
             keep["days_until_expiry"] = whois["days_until_expiry"]
 
     # Determine enrichment level (what data is present)
-    has_domain = bool(r.get("dns") or r.get("whois"))
+    # Check for domain data in both nested (dns-collector) and flattened (rule-scorer) formats
+    has_domain = bool(
+        r.get("dns") or
+        r.get("whois") or
+        r.get("a_count") is not None or
+        r.get("mx_count") is not None or
+        r.get("ns_count") is not None or
+        r.get("domain_age_days") is not None or
+        r.get("country")
+    )
     has_features = bool(r.get("url_features") or r.get("forms"))
     has_verdict = bool(r.get("verdict") or r.get("score") is not None)
     is_failed = bool("error" in r or r.get("status") == "failed")
@@ -576,10 +585,29 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
 
     if "url_features" in r:
         url_f = r["url_features"]
+        # Basic URL metrics
         keep["url_length"] = url_f.get("url_length", 0)
         keep["url_entropy"] = float(url_f.get("url_entropy", 0))
-        keep["num_subdomains"] = url_f.get("num_subdomains", 0)
+        keep["num_dots"] = url_f.get("num_dots", 0)
+        keep["num_hyphens"] = url_f.get("num_hyphens", 0)
+        keep["num_slashes"] = url_f.get("num_slashes", 0)
+        keep["num_underscores"] = url_f.get("num_underscores", 0)
         keep["has_repeated_digits"] = bool(url_f.get("has_repeated_digits", False))
+
+        # Domain metrics
+        keep["domain_length"] = url_f.get("domain_length", 0)
+        keep["domain_entropy"] = float(url_f.get("domain_entropy", 0))
+        keep["domain_hyphens"] = url_f.get("domain_hyphens", 0)
+
+        # Subdomain metrics
+        keep["num_subdomains"] = url_f.get("num_subdomains", 0)
+        keep["avg_subdomain_length"] = url_f.get("avg_subdomain_length", 0)
+        keep["subdomain_entropy"] = float(url_f.get("subdomain_entropy", 0))
+
+        # Path metrics
+        keep["path_length"] = url_f.get("path_length", 0)
+        keep["path_has_query"] = bool(url_f.get("path_has_query", False))
+        keep["path_has_fragment"] = bool(url_f.get("path_has_fragment", False))
 
     if "idn" in r:
         idn = r["idn"]
@@ -610,9 +638,33 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
     if "iframes" in r:
         keep["iframe_count"] = r["iframes"]
 
+    # FIX: Add missing field mappings
+    if "images_count" in r:
+        keep["images_count"] = r["images_count"]
+
+    if "external_scripts" in r:
+        keep["external_scripts"] = r["external_scripts"]
+
+    if "external_stylesheets" in r:
+        keep["external_stylesheets"] = r["external_stylesheets"]
+
+    if "favicon_size" in r:
+        keep["favicon_size"] = r["favicon_size"]
+
     # SSL certificate analysis
-    if "ssl" in r or "tls" in r or "ssl_info" in r:
-        ssl = r.get("ssl") or r.get("tls") or r.get("ssl_info") or {}
+    # Check multiple possible locations for SSL data
+    ssl = None
+    if "ssl_info" in r:
+        ssl = r["ssl_info"]
+    elif "ssl" in r:
+        ssl = r["ssl"]
+    elif "tls" in r:
+        ssl = r["tls"]
+    elif "final" in r and isinstance(r["final"], dict) and "ssl_info" in r["final"]:
+        # SSL data might be nested inside 'final' object from http-fetcher
+        ssl = r["final"]["ssl_info"]
+
+    if ssl and isinstance(ssl, dict):
         keep["uses_https"] = bool(ssl.get("uses_https", False))
         keep["is_self_signed"] = bool(ssl.get("is_self_signed", False))
         keep["domain_mismatch"] = bool(ssl.get("domain_mismatch") or ssl.get("has_domain_mismatch", False))
