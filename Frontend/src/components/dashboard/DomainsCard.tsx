@@ -4,7 +4,7 @@ import { Skeleton } from "@mui/material";
 
 export const DomainsCard: React.FC<any> = ({ data, loading }) => {
   return (
-    <LiquidCard variant="glass" className="p-6 min-h-[360px]">
+    <LiquidCard variant="glass" className="p-6 min-h-[460px]">
       <div className="grid grid-cols-2 gap-20">
         <div>
           <p className="text-slate-400 text-sm mb-1">Look-Alike Domains</p>

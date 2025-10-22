@@ -10,7 +10,7 @@ import {
 import { scaleSqrt } from "d3-scale";
 
 /** TopoJSON for world map (lightweight). You can self-host later if needed. */
-const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
 
 /** ISO2 → [lng, lat] centroids (add more as your API returns new countries) */
 const ISO2_TO_COORD: Record<string, [number, number]> = {
@@ -63,6 +63,121 @@ interface OriginCountriesMapProps {
   topN?: number; // right-side list count (default 5)
 }
 
+/** Ripple component for animated pulse effect */
+const RippleMarker: React.FC<{
+  coords: [number, number];
+  radius: number;
+  name: string;
+  count: number;
+  percentage?: number;
+}> = ({ coords, radius, name, count, percentage }) => {
+  return (
+    <Marker coordinates={coords}>
+      {/* Animated ripple rings */}
+      <circle
+        r={radius}
+        fill="none"
+        stroke="rgba(229,9,20,0.6)"
+        strokeWidth={2}
+      >
+        <animate
+          attributeName="r"
+          from={radius}
+          to={radius * 2}
+          dur="2s"
+          begin="0s"
+          repeatCount="indefinite"
+        />
+        <animate
+          attributeName="opacity"
+          from="0.8"
+          to="0"
+          dur="2s"
+          begin="0s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <circle
+        r={radius}
+        fill="none"
+        stroke="rgba(229,9,20,0.6)"
+        strokeWidth={2}
+      >
+        <animate
+          attributeName="r"
+          from={radius}
+          to={radius * 2}
+          dur="2s"
+          begin="0.7s"
+          repeatCount="indefinite"
+        />
+        <animate
+          attributeName="opacity"
+          from="0.8"
+          to="0"
+          dur="2s"
+          begin="0.7s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <circle
+        r={radius}
+        fill="none"
+        stroke="rgba(229,9,20,0.6)"
+        strokeWidth={2}
+      >
+        <animate
+          attributeName="r"
+          from={radius}
+          to={radius * 2}
+          dur="2s"
+          begin="1.4s"
+          repeatCount="indefinite"
+        />
+        <animate
+          attributeName="opacity"
+          from="0.8"
+          to="0"
+          dur="2s"
+          begin="1.4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      {/* Main bubble */}
+      <circle
+        r={radius}
+        fill="rgba(229,9,20,0.28)"
+        stroke="rgba(229,9,20,0.55)"
+        strokeWidth={1}
+        style={{
+          filter: "drop-shadow(0 0 8px rgba(229,9,20,0.35))",
+        }}
+      />
+
+      {/* Small core with pulse */}
+      <circle r={3} fill="#E50914">
+        <animate
+          attributeName="r"
+          values="3;4;3"
+          dur="1.5s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      {/* Tooltip */}
+      <title>
+        {name}
+        {"\n"}
+        Count: {count}
+        {typeof percentage === "number" ? ` (${percentage.toFixed(2)}%)` : ""}
+      </title>
+    </Marker>
+  );
+};
+
 export const OriginCountriesMap: React.FC<OriginCountriesMapProps> = ({
   data,
   loading = false,
@@ -110,9 +225,9 @@ export const OriginCountriesMap: React.FC<OriginCountriesMapProps> = ({
     n >= 1000 ? `${Math.round(n / 100) / 10}K` : `${n}`;
 
   return (
-    <LiquidCard variant="glass" className="p-4">
+    <LiquidCard variant="glass" className="p-4 h-[460px] ">
       <div className="gap-6 overflow-auto">
-        <div className="w-full h-[200px] flex items-center justify-center">
+        <div className="w-full h-[300px] flex items-center justify-center">
           {loading ? (
             <CircularProgress size={28} />
           ) : !hasData ? (
@@ -146,31 +261,16 @@ export const OriginCountriesMap: React.FC<OriginCountriesMapProps> = ({
                 }
               </Geographies>
 
-              {/* Bubbles */}
+              {/* Ripple Markers */}
               {points.map((p) => (
-                <Marker key={p.code} coordinates={p.coords}>
-                  {/* Outer translucent circle */}
-                  <circle
-                    r={radius(p.count)}
-                    fill="rgba(229,9,20,0.28)"
-                    stroke="rgba(229,9,20,0.55)"
-                    strokeWidth={1}
-                    style={{
-                      filter: "drop-shadow(0 0 8px rgba(229,9,20,0.35))",
-                    }}
-                  />
-                  {/* Small core */}
-                  <circle r={3} fill="#E50914" />
-                  {/* Optional simple tooltip on title */}
-                  <title>
-                    {p.name}
-                    {"\n"}
-                    Count: {p.count}
-                    {typeof p.percentage === "number"
-                      ? ` (${p.percentage.toFixed(2)}%)`
-                      : ""}
-                  </title>
-                </Marker>
+                <RippleMarker
+                  key={p.code}
+                  coords={p.coords}
+                  radius={radius(p.count)}
+                  name={p.name}
+                  count={p.count}
+                  percentage={p.percentage}
+                />
               ))}
             </ComposableMap>
           )}

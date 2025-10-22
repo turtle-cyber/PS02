@@ -21,7 +21,7 @@ interface UrlInsightsRow {
 }
 
 interface UrlInsightsTableProps {
-  rows?: UrlInsightsRow[];   // ← optional to allow "not passed"
+  rows?: UrlInsightsRow[]; // ← optional to allow "not passed"
   loading?: boolean;
 }
 
@@ -84,8 +84,8 @@ export const UrlInsightsTable: React.FC<UrlInsightsTableProps> = ({
   );
 
   return (
-    <LiquidCard variant="glass" className="p-6 min-h-[360px]">
-      <ScrollArea className="h-[300px] pr-4">
+    <LiquidCard variant="glass" className="p-6 min-h-[460px]">
+      <ScrollArea className="h-[400px] pr-4">
         <Table aria-busy={!!loading}>
           <TableHeader>
             <TableRow className="border-white/10 hover:bg-transparent">
@@ -120,7 +120,9 @@ export const UrlInsightsTable: React.FC<UrlInsightsTableProps> = ({
                       {row.cse_intended}
                     </TableCell>
                     <TableCell>
-                      <Badge className={`${getVerdictColor(row.verdict)} border-0`}>
+                      <Badge
+                        className={`${getVerdictColor(row.verdict)} border-0`}
+                      >
                         {row.verdict}
                       </Badge>
                     </TableCell>
