@@ -422,6 +422,9 @@ services:
       - CHROMA_PORT=8000
       - LOG_LEVEL=info
       - NODE_ENV=production
+      - ARTIFACTS_PATH=/workspace/out
+    volumes:
+      - ../out:/workspace/out:ro
     depends_on:
       kafka:
         condition: service_healthy

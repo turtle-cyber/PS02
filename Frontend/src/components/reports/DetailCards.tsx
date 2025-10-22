@@ -3,6 +3,9 @@ import { GeoRippleMap } from "@/components/echarts/GeoRippleMap";
 import { ScreenshotGrid } from "./ScreenshotGrid";
 import type { UrlDetailData } from "@/data/mockReportDetails";
 import { LiquidCard } from "../ui/liquid-card";
+import { transformScreenshotPath } from "@/utils/screenshotHelpers";
+import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
+import { ArrowDownward } from "@mui/icons-material";
 
 const cardStyles =
   "rounded-2xl border border-white/6 backdrop-blur-md bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] shadow-[0_0_24px_rgba(229,9,20,0.10)] ring-1 ring-white/5 p-5";
@@ -20,6 +23,29 @@ const MetricRow: React.FC<{
 );
 
 export const DetailCards: React.FC<any> = ({ data }) => {
+  const [showScreenshot, setShowScreenshot] = React.useState(true);
+  const [imageError, setImageError] = React.useState(false);
+
+  const handleDownload = async (imageUrl: string) => {
+    if (!imageUrl) return;
+    try {
+      const response = await fetch(imageUrl);
+      if (!response.ok) throw new Error("Failed to fetch image");
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = imageUrl.split("/").pop() || "screenshot.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download failed:", err);
+      alert("Unable to download screenshot.");
+    }
+  };
+
   return (
     <>
       {/* Row 1: Domain Analysis + Screenshots */}
@@ -79,7 +105,16 @@ export const DetailCards: React.FC<any> = ({ data }) => {
             Feature Metrics
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2 ml-4 mb-4 mr-4">
-            <MetricRow label="URL" value={data?.data?.metadata?.url} />
+            <MetricRow
+              label="URL"
+              value={
+                data?.data?.metadata?.url
+                  ? data.data.metadata.url.length > 100
+                    ? data.data.metadata.url.slice(0, 100) + "..."
+                    : data.data.metadata.url
+                  : "N/A"
+              }
+            />
             <MetricRow
               label="Has Features"
               value={data?.data?.metadata?.has_features}
@@ -243,15 +278,62 @@ export const DetailCards: React.FC<any> = ({ data }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 mt-6 mb-6">
         <LiquidCard variant="glass">
-          <h3 className="text-base font-semibold text-slate-300 mb-4 ml-4 mt-4">
-            Screenshots
-          </h3>
-          <div className="ml-4 mb-4 mr-4">
-            <img
-              src={data?.data?.metadata?.screenshot_path}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <Accordion
+            disableGutters
+            elevation={0}
+            expanded={showScreenshot}
+            onChange={() => setShowScreenshot((prev) => !prev)}
+            className="!bg-transparent !shadow-none"
+          >
+            <AccordionSummary
+              expandIcon={<ArrowDownward className="text-slate-300" />}
+              className="!min-h-0 !py-0 hover:bg-white/5 rounded-lg transition"
+            >
+              <h3 className="text-base font-semibold text-slate-300 select-none">
+                Screenshots
+              </h3>
+            </AccordionSummary>
+
+            <AccordionDetails className="!pt-5">
+              <div className="flex justify-center mb-4">
+                {data?.data?.metadata?.screenshot_path && !imageError ? (
+                  <div className="relative group w-full max-w-md rounded-lg overflow-hidden">
+                    <img
+                      src={
+                        transformScreenshotPath(
+                          data?.data?.metadata?.screenshot_path
+                        ) || ""
+                      }
+                      alt="Domain Screenshot"
+                      className="w-full h-auto rounded-md object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                      onError={() => setImageError(true)}
+                    />
+
+                    {/* Hover Download button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent accordion toggle
+                        handleDownload(
+                          transformScreenshotPath(
+                            data?.data?.metadata?.screenshot_path
+                          )
+                        );
+                      }}
+                      className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <span className="px-3 py-1.5 bg-slate-800/80 text-slate-100 text-sm rounded-md border border-white/10 hover:bg-slate-700/90">
+                        Download
+                      </span>
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-400 italic mb-4">
+                    No Screenshot available
+                  </p>
+                )}
+              </div>
+            </AccordionDetails>
+          </Accordion>
         </LiquidCard>
       </div>
     </>

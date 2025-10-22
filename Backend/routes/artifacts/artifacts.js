@@ -114,8 +114,16 @@ router.get('/artifacts/screenshot/:filename', (req, res) => {
             });
         }
 
+        // Set CORS headers to allow cross-origin image loading
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+
         // Serve the screenshot with proper content type
         res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
+
         res.sendFile(filePath);
     } catch (error) {
         console.error('Error serving screenshot artifact:', error);
