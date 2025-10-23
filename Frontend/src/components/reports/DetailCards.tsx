@@ -94,7 +94,21 @@ export const DetailCards: React.FC<any> = ({ data }) => {
           <h3 className="text-base font-semibold text-slate-300 mt-4 mb-4 ml-4">
             Geo Location
           </h3>
-          <GeoRippleMap data={data?.geoPoints} height="280px" />
+          <GeoRippleMap
+            data={
+              data?.data?.metadata?.latitude && data?.data?.metadata?.longitude
+                ? [{
+                    name: data?.data?.metadata?.city || data?.data?.metadata?.country || "Unknown Location",
+                    value: [
+                      data.data.metadata.longitude,
+                      data.data.metadata.latitude,
+                      1
+                    ]
+                  }]
+                : []
+            }
+            height="280px"
+          />
         </LiquidCard>
       </div>
 
