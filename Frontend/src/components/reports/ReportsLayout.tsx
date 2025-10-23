@@ -51,7 +51,7 @@ export const ReportsLayout: React.FC<ReportsLayoutProps> = ({
                   <FileText className="h-5 w-5" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent side="bottom">
                 {isExporting ? "Exporting..." : "Export PDF"}
               </TooltipContent>
             </Tooltip>
@@ -68,7 +68,7 @@ export const ReportsLayout: React.FC<ReportsLayoutProps> = ({
                   <Download className="h-5 w-5" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent side="bottom">
                 {isExporting ? "Exporting..." : "Export CSV"}
               </TooltipContent>
             </Tooltip>

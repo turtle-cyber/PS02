@@ -37,12 +37,12 @@ interface LookalikesTableProps {
 const getVerdictColor = (verdict?: string) => {
   const v = String(verdict ?? "").toLowerCase();
   if (v === "phishing")
-    return "bg-[#8B373A]/20 text-[#E1E1E1] border-[#E50914]/40";
+    return "bg-[#8B373A]/20 text-[#E1E1E1] border-[#E50914]/40 capitalize";
   if (v === "suspicious")
-    return "bg-[#FDD835]/20 text-[#E1E1E1] border-[#FFB020]/40";
+    return "bg-[#FDD835]/20 text-[#E1E1E1] border-[#FFB020]/40 capitalize";
   if (v === "benign" || v === "clean")
-    return "bg-[#43A047]/20 text-[#E1E1E1] border-[#1FBF75]/40";
-  return "bg-slate-500/20 text-slate-400 border-slate-500/40";
+    return "bg-[#43A047]/20 text-[#E1E1E1] border-[#1FBF75]/40 capitalize";
+  return "bg-slate-500/20 text-slate-400 border-slate-500/40 capitalize";
 };
 
 const getRiskColor = (risk?: number) => {

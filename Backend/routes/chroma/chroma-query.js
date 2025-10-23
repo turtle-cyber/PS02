@@ -245,7 +245,13 @@ router.get('/originals', async (req, res) => {
                 ...metadataWithoutFirstSeen,
                 ipv4: ipv4,
                 nameserver: nameserver,
-                first_seen: firstSeenFormatted
+                first_seen: firstSeenFormatted,
+                country: metadata.country || null,
+                city: metadata.city || null,
+                asn: metadata.asn || null,
+                asn_org: metadata.asn_org || null,  // ISP name
+                latitude: metadata.latitude || null,
+                longitude: metadata.longitude || null
             };
 
             return {
@@ -599,7 +605,13 @@ router.get('/domain/:domain', async (req, res) => {
             ...metadataWithoutFirstSeen,
             ipv4: ipv4,
             nameserver: nameserver,
-            first_seen: firstSeenFormatted
+            first_seen: firstSeenFormatted,
+            country: found.metadata.country || null,
+            city: found.metadata.city || null,
+            asn: found.metadata.asn || null,
+            asn_org: found.metadata.asn_org || null,  // ISP name
+            latitude: found.metadata.latitude || null,
+            longitude: found.metadata.longitude || null
         };
 
         // Build response object with enhanced data

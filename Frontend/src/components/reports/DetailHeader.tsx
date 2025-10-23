@@ -25,13 +25,13 @@ interface DetailHeaderProps {
 const getVerdictColor = (verdict: string) => {
   switch (verdict) {
     case "phishing":
-      return "bg-[#8B373A]/20 text-[#e1e1e1] border-[#E50914]/40";
+      return "bg-[#8B373A]/20 text-[#e1e1e1] border-[#E50914]/40 capitalize";
     case "parked":
-      return "bg-[#FDD835]/20 text-[#FFB020] border-[#FFB020]/40";
+      return "bg-[#FDD835]/20 text-[#FFB020] border-[#FFB020]/40 capitalize";
     case "benign":
-      return "bg-[#43A047]/20 text-[#1FBF75] border-[#1FBF75]/40";
+      return "bg-[#43A047]/20 text-[#1FBF75] border-[#1FBF75]/40 capitalize";
     default:
-      return "bg-slate-500/20 text-slate-400 border-slate-500/40";
+      return "bg-slate-500/20 text-slate-400 border-slate-500/40 capitalize";
   }
 };
 

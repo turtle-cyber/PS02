@@ -90,9 +90,22 @@ const LookalikeDetailPage = () => {
               },
             ]}
             metaLeft={[
-              { label: "ISP", value: displayData.isp },
-              { label: "ASN", value: displayData.asn },
-              { label: "Location", value: displayData.location },
+              {
+                label: "ISP",
+                value: lookalikeData?.data?.metadata?.asn_org || "N/A",
+              },
+              {
+                label: "ASN",
+                value: lookalikeData?.data?.metadata?.asn || "N/A",
+              },
+              {
+                label: "Location",
+                value:
+                  lookalikeData?.data?.metadata?.city &&
+                  lookalikeData?.data?.metadata?.country
+                    ? `${lookalikeData.data.metadata.city}, ${lookalikeData.data.metadata.country}`
+                    : lookalikeData?.data?.metadata?.country || "N/A",
+              },
             ]}
             metaRight={[
               {

@@ -76,35 +76,40 @@ const UrlDetailPage = () => {
             metaLeft={[
               { label: "Source URL", value: reportDetailData?.domain },
               {
-                label: "Destination URL",
-                value: reportDetailData?.metadata?.destination_url || "N/A",
+                label: "IP Address",
+                value: reportDetailData?.data?.metadata?.ipv4 || "N/A",
               },
               {
-                label: "IP Address",
-                value: reportDetailData?.data?.metadata?.ipv4,
+                label: "ISP",
+                value: reportDetailData?.data?.metadata?.asn_org || "N/A",
               },
             ]}
             metaRight={[
               {
+                label: "ASN",
+                value: reportDetailData?.data?.metadata?.asn || "N/A",
+              },
+              {
+                label: "Location",
+                value: reportDetailData?.data?.metadata?.city && reportDetailData?.data?.metadata?.country
+                  ? `${reportDetailData.data.metadata.city}, ${reportDetailData.data.metadata.country}`
+                  : reportDetailData?.data?.metadata?.country || "N/A",
+              },
+              {
                 label: "A Count",
                 value: reportDetailData?.data?.metadata?.a_count,
               },
-              {
-                label: "Country",
-                value: reportDetailData?.data?.metadata?.country || "N/A",
-              },
-              { label: "Risk", value: displayData.risk },
               {
                 label: "MX Count",
                 value: reportDetailData?.data?.metadata?.mx_count,
               },
               {
                 label: "Registrar",
-                value: reportDetailData?.data?.metadata?.registrar,
+                value: reportDetailData?.data?.metadata?.registrar || "N/A",
               },
               {
                 label: "Domain Age",
-                value: reportDetailData?.data?.metadata?.domain_age_days,
+                value: reportDetailData?.data?.metadata?.domain_age_days || "N/A",
               },
             ]}
             lastScan={displayData.lastScan}
