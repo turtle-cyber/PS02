@@ -1,7 +1,7 @@
 import * as React from "react";
 import { LiquidCard } from "@/components/ui/liquid-card";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -84,13 +84,16 @@ export const UrlInsightsTable: React.FC<UrlInsightsTableProps> = ({
   );
 
   return (
-    <LiquidCard variant="glass" className="p-6 min-h-[460px]">
+    <LiquidCard variant="glass" className="p-6 min-h-[460px]" allowOverflow>
       <ScrollArea className="h-[400px] pr-4">
         <Table aria-busy={!!loading}>
           <TableHeader>
             <TableRow className="border-white/10 hover:bg-transparent">
               {headers.map((h) => (
-                <TableHead key={h} className="text-gray-400 font-medium">
+                <TableHead
+                  key={h}
+                  className="text-gray-400 font-medium md:px-2 md:text-xs"
+                >
                   {h}
                 </TableHead>
               ))}
@@ -107,19 +110,19 @@ export const UrlInsightsTable: React.FC<UrlInsightsTableProps> = ({
                     key={`${row.source_url}-${row.ip_address}-${idx}`}
                     className="border-white/5 hover:bg-white/[0.03] transition-colors"
                   >
-                    <TableCell className="text-blue-400 text-sm max-w-[200px] truncate">
+                    <TableCell className="text-blue-400 text-sm md:text-xs md:px-2 max-w-[200px] truncate">
                       {row.source_url}
                     </TableCell>
-                    <TableCell className="text-slate-300 text-sm">
+                    <TableCell className="text-slate-300 text-sm md:text-xs md:px-2">
                       {row.ip_address}
                     </TableCell>
-                    <TableCell className="text-slate-300 text-sm">
+                    <TableCell className="text-slate-300 text-sm md:text-xs md:px-2">
                       {row.hosting_provider}
                     </TableCell>
-                    <TableCell className="text-slate-300 text-sm">
+                    <TableCell className="text-slate-300 text-sm md:text-xs md:px-2">
                       {row.cse_intended}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="md:px-2">
                       <Badge
                         className={`${getVerdictColor(row.verdict)} border-0`}
                       >
@@ -130,6 +133,7 @@ export const UrlInsightsTable: React.FC<UrlInsightsTableProps> = ({
                 ))}
           </TableBody>
         </Table>
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </LiquidCard>
   );
