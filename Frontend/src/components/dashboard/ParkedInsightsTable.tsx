@@ -72,7 +72,7 @@ export const ParkedInsightsTable: React.FC<ParkedInsightsTableProps> = ({
   return (
     <LiquidCard variant="glass" className="p-6 min-h-[450px]">
       {/* Row fade-in animation CSS (scoped) */}
-      <style>{`
+      {/* <style>{`
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(-6px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -85,7 +85,7 @@ export const ParkedInsightsTable: React.FC<ParkedInsightsTableProps> = ({
         @media (prefers-reduced-motion: reduce) {
           .tr-fade { animation: none; opacity: 1; transform: none; }
         }
-      `}</style>
+      `}</style> */}
 
       <ScrollArea className="h-[400px] pr-4">
         <Table aria-busy={!!loading}>

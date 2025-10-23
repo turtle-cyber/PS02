@@ -3,8 +3,8 @@ import { LiquidCard } from "@/components/ui/liquid-card";
 import { EChartBase } from "@/components/echarts/echart-base";
 import type { EChartsOption } from "echarts";
 
-export const UrlWatchArea: React.FC<any> = ({ series }) => {
-  const option: EChartsOption = {
+export const UrlWatchArea: React.FC<any> = React.memo(({ series }) => {
+  const option: EChartsOption = React.useMemo(() => ({
     backgroundColor: "transparent",
     grid: {
       left: "3%",
@@ -177,7 +177,7 @@ export const UrlWatchArea: React.FC<any> = ({ series }) => {
         data: series.clean,
       },
     ],
-  };
+  }), [series.dates, series.phishing, series.suspicious, series.clean]);
 
   return (
     <LiquidCard variant="glass" className="p-2 min-h-[280px]">
@@ -187,4 +187,4 @@ export const UrlWatchArea: React.FC<any> = ({ series }) => {
       </div>
     </LiquidCard>
   );
-};
+});

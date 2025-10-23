@@ -61,16 +61,17 @@ interface OriginCountriesMapProps {
   data?: CountryPoint[]; // API: [{ country: "US", count: 217, percentage: 59.94 }, ...]
   loading?: boolean;
   topN?: number; // right-side list count (default 5)
+  useRipple?: boolean; // Use ripple animation (performance heavy) vs simple markers (default: false)
 }
 
-/** Ripple component for animated pulse effect */
+/** Ripple component for animated pulse effect (performance heavy) */
 const RippleMarker: React.FC<{
   coords: [number, number];
   radius: number;
   name: string;
   count: number;
   percentage?: number;
-}> = ({ coords, radius, name, count, percentage }) => {
+}> = React.memo(({ coords, radius, name, count, percentage }) => {
   return (
     <Marker coordinates={coords}>
       {/* Animated ripple rings */}
@@ -176,136 +177,180 @@ const RippleMarker: React.FC<{
       </title>
     </Marker>
   );
-};
+});
 
-export const OriginCountriesMap: React.FC<OriginCountriesMapProps> = ({
-  data,
-  loading = false,
-  topN = 5,
-}) => {
-  const hasData = Array.isArray(data) && data.length > 0;
-
-  // Filter to countries we have coordinates for, and map to display shape
-  const points = React.useMemo(() => {
-    if (!hasData) return [];
-    return data!
-      .filter((d) => ISO2_TO_COORD[d.country] && d.count > 0)
-      .map((d) => {
-        const [lng, lat] = ISO2_TO_COORD[d.country];
-        return {
-          code: d.country,
-          name: ISO2_TO_NAME[d.country] || d.country,
-          coords: [lng, lat] as [number, number],
-          count: d.count,
-          percentage: d.percentage,
-        };
-      });
-  }, [data, hasData]);
-
-  // Radius scale (sqrt so big counts don't dominate)
-  const radius = React.useMemo(() => {
-    const max = points.reduce((m, p) => Math.max(m, p.count), 0);
-    const min = points.reduce((m, p) => Math.min(m, p.count), Infinity);
-    const domainMin = isFinite(min) ? Math.min(min, 1) : 0;
-    const domainMax = Math.max(max, 1);
-    return scaleSqrt<number, number>()
-      .domain([domainMin, domainMax])
-      .range([6, 26]);
-  }, [points]);
-
-  // Top-N list for right side
-  const top = React.useMemo(() => {
-    if (!hasData) return [];
-    return [...data!].sort((a, b) => b.count - a.count).slice(0, topN);
-  }, [data, hasData, topN]);
-
-  const maxCount = top[0]?.count ?? 1;
-
-  const formatK = (n: number) =>
-    n >= 1000 ? `${Math.round(n / 100) / 10}K` : `${n}`;
-
+/** Simple static marker - no animations for better performance */
+const SimpleMarker: React.FC<{
+  coords: [number, number];
+  radius: number;
+  name: string;
+  count: number;
+  percentage?: number;
+}> = React.memo(({ coords, radius, name, count, percentage }) => {
   return (
-    <LiquidCard variant="glass" className="p-4 h-[460px] ">
-      <div className="gap-6 overflow-auto">
-        <div className="w-full h-[300px] flex items-center justify-center">
-          {loading ? (
-            <CircularProgress size={28} />
-          ) : !hasData ? (
-            <div className="text-slate-400 text-sm">No Data Found</div>
-          ) : (
-            <ComposableMap
-              projectionConfig={{ scale: 200 }}
-              style={{ width: "100%", height: "100%" }}
-            >
-              <Geographies geography={geoUrl}>
-                {({ geographies }) =>
-                  geographies.map((geo) => (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      style={{
-                        default: {
-                          fill: "rgba(255,255,255,0.03)",
-                          stroke: "rgba(255,255,255,0.08)",
-                          outline: "none",
-                        },
-                        hover: {
-                          fill: "rgba(229,9,20,0.12)",
-                          stroke: "rgba(255,255,255,0.12)",
-                          outline: "none",
-                        },
-                        pressed: { outline: "none" },
-                      }}
-                    />
-                  ))
-                }
-              </Geographies>
+    <Marker coordinates={coords}>
+      {/* Main bubble with glow effect */}
+      <circle
+        r={radius}
+        fill="rgba(229,9,20,0.35)"
+        stroke="rgba(229,9,20,0.8)"
+        strokeWidth={1.5}
+        style={{
+          filter: "drop-shadow(0 0 6px rgba(229,9,20,0.5))",
+        }}
+      />
 
-              {/* Ripple Markers */}
-              {points.map((p) => (
-                <RippleMarker
-                  key={p.code}
-                  coords={p.coords}
-                  radius={radius(p.count)}
-                  name={p.name}
-                  count={p.count}
-                  percentage={p.percentage}
-                />
-              ))}
-            </ComposableMap>
-          )}
-        </div>
+      {/* Small core */}
+      <circle r={3} fill="#E50914" />
 
-        {/* Right-side Top-N bars */}
-        <div className="mt-2 grid grid-cols-2 gap-4">
-          {(hasData ? top : []).map((row, idx) => (
-            <div key={`${row.country}-${idx}`}>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-slate-300 text-sm">
-                  {ISO2_TO_NAME[row.country] || row.country}{" "}
-                  {formatK(row.count)}
-                </span>
-                {typeof row.percentage === "number" && (
-                  <span className="text-white text-sm font-semibold">
-                    {row.percentage.toFixed(0)}%
-                  </span>
-                )}
-              </div>
-              <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#E50914] rounded-full transition-all"
-                  style={{ width: `${(row.count / maxCount) * 100}%` }}
-                />
-              </div>
-            </div>
-          ))}
-          {!loading && !hasData && (
-            <div className="text-slate-400 text-sm col-span-2">
-              No Data Found
-            </div>
-          )}
-        </div>
-      </div>
-    </LiquidCard>
+      {/* Tooltip */}
+      <title>
+        {name}
+        {"\n"}
+        Count: {count}
+        {typeof percentage === "number" ? ` (${percentage.toFixed(2)}%)` : ""}
+      </title>
+    </Marker>
   );
-};
+});
+
+export const OriginCountriesMap: React.FC<OriginCountriesMapProps> = React.memo(
+  ({ data, loading = false, topN = 5, useRipple = false }) => {
+    const hasData = Array.isArray(data) && data.length > 0;
+
+    // Filter to countries we have coordinates for, and map to display shape
+    const points = React.useMemo(() => {
+      if (!hasData) return [];
+      return data!
+        .filter((d) => ISO2_TO_COORD[d.country] && d.count > 0)
+        .map((d) => {
+          const [lng, lat] = ISO2_TO_COORD[d.country];
+          return {
+            code: d.country,
+            name: ISO2_TO_NAME[d.country] || d.country,
+            coords: [lng, lat] as [number, number],
+            count: d.count,
+            percentage: d.percentage,
+          };
+        });
+    }, [data, hasData]);
+
+    // Radius scale (sqrt so big counts don't dominate)
+    const radius = React.useMemo(() => {
+      const max = points.reduce((m, p) => Math.max(m, p.count), 0);
+      const min = points.reduce((m, p) => Math.min(m, p.count), Infinity);
+      const domainMin = isFinite(min) ? Math.min(min, 1) : 0;
+      const domainMax = Math.max(max, 1);
+      return scaleSqrt<number, number>()
+        .domain([domainMin, domainMax])
+        .range([6, 26]);
+    }, [points]);
+
+    // Top-N list for right side
+    const top = React.useMemo(() => {
+      if (!hasData) return [];
+      return [...data!].sort((a, b) => b.count - a.count).slice(0, topN);
+    }, [data, hasData, topN]);
+
+    const maxCount = top[0]?.count ?? 1;
+
+    const formatK = (n: number) =>
+      n >= 1000 ? `${Math.round(n / 100) / 10}K` : `${n}`;
+
+    return (
+      <LiquidCard variant="glass" className="p-4 h-[460px] ">
+        <div className="gap-6 overflow-auto">
+          <div className="w-full h-[300px] flex items-center justify-center">
+            {loading ? (
+              <CircularProgress size={28} />
+            ) : !hasData ? (
+              <div className="text-slate-400 text-sm">No Data Found</div>
+            ) : (
+              <ComposableMap
+                projectionConfig={{ scale: 200 }}
+                style={{ width: "100%", height: "100%" }}
+              >
+                <Geographies geography={geoUrl}>
+                  {({ geographies }) =>
+                    geographies.map((geo) => (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        style={{
+                          default: {
+                            fill: "rgba(255,255,255,0.03)",
+                            stroke: "rgba(255,255,255,0.08)",
+                            outline: "none",
+                          },
+                          hover: {
+                            fill: "rgba(229,9,20,0.12)",
+                            stroke: "rgba(255,255,255,0.12)",
+                            outline: "none",
+                          },
+                          pressed: { outline: "none" },
+                        }}
+                      />
+                    ))
+                  }
+                </Geographies>
+
+                {/* Markers - Ripple (animated) or Simple (performant) */}
+                {points.map((p) =>
+                  useRipple ? (
+                    <RippleMarker
+                      key={p.code}
+                      coords={p.coords}
+                      radius={radius(p.count)}
+                      name={p.name}
+                      count={p.count}
+                      percentage={p.percentage}
+                    />
+                  ) : (
+                    <SimpleMarker
+                      key={p.code}
+                      coords={p.coords}
+                      radius={radius(p.count)}
+                      name={p.name}
+                      count={p.count}
+                      percentage={p.percentage}
+                    />
+                  )
+                )}
+              </ComposableMap>
+            )}
+          </div>
+
+          {/* Right-side Top-N bars */}
+          <div className="mt-2 grid grid-cols-2 gap-4">
+            {(hasData ? top : []).map((row, idx) => (
+              <div key={`${row.country}-${idx}`}>
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-slate-300 text-sm">
+                    {ISO2_TO_NAME[row.country] || row.country}{" "}
+                    {formatK(row.count)}
+                  </span>
+                  {typeof row.percentage === "number" && (
+                    <span className="text-white text-sm font-semibold">
+                      {row.percentage.toFixed(0)}%
+                    </span>
+                  )}
+                </div>
+                <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#E50914] rounded-full transition-all"
+                    style={{ width: `${(row.count / maxCount) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+            {!loading && !hasData && (
+              <div className="text-slate-400 text-sm col-span-2">
+                No Data Found
+              </div>
+            )}
+          </div>
+        </div>
+      </LiquidCard>
+    );
+  }
+);

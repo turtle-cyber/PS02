@@ -111,7 +111,7 @@ function buildSectorRows(
   return nonZero.slice(0, maxSectors);
 }
 
-export const TopCseByRisk: React.FC<TopCseByRiskProps> = ({
+export const TopCseByRisk: React.FC<TopCseByRiskProps> = React.memo(({
   apiData,
   loading,
   maxSectors = 8,
@@ -124,94 +124,104 @@ export const TopCseByRisk: React.FC<TopCseByRiskProps> = ({
   const hasData = rows.length > 0;
 
   // Y-axis labels
-  const sectors = rows.map((r) => r.sector);
+  const sectors = React.useMemo(() => rows.map((r) => r.sector), [rows]);
 
   // For stacked percentage bars (0..100), compute percentages per sector
   const toPct = (num: number, denom: number) =>
     denom ? (num / denom) * 100 : 0;
 
-  const series = STATUS_ORDER.map((statusKey, idx) => ({
-    name: STATUS_CONFIG[statusKey].label,
-    type: "bar",
-    stack: "total",
-    barWidth: "60%",
-    barMaxWidth: 24,
-    itemStyle: { color: STATUS_CONFIG[statusKey].color },
-    data: rows.map((r) => toPct(r.totals[statusKey], r.totalAll)),
-  })) satisfies BarSeriesOption[];
+  const series = React.useMemo(
+    () =>
+      STATUS_ORDER.map((statusKey, idx) => ({
+        name: STATUS_CONFIG[statusKey].label,
+        type: "bar",
+        stack: "total",
+        barWidth: "60%",
+        barMaxWidth: 24,
+        itemStyle: { color: STATUS_CONFIG[statusKey].color },
+        data: rows.map((r) => toPct(r.totals[statusKey], r.totalAll)),
+      })) satisfies BarSeriesOption[],
+    [rows]
+  );
 
-  const legendLabels = STATUS_ORDER.map((k) => STATUS_CONFIG[k].label);
+  const legendLabels = React.useMemo(
+    () => STATUS_ORDER.map((k) => STATUS_CONFIG[k].label),
+    []
+  );
 
-  const option: EChartsOption = {
-    backgroundColor: "transparent",
-    grid: {
-      left: "5%",
-      right: "25%",
-      top: "15%",
-      bottom: "5%",
-      containLabel: false,
-    },
-    tooltip: {
-      trigger: "axis",
-      axisPointer: { type: "shadow" },
-      backgroundColor: "rgba(0, 0, 0, 0.9)",
-      borderColor: "rgba(255, 255, 255, 0.1)",
-      textStyle: { color: "#ffffff" },
-      // Show both % and raw counts in tooltip
-      formatter: (params: any) => {
-        if (!params || !params.length) return "";
-        const sectorIdx = params[0].dataIndex;
-        const row = rows[sectorIdx];
-        if (!row) return "";
+  const option: EChartsOption = React.useMemo(
+    () => ({
+      backgroundColor: "transparent",
+      grid: {
+        left: "5%",
+        right: "25%",
+        top: "15%",
+        bottom: "5%",
+        containLabel: false,
+      },
+      tooltip: {
+        trigger: "axis",
+        axisPointer: { type: "shadow" },
+        backgroundColor: "rgba(0, 0, 0, 0.9)",
+        borderColor: "rgba(255, 255, 255, 0.1)",
+        textStyle: { color: "#ffffff" },
+        // Show both % and raw counts in tooltip
+        formatter: (params: any) => {
+          if (!params || !params.length) return "";
+          const sectorIdx = params[0].dataIndex;
+          const row = rows[sectorIdx];
+          if (!row) return "";
 
-        const lines = [
-          `<div style="margin-bottom:6px;"><b>${row.sector}</b></div>`,
-        ];
-        for (const p of params) {
-          const statusKey = STATUS_ORDER.find(
-            (k) => STATUS_CONFIG[k].label === p.seriesName
-          );
-          if (!statusKey) continue;
-          const raw = row.totals[statusKey] ?? 0;
-          const pct = row.totalAll
-            ? ((raw / row.totalAll) * 100).toFixed(1)
-            : "0.0";
-          const color = STATUS_CONFIG[statusKey].color;
-          lines.push(
-            `<div style="display:flex;align-items:center;gap:8px;">
+          const lines = [
+            `<div style="margin-bottom:6px;"><b>${row.sector}</b></div>`,
+          ];
+          for (const p of params) {
+            const statusKey = STATUS_ORDER.find(
+              (k) => STATUS_CONFIG[k].label === p.seriesName
+            );
+            if (!statusKey) continue;
+            const raw = row.totals[statusKey] ?? 0;
+            const pct = row.totalAll
+              ? ((raw / row.totalAll) * 100).toFixed(1)
+              : "0.0";
+            const color = STATUS_CONFIG[statusKey].color;
+            lines.push(
+              `<div style="display:flex;align-items:center;gap:8px;">
               <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color}"></span>
               <span>${STATUS_CONFIG[statusKey].label}: ${pct}% <span style="opacity:.7">(${raw})</span></span>
             </div>`
-          );
-        }
-        return lines.join("");
+            );
+          }
+          return lines.join("");
+        },
+      } as any,
+      legend: {
+        data: legendLabels,
+        top: 10,
+        left: 680,
+        textStyle: { color: "#a1a1aa", fontSize: 11 },
+        itemWidth: 12,
+        itemHeight: 12,
       },
-    } as any,
-    legend: {
-      data: legendLabels,
-      top: 10,
-      left: 680,
-      textStyle: { color: "#a1a1aa", fontSize: 11 },
-      itemWidth: 12,
-      itemHeight: 12,
-    },
-    xAxis: {
-      type: "value",
-      max: 100,
-      axisLine: { show: false },
-      axisTick: { show: false },
-      axisLabel: { show: false },
-      splitLine: { lineStyle: { color: "rgba(255, 255, 255, 0.05)" } },
-    },
-    yAxis: {
-      type: "category",
-      data: sectors,
-      axisLine: { show: false },
-      axisTick: { show: false },
-      axisLabel: { color: "#a1a1aa", fontSize: 12 },
-    },
-    series,
-  };
+      xAxis: {
+        type: "value",
+        max: 100,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { show: false },
+        splitLine: { lineStyle: { color: "rgba(255, 255, 255, 0.05)" } },
+      },
+      yAxis: {
+        type: "category",
+        data: sectors,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { color: "#a1a1aa", fontSize: 12 },
+      },
+      series,
+    }),
+    [rows, sectors, series, legendLabels]
+  );
 
   return (
     <LiquidCard variant="glass" className="p-6 min-h-[400px]">
@@ -268,4 +278,4 @@ export const TopCseByRisk: React.FC<TopCseByRiskProps> = ({
       )}
     </LiquidCard>
   );
-};
+});
