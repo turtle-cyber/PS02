@@ -12,7 +12,6 @@ import {
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { Link, useLocation } from "react-router-dom";
 import { styled } from "@mui/material/styles";
-import { mockDashboard } from "@/data/mockDashboard";
 import { OverviewCards } from "@/components/dashboard/OverviewCards";
 import { DomainsCard } from "@/components/dashboard/DomainsCard";
 import { UrlWatchArea } from "@/components/dashboard/UrlWatchArea";
@@ -21,7 +20,7 @@ import { UrlInsightsTable } from "@/components/dashboard/UrlInsightsTable";
 import { ThreatLandscapeBar } from "@/components/dashboard/ThreatLandscapeBar";
 import { TopCseByRisk } from "@/components/dashboard/TopCseByRisk";
 import { ParkedInsightsTable } from "@/components/dashboard/ParkedInsightsTable";
-import { MonthRangePicker } from "@/components/dashboard/MonthRangePicker";
+import DateRangeFilter from "@/components/date-filter";
 import { useCallback, useEffect, useState } from "react";
 import { http } from "@/hooks/config";
 import { toast } from "sonner";
@@ -35,14 +34,24 @@ import {
   GET_URL_WATCH_GRAPH,
 } from "@/endpoints/dashboard.endpoints";
 
-const useGetUrlInsightsData = () => {
+interface DateRangeValue {
+  startDate: Date;
+  endDate: Date;
+}
+
+const useGetUrlInsightsData = (dateRange: DateRangeValue) => {
   const [urlInsightsData, setUrlInsightsData] = useState<any>({});
   const [urlInsightsLoading, setUrlInsightsLoading] = useState(false);
 
   const fetchUrlInsights = useCallback(async () => {
     setUrlInsightsLoading(true);
     try {
-      const response = await http.get(GET_URL_INSIGHTS);
+      const response = await http.get(GET_URL_INSIGHTS, {
+        params: {
+          start_time: dateRange.startDate.toISOString(),
+          end_time: dateRange.endDate.toISOString(),
+        },
+      });
       setUrlInsightsData(response?.data || {});
     } catch (error) {
       toast.error("Error Fetching URL Insight Data");
@@ -50,7 +59,7 @@ const useGetUrlInsightsData = () => {
     } finally {
       setUrlInsightsLoading(false);
     }
-  }, []);
+  }, [dateRange]);
   useEffect(() => {
     fetchUrlInsights();
   }, [fetchUrlInsights]);
@@ -58,14 +67,19 @@ const useGetUrlInsightsData = () => {
   return { urlInsightsData, urlInsightsLoading, refetch: fetchUrlInsights };
 };
 
-const useGetOriginatingCountries = () => {
+const useGetOriginatingCountries = (dateRange: DateRangeValue) => {
   const [countriesData, setCountriesData] = useState([]);
   const [countriesLoading, setCountriesLoading] = useState(false);
 
   const fetchCountries = useCallback(async () => {
     setCountriesLoading(true);
     try {
-      const response = await http.get(GET_ORIGINATING_COUNTRIES);
+      const response = await http.get(GET_ORIGINATING_COUNTRIES, {
+        params: {
+          start_time: dateRange.startDate.toISOString(),
+          end_time: dateRange.endDate.toISOString(),
+        },
+      });
 
       setCountriesData(response?.data?.data || []);
     } catch (error) {
@@ -74,7 +88,7 @@ const useGetOriginatingCountries = () => {
     } finally {
       setCountriesLoading(false);
     }
-  }, []);
+  }, [dateRange]);
   useEffect(() => {
     fetchCountries();
   }, [fetchCountries]);
@@ -82,14 +96,19 @@ const useGetOriginatingCountries = () => {
   return { countriesData, countriesLoading, refetch: fetchCountries };
 };
 
-const useGetUrlWatch = () => {
+const useGetUrlWatch = (dateRange: DateRangeValue) => {
   const [urlWatchData, setUrlWatchData] = useState([]);
   const [urlWatchLoading, setUrlWatchLoading] = useState(false);
 
   const fetchUrlWatch = useCallback(async () => {
     setUrlWatchLoading(true);
     try {
-      const response = await http.get(GET_URL_WATCH_GRAPH);
+      const response = await http.get(GET_URL_WATCH_GRAPH, {
+        params: {
+          start_time: dateRange.startDate.toISOString(),
+          end_time: dateRange.endDate.toISOString(),
+        },
+      });
 
       setUrlWatchData(response?.data?.series || []);
     } catch (error) {
@@ -98,7 +117,7 @@ const useGetUrlWatch = () => {
     } finally {
       setUrlWatchLoading(false);
     }
-  }, []);
+  }, [dateRange]);
   useEffect(() => {
     fetchUrlWatch();
   }, [fetchUrlWatch]);
@@ -106,14 +125,19 @@ const useGetUrlWatch = () => {
   return { urlWatchData, urlWatchLoading, refetch: fetchUrlWatch };
 };
 
-const useGetParkedInsight = () => {
+const useGetParkedInsight = (dateRange: DateRangeValue) => {
   const [parkedInsightData, setParkedInsightData] = useState([]);
   const [parkedInsightLoading, setParkedInsightLoading] = useState(false);
 
   const fetchParkedInsight = useCallback(async () => {
     setParkedInsightLoading(true);
     try {
-      const response = await http.get(GET_PARKED_INSIGHTS);
+      const response = await http.get(GET_PARKED_INSIGHTS, {
+        params: {
+          start_time: dateRange.startDate.toISOString(),
+          end_time: dateRange.endDate.toISOString(),
+        },
+      });
 
       setParkedInsightData(response?.data?.data || []);
     } catch (error) {
@@ -121,7 +145,7 @@ const useGetParkedInsight = () => {
     } finally {
       setParkedInsightLoading(false);
     }
-  }, []);
+  }, [dateRange]);
   useEffect(() => {
     fetchParkedInsight();
   }, [fetchParkedInsight]);
@@ -133,21 +157,26 @@ const useGetParkedInsight = () => {
   };
 };
 
-const useGetOverview = () => {
+const useGetOverview = (dateRange: DateRangeValue) => {
   const [overviewData, setOverviewData] = useState([]);
   const [overviewLoading, setOverviewLoading] = useState(false);
 
   const fetchOverview = useCallback(async () => {
     setOverviewLoading(true);
     try {
-      const response = await http.get(GET_OVERVIEW);
+      const response = await http.get(GET_OVERVIEW, {
+        params: {
+          start_time: dateRange.startDate.toISOString(),
+          end_time: dateRange.endDate.toISOString(),
+        },
+      });
       setOverviewData(response?.data?.overview || []);
     } catch (error) {
       console.error("Error Fetching Overview Data with error: ", error);
     } finally {
       setOverviewLoading(false);
     }
-  }, []);
+  }, [dateRange]);
   useEffect(() => {
     fetchOverview();
   }, [fetchOverview]);
@@ -159,21 +188,26 @@ const useGetOverview = () => {
   };
 };
 
-const useGetDomains = () => {
+const useGetDomains = (dateRange: DateRangeValue) => {
   const [domainsData, setDomainsData] = useState({});
   const [domainsLoading, setDomainsLoading] = useState(false);
 
   const fetchDomains = useCallback(async () => {
     setDomainsLoading(true);
     try {
-      const response = await http.get(GET_DOMAINS);
+      const response = await http.get(GET_DOMAINS, {
+        params: {
+          start_time: dateRange.startDate.toISOString(),
+          end_time: dateRange.endDate.toISOString(),
+        },
+      });
       setDomainsData(response?.data?.domains || {});
     } catch (error) {
       console.error("Error Fetching Domain Data with error: ", error);
     } finally {
       setDomainsLoading(false);
     }
-  }, []);
+  }, [dateRange]);
   useEffect(() => {
     fetchDomains();
   }, [fetchDomains]);
@@ -185,21 +219,26 @@ const useGetDomains = () => {
   };
 };
 
-const useGetThreatLandscape = () => {
+const useGetThreatLandscape = (dateRange: DateRangeValue) => {
   const [threatLandscapeData, setThreatLandscapeData] = useState({});
   const [threatLandscapeLoading, setThreatLandscapeLoading] = useState(false);
 
   const fetchThreatLandscape = useCallback(async () => {
     setThreatLandscapeLoading(true);
     try {
-      const response = await http.get(GET_THREAT_LANDSCAPE);
+      const response = await http.get(GET_THREAT_LANDSCAPE, {
+        params: {
+          start_time: dateRange.startDate.toISOString(),
+          end_time: dateRange.endDate.toISOString(),
+        },
+      });
       setThreatLandscapeData(response?.data?.data);
     } catch (error) {
       console.error("Error Fetching Threat Landscape Data with error: ", error);
     } finally {
       setThreatLandscapeLoading(false);
     }
-  }, []);
+  }, [dateRange]);
   useEffect(() => {
     fetchThreatLandscape();
   }, [fetchThreatLandscape]);
@@ -218,6 +257,20 @@ const Dashboard = () => {
   );
   const reportsOpen = Boolean(reportsAnchorEl);
 
+  // Date range state - default to last 24 hours
+  const [dateRange, setDateRange] = useState<DateRangeValue>(() => {
+    const now = new Date();
+    const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    const startDate = new Date(last24Hours);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(now);
+    endDate.setHours(23, 59, 59, 999);
+
+    return { startDate, endDate };
+  });
+
   const handleReportsClick = (event: React.MouseEvent<HTMLElement>) => {
     setReportsAnchorEl(event?.currentTarget);
   };
@@ -227,14 +280,14 @@ const Dashboard = () => {
   };
 
   /*------ API Data Unpacking ------*/
-  const { urlInsightsData, urlInsightsLoading } = useGetUrlInsightsData();
-  const { countriesData, countriesLoading } = useGetOriginatingCountries();
-  const { urlWatchData, urlWatchLoading } = useGetUrlWatch();
-  const { parkedInsightData, parkedInsightLoading } = useGetParkedInsight();
-  const { overviewData, overviewLoading } = useGetOverview();
-  const { domainsData, domainsLoading } = useGetDomains();
+  const { urlInsightsData, urlInsightsLoading } = useGetUrlInsightsData(dateRange);
+  const { countriesData, countriesLoading } = useGetOriginatingCountries(dateRange);
+  const { urlWatchData, urlWatchLoading } = useGetUrlWatch(dateRange);
+  const { parkedInsightData, parkedInsightLoading } = useGetParkedInsight(dateRange);
+  const { overviewData, overviewLoading } = useGetOverview(dateRange);
+  const { domainsData, domainsLoading } = useGetDomains(dateRange);
   const { threatLandscapeData, threatLandscapeLoading } =
-    useGetThreatLandscape();
+    useGetThreatLandscape(dateRange);
 
   return (
     <Box
@@ -259,9 +312,9 @@ const Dashboard = () => {
         maxWidth={false}
         sx={{ py: 6, position: "relative", zIndex: 1, px: 2, maxWidth: "98%" }}
       >
-        {/* Month Range Picker */}
+        {/* Date Range Filter */}
         <div className="flex justify-end mb-6">
-          <MonthRangePicker range={mockDashboard.monthRange} />
+          <DateRangeFilter value={dateRange} onChange={setDateRange} />
         </div>
 
         {/* Top Grid: Overview, URL Watch, URL Insights */}
