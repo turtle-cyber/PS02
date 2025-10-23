@@ -15,7 +15,7 @@ const useGetUrlReportsData = () => {
     setUrlReportsLoading(true);
     try {
       const response = await http.get(GET_ORIGINAL_LIST, {
-        params: { limit: 20 },
+        params: { limit: 100 },
       });
       setUrlReportsData(response?.data?.domains || []);
     } catch (error) {

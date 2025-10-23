@@ -27,12 +27,12 @@ interface UrlInsightsTableProps {
 
 const getVerdictColor = (verdict: string) => {
   switch (verdict) {
-    case "Phishing":
-      return "bg-[#E50914] text-white";
-    case "Suspicious":
-      return "bg-[#FFB020] text-black";
-    case "Clean":
-      return "bg-[#1FBF75] text-white";
+    case "phishing":
+      return "bg-[#E50914] text-white capitalize";
+    case "suspicious":
+      return "bg-[#FFB020] text-black capitalize";
+    case "benign":
+      return "bg-[#1FBF75] text-white capitalize";
     default:
       return "";
   }
