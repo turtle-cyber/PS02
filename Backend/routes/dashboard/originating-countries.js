@@ -32,6 +32,8 @@ let chromaReady = false;
  * - limit (optional): Number of top countries to return (default: 20)
  * - min_count (optional): Minimum domain count to include (default: 1)
  * - verdict (optional): Filter by verdict (e.g., "phishing", "benign", "suspicious")
+ * - start_time (optional): ISO 8601 timestamp (defaults to 24 hours ago)
+ * - end_time (optional): ISO 8601 timestamp (defaults to now)
  *
  * Response shape:
  * {
@@ -59,11 +61,32 @@ router.get('/dashboard/originating-countries', async (req, res) => {
         const limit = parseInt(req.query.limit) || 20;
         const minCount = parseInt(req.query.min_count) || 1;
         const verdictFilter = req.query.verdict ? req.query.verdict.toLowerCase() : null;
+        const { start_time, end_time } = req.query;
+
+        // Default to last 24 hours if not provided
+        let startTimeISO, endTimeISO;
+
+        if (!start_time || !end_time) {
+            const now = new Date();
+            const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+            startTimeISO = last24Hours.toISOString();
+            endTimeISO = now.toISOString();
+
+            console.log('[originating-countries] Using default time range (last 24 hours)');
+        } else {
+            startTimeISO = new Date(start_time).toISOString();
+            endTimeISO = new Date(end_time).toISOString();
+
+            console.log('[originating-countries] Using custom time range:', { start: startTimeISO, end: endTimeISO });
+        }
 
         console.log('[originating-countries] Query:', {
             limit,
             min_count: minCount,
-            verdict: verdictFilter
+            verdict: verdictFilter,
+            start_time: startTimeISO,
+            end_time: endTimeISO
         });
 
         // Fetch all records from ChromaDB with metadata
@@ -79,6 +102,18 @@ router.get('/dashboard/originating-countries', async (req, res) => {
 
         if (results.metadatas && results.metadatas.length > 0) {
             for (const metadata of results.metadatas) {
+                // Apply time filter if first_seen is available
+                if (metadata.first_seen) {
+                    const recordTime = new Date(metadata.first_seen);
+                    const startTime = new Date(startTimeISO);
+                    const endTime = new Date(endTimeISO);
+
+                    // Skip if outside time range
+                    if (recordTime < startTime || recordTime > endTime) {
+                        continue;
+                    }
+                }
+
                 // Apply verdict filter if specified
                 if (verdictFilter && metadata.verdict?.toLowerCase() !== verdictFilter) {
                     continue;
@@ -118,6 +153,11 @@ router.get('/dashboard/originating-countries', async (req, res) => {
             success: true,
             total_domains: totalDomains,
             countries_count: countryData.length,
+            query: {
+                start_time: startTimeISO,
+                end_time: endTimeISO,
+                default_range: (!start_time || !end_time) ? 'last_24_hours' : null
+            },
             filters: {
                 limit,
                 min_count: minCount,

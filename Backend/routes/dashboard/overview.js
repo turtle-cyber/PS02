@@ -29,6 +29,10 @@ let chromaReady = false;
  * GET /api/dashboard/overview
  * Returns overview statistics for dashboard cards
  *
+ * Query Parameters:
+ * - start_time (optional): ISO 8601 timestamp (defaults to 24 hours ago)
+ * - end_time (optional): ISO 8601 timestamp (defaults to now)
+ *
  * Response shape:
  * {
  *   "success": true,
@@ -56,6 +60,27 @@ router.get('/dashboard/overview', async (req, res) => {
             });
         }
 
+        // Parse query parameters
+        const { start_time, end_time } = req.query;
+
+        // Default to last 24 hours if not provided
+        let startTimeISO, endTimeISO;
+
+        if (!start_time || !end_time) {
+            const now = new Date();
+            const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+            startTimeISO = last24Hours.toISOString();
+            endTimeISO = now.toISOString();
+
+            console.log('[overview] Using default time range (last 24 hours)');
+        } else {
+            startTimeISO = new Date(start_time).toISOString();
+            endTimeISO = new Date(end_time).toISOString();
+
+            console.log('[overview] Using custom time range:', { start: startTimeISO, end: endTimeISO });
+        }
+
         console.log('[overview] Fetching overview statistics...');
 
         // Fetch all records from ChromaDB
@@ -77,14 +102,27 @@ router.get('/dashboard/overview', async (req, res) => {
         const brandsSet = new Set();
         let newLast24h = 0;
 
-        // Calculate 24 hours ago timestamp
+        // Calculate 24 hours ago timestamp (for new_last_24h metric)
         const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
         // Process all records
         if (results.metadatas && results.metadatas.length > 0) {
-            totalScans = results.metadatas.length;
-
             for (const metadata of results.metadatas) {
+                // Apply time filter if first_seen is available
+                if (metadata.first_seen) {
+                    const recordTime = new Date(metadata.first_seen);
+                    const startTime = new Date(startTimeISO);
+                    const endTime = new Date(endTimeISO);
+
+                    // Skip if outside time range
+                    if (recordTime < startTime || recordTime > endTime) {
+                        continue;
+                    }
+                }
+
+                // Count this record
+                totalScans++;
+
                 // Count by verdict
                 const verdict = (metadata.verdict || '').toLowerCase();
                 if (verdict === 'phishing') {
@@ -154,6 +192,11 @@ router.get('/dashboard/overview', async (req, res) => {
         res.json({
             success: true,
             overview,
+            query: {
+                start_time: startTimeISO,
+                end_time: endTimeISO,
+                default_range: (!start_time || !end_time) ? 'last_24_hours' : null
+            },
             timestamp: new Date().toISOString()
         });
 

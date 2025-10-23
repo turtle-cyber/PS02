@@ -29,7 +29,8 @@ let chromaReady = false;
  * Returns daily counts of URLs by verdict type (phishing, suspicious, benign)
  *
  * Query Parameters:
- * - days (optional): Number of days to return (default: 7)
+ * - start_time (optional): ISO 8601 timestamp (defaults to 24 hours ago)
+ * - end_time (optional): ISO 8601 timestamp (defaults to now)
  *
  * Response shape (optimized for UrlWatchArea.tsx):
  * {
@@ -53,17 +54,32 @@ router.get('/dashboard/url-watch', async (req, res) => {
         }
 
         // Parse query parameters
-        const days = parseInt(req.query.days) || 7;
+        const { start_time, end_time } = req.query;
 
-        console.log('[url-watch] Query:', { days });
+        // Default to last 24 hours if not provided
+        let startTimeISO, endTimeISO;
 
-        // Calculate date range
-        const endDate = new Date();
-        endDate.setHours(23, 59, 59, 999); // End of today
+        if (!start_time || !end_time) {
+            const now = new Date();
+            const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - (days - 1)); // Include today
+            startTimeISO = last24Hours.toISOString();
+            endTimeISO = now.toISOString();
+
+            console.log('[url-watch] Using default time range (last 24 hours)');
+        } else {
+            startTimeISO = new Date(start_time).toISOString();
+            endTimeISO = new Date(end_time).toISOString();
+
+            console.log('[url-watch] Using custom time range:', { start: startTimeISO, end: endTimeISO });
+        }
+
+        // Calculate date range for bucketing
+        const startDate = new Date(startTimeISO);
         startDate.setHours(0, 0, 0, 0); // Start of day
+
+        const endDate = new Date(endTimeISO);
+        endDate.setHours(23, 59, 59, 999); // End of day
 
         console.log('[url-watch] Date range:', {
             start: startDate.toISOString(),
@@ -77,10 +93,13 @@ router.get('/dashboard/url-watch', async (req, res) => {
 
         console.log('[url-watch] Found', results.ids?.length || 0, 'total records in ChromaDB');
 
-        // Initialize date buckets for the last N days
+        // Initialize date buckets for the date range
         const dateBuckets = new Map();
 
-        for (let i = 0; i < days; i++) {
+        // Calculate number of days in the range
+        const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+
+        for (let i = 0; i < daysDiff; i++) {
             const date = new Date(startDate);
             date.setDate(date.getDate() + i);
             const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD format
@@ -157,9 +176,12 @@ router.get('/dashboard/url-watch', async (req, res) => {
                 clean
             },
             query: {
-                days,
+                start_time: startTimeISO,
+                end_time: endTimeISO,
                 start_date: startDate.toISOString().split('T')[0],
-                end_date: endDate.toISOString().split('T')[0]
+                end_date: endDate.toISOString().split('T')[0],
+                days: daysDiff,
+                default_range: (!start_time || !end_time) ? 'last_24_hours' : null
             },
             timestamp: new Date().toISOString()
         });

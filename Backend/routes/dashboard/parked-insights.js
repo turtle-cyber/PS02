@@ -33,6 +33,8 @@ let chromaReady = false;
  * - limit (optional): Number of records to return (default: 50)
  * - cse_id (optional): Filter by brand/CSE
  * - country (optional): Filter by country code
+ * - start_time (optional): ISO 8601 timestamp (defaults to 24 hours ago)
+ * - end_time (optional): ISO 8601 timestamp (defaults to now)
  *
  * Response shape:
  * {
@@ -66,11 +68,32 @@ router.get('/dashboard/parked-insights', async (req, res) => {
         const limit = parseInt(req.query.limit) || 50;
         const cseFilter = req.query.cse_id;
         const countryFilter = req.query.country;
+        const { start_time, end_time } = req.query;
+
+        // Default to last 24 hours if not provided
+        let startTimeISO, endTimeISO;
+
+        if (!start_time || !end_time) {
+            const now = new Date();
+            const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+            startTimeISO = last24Hours.toISOString();
+            endTimeISO = now.toISOString();
+
+            console.log('[parked-insights] Using default time range (last 24 hours)');
+        } else {
+            startTimeISO = new Date(start_time).toISOString();
+            endTimeISO = new Date(end_time).toISOString();
+
+            console.log('[parked-insights] Using custom time range:', { start: startTimeISO, end: endTimeISO });
+        }
 
         console.log('[parked-insights] Query:', {
             limit,
             cse_id: cseFilter,
-            country: countryFilter
+            country: countryFilter,
+            start_time: startTimeISO,
+            end_time: endTimeISO
         });
 
         // Fetch all records from ChromaDB
@@ -91,6 +114,18 @@ router.get('/dashboard/parked-insights', async (req, res) => {
                 // Filter: Only parked domains
                 if (metadata.verdict !== 'parked') {
                     continue;
+                }
+
+                // Apply time filter if first_seen is available
+                if (metadata.first_seen) {
+                    const recordTime = new Date(metadata.first_seen);
+                    const startTime = new Date(startTimeISO);
+                    const endTime = new Date(endTimeISO);
+
+                    // Skip if outside time range
+                    if (recordTime < startTime || recordTime > endTime) {
+                        continue;
+                    }
                 }
 
                 // Apply CSE filter if specified
@@ -148,6 +183,11 @@ router.get('/dashboard/parked-insights', async (req, res) => {
             data: limitedData,
             total: parkedDomains.length,
             returned: limitedData.length,
+            query: {
+                start_time: startTimeISO,
+                end_time: endTimeISO,
+                default_range: (!start_time || !end_time) ? 'last_24_hours' : null
+            },
             filters: {
                 limit,
                 cse_id: cseFilter || null,

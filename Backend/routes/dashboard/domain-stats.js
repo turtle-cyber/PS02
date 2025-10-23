@@ -28,6 +28,10 @@ let chromaReady = false;
  * GET /api/dashboard/domain-stats
  * Returns domain statistics for dashboard cards
  *
+ * Query Parameters:
+ * - start_time (optional): ISO 8601 timestamp (defaults to 24 hours ago)
+ * - end_time (optional): ISO 8601 timestamp (defaults to now)
+ *
  * Response shape:
  * {
  *   "success": true,
@@ -54,6 +58,27 @@ router.get('/dashboard/domain-stats', async (req, res) => {
             });
         }
 
+        // Parse query parameters
+        const { start_time, end_time } = req.query;
+
+        // Default to last 24 hours if not provided
+        let startTimeISO, endTimeISO;
+
+        if (!start_time || !end_time) {
+            const now = new Date();
+            const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+            startTimeISO = last24Hours.toISOString();
+            endTimeISO = now.toISOString();
+
+            console.log('[domain-stats] Using default time range (last 24 hours)');
+        } else {
+            startTimeISO = new Date(start_time).toISOString();
+            endTimeISO = new Date(end_time).toISOString();
+
+            console.log('[domain-stats] Using custom time range:', { start: startTimeISO, end: endTimeISO });
+        }
+
         console.log('[domain-stats] Fetching domain statistics...');
 
         // Fetch all records from ChromaDB
@@ -75,6 +100,18 @@ router.get('/dashboard/domain-stats', async (req, res) => {
         // Process all records
         if (results.metadatas && results.metadatas.length > 0) {
             for (const metadata of results.metadatas) {
+                // Apply time filter if first_seen is available
+                if (metadata.first_seen) {
+                    const recordTime = new Date(metadata.first_seen);
+                    const startTime = new Date(startTimeISO);
+                    const endTime = new Date(endTimeISO);
+
+                    // Skip if outside time range
+                    if (recordTime < startTime || recordTime > endTime) {
+                        continue;
+                    }
+                }
+
                 // Count lookalike domains (variants that differ from seed domain)
                 // A lookalike is:
                 // 1. Has a seed_registrable (target brand)
@@ -158,6 +195,11 @@ router.get('/dashboard/domain-stats', async (req, res) => {
         res.json({
             success: true,
             ...stats,
+            query: {
+                start_time: startTimeISO,
+                end_time: endTimeISO,
+                default_range: (!start_time || !end_time) ? 'last_24_hours' : null
+            },
             timestamp: new Date().toISOString()
         });
 
