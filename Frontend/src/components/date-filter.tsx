@@ -1,144 +1,181 @@
 import React, { useState } from "react";
-import { DateRangePicker } from "react-date-range";
-
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
-import { Button, Popover, Typography } from "@mui/material";
-import { addDays } from "date-fns";
+import { addDays, setHours, setMinutes } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DateRange as DateRangeIcon } from "@mui/icons-material";
+import type { DateRange } from "react-day-picker";
 
-interface DateRangeValue {
+interface DateTimeRangeValue {
   startDate: Date;
   endDate: Date;
 }
 
-interface DateRangeFilterProps {
-  value: DateRangeValue;
-  onChange: (value: DateRangeValue) => void;
+interface DateTimeRangeFilterProps {
+  value: DateTimeRangeValue;
+  onChange: (value: DateTimeRangeValue) => void;
 }
 
-const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
-  value,
-  onChange,
-}) => {
-  const [anchorElCalendar, setAnchorElCalendar] =
-    useState<HTMLButtonElement | null>(null);
-  const openCalendar = Boolean(anchorElCalendar);
-  const id = openCalendar ? "date-range-popover" : undefined;
+const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
 
-  const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: value.startDate,
-    endDate: value.endDate,
-    key: "selection",
+  // Internal state for calendar date range
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: value.startDate,
+    to: value.endDate,
   });
 
-  const handleDateRangeSelection = (ranges: any) => {
-    setSelectedDateRange(ranges.selection);
+  // Internal state for time inputs
+  const [startTime, setStartTime] = useState(() => {
+    const hours = value.startDate.getHours().toString().padStart(2, "0");
+    const minutes = value.startDate.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
+  });
+
+  const [endTime, setEndTime] = useState(() => {
+    const hours = value.endDate.getHours().toString().padStart(2, "0");
+    const minutes = value.endDate.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
+  });
+
+  const handleDateRangeSelect = (range: DateRange | undefined) => {
+    setDateRange(range);
   };
 
-  const handleDateRangeDone = () => {
-    // Set time to start of day (00:00:00) for start date
-    const startDate = new Date(selectedDateRange.startDate);
-    startDate.setHours(0, 0, 0, 0);
+  const handleDone = () => {
+    if (!dateRange?.from || !dateRange?.to) {
+      return;
+    }
 
-    // Set time to end of day (23:59:59) for end date
-    const endDate = new Date(selectedDateRange.endDate);
-    endDate.setHours(23, 59, 59, 999);
+    // Parse start time
+    const [startHours, startMinutes] = startTime.split(":").map((str) => parseInt(str, 10));
+    let startDateTime = new Date(dateRange.from);
+    startDateTime = setHours(startDateTime, startHours);
+    startDateTime = setMinutes(startDateTime, startMinutes);
+    startDateTime.setSeconds(0, 0);
 
-    onChange({ startDate, endDate });
-    handleCloseCalendar();
+    // Parse end time
+    const [endHours, endMinutes] = endTime.split(":").map((str) => parseInt(str, 10));
+    let endDateTime = new Date(dateRange.to);
+    endDateTime = setHours(endDateTime, endHours);
+    endDateTime = setMinutes(endDateTime, endMinutes);
+    endDateTime.setSeconds(59, 999);
+
+    onChange({
+      startDate: startDateTime,
+      endDate: endDateTime,
+    });
+
+    setOpen(false);
   };
 
-  const handleClickCalendar = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorElCalendar(event.currentTarget);
-  };
-
-  const handleCloseCalendar = () => {
-    setAnchorElCalendar(null);
-  };
-
-  const onClickClearDateRange = () => {
+  const handleReset = () => {
     // Reset to last 24 hours
     const now = new Date();
     const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-    const startDate = new Date(last24Hours);
-    startDate.setHours(0, 0, 0, 0);
+    const startDateTime = new Date(last24Hours);
+    startDateTime.setHours(0, 0, 0, 0);
 
-    const endDate = new Date(now);
-    endDate.setHours(23, 59, 59, 999);
+    const endDateTime = new Date(now);
+    endDateTime.setHours(23, 59, 59, 999);
 
-    setSelectedDateRange({
-      startDate,
-      endDate,
-      key: "selection",
+    setDateRange({
+      from: startDateTime,
+      to: endDateTime,
+    });
+    setStartTime("00:00");
+    setEndTime("23:59");
+
+    onChange({
+      startDate: startDateTime,
+      endDate: endDateTime,
     });
 
-    onChange({ startDate, endDate });
-    handleCloseCalendar();
+    setOpen(false);
   };
 
-  // Format date range for display: "Jan 15 2025 - Jan 22, 2025"
-  const formatDateRange = (start: Date, end: Date) => {
+  // Format datetime for display: "Jan 15 2025 14:30 - Jan 22 2025 18:45"
+  const formatDateTimeRange = (start: Date, end: Date) => {
     const options: Intl.DateTimeFormatOptions = {
       month: "short",
       day: "numeric",
       year: "numeric",
     };
 
-    const startStr = start.toLocaleDateString("en-US", options);
-    const endStr = end.toLocaleDateString("en-US", options);
+    const startDate = start.toLocaleDateString("en-US", options);
+    const endDate = end.toLocaleDateString("en-US", options);
 
-    return `${startStr} - ${endStr}`;
+    const startHours = start.getHours().toString().padStart(2, "0");
+    const startMinutes = start.getMinutes().toString().padStart(2, "0");
+    const endHours = end.getHours().toString().padStart(2, "0");
+    const endMinutes = end.getMinutes().toString().padStart(2, "0");
+
+    return `${startDate} ${startHours}:${startMinutes} - ${endDate} ${endHours}:${endMinutes}`;
   };
 
   return (
-    <>
-      <Button
-        sx={{ paddingX: 3, paddingY: 1 }}
-        aria-describedby={id}
-        variant="outlined"
-        onClick={handleClickCalendar}
-        startIcon={<DateRangeIcon />}
-      >
-        {formatDateRange(value.startDate, value.endDate)}
-      </Button>
-      <Popover
-        id={id}
-        open={openCalendar}
-        anchorEl={anchorElCalendar}
-        onClose={handleCloseCalendar}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-      >
-        <div className="calender-date-range-container">
-          <Typography sx={{ p: 2 }}>
-            <DateRangePicker
-              onChange={handleDateRangeSelection}
-              showSelectionPreview={true}
-              moveRangeOnFirstSelection={false}
-              months={1}
-              minDate={addDays(new Date(), -90)}
-              maxDate={addDays(new Date(), 0)}
-              ranges={[selectedDateRange]}
-              inputRanges={[]}
-              direction="horizontal"
-            />
-            <div className="calender-action-buttons">
-              <button className="btn-done p-2" onClick={handleDateRangeDone}>
-                Done
-              </button>
-              <button className="btn-clear p-2" onClick={onClickClearDateRange}>
-                Reset
-              </button>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="justify-start text-left font-normal">
+          <DateRangeIcon className="mr-2 h-4 w-4" />
+          {formatDateTimeRange(value.startDate, value.endDate)}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <div className="p-4 space-y-4">
+          {/* Calendar for date range selection */}
+          <Calendar
+            mode="range"
+            selected={dateRange}
+            onSelect={handleDateRangeSelect}
+            numberOfMonths={1}
+            disabled={(date) =>
+              date > new Date() || date < addDays(new Date(), -90)
+            }
+          />
+
+          {/* Time inputs */}
+          <div className="border-t pt-4 space-y-3">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">
+                  Start Time
+                </label>
+                <input
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">
+                  End Time
+                </label>
+                <input
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border rounded-md"
+                />
+              </div>
             </div>
-          </Typography>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex justify-end gap-2 border-t pt-4">
+            <Button variant="outline" size="sm" onClick={handleReset}>
+              Reset
+            </Button>
+            <Button size="sm" onClick={handleDone}>
+              Done
+            </Button>
+          </div>
         </div>
-      </Popover>
-    </>
+      </PopoverContent>
+    </Popover>
   );
 };
 
-export default DateRangeFilter;
+export default DateTimeRangeFilter;
