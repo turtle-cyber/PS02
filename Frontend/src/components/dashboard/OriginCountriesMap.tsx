@@ -9,8 +9,8 @@ import {
 } from "react-simple-maps";
 import { scaleSqrt } from "d3-scale";
 
-/** TopoJSON for world map (lightweight). You can self-host later if needed. */
-const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
+/** TopoJSON for world map (lightweight). */
+const geoUrl = "/worldmap.json";
 
 /** ISO2 → [lng, lat] centroids (add more as your API returns new countries) */
 const ISO2_TO_COORD: Record<string, [number, number]> = {
@@ -267,6 +267,7 @@ export const OriginCountriesMap: React.FC<OriginCountriesMapProps> = React.memo(
               <div className="text-slate-400 text-sm">No Data Found</div>
             ) : (
               <ComposableMap
+                projection="geoMercator"
                 projectionConfig={{ scale: 200 }}
                 style={{ width: "100%", height: "100%" }}
               >

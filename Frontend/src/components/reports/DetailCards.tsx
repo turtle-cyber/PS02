@@ -97,14 +97,19 @@ export const DetailCards: React.FC<any> = ({ data }) => {
           <GeoRippleMap
             data={
               data?.data?.metadata?.latitude && data?.data?.metadata?.longitude
-                ? [{
-                    name: data?.data?.metadata?.city || data?.data?.metadata?.country || "Unknown Location",
-                    value: [
-                      data.data.metadata.longitude,
-                      data.data.metadata.latitude,
-                      1
-                    ]
-                  }]
+                ? [
+                    {
+                      name:
+                        data?.data?.metadata?.city ||
+                        data?.data?.metadata?.country ||
+                        "Unknown Location",
+                      value: [
+                        data.data.metadata.longitude,
+                        data.data.metadata.latitude,
+                        1,
+                      ],
+                    },
+                  ]
                 : []
             }
             height="280px"

@@ -8,7 +8,7 @@ import {
 } from "react-simple-maps";
 
 /** Full world TopoJSON from CDN */
-const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+const geoUrl = "/worldmap.json";
 
 interface GeoRippleMapProps {
   data: Array<{ name: string; value: [number, number, number] }>;
