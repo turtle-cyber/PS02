@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { addDays, setHours, setMinutes } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { DateRange as DateRangeIcon } from "@mui/icons-material";
 import type { DateRange } from "react-day-picker";
 
@@ -16,7 +20,10 @@ interface DateTimeRangeFilterProps {
   onChange: (value: DateTimeRangeValue) => void;
 }
 
-const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({ value, onChange }) => {
+const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({
+  value,
+  onChange,
+}) => {
   const [open, setOpen] = useState(false);
 
   // Internal state for calendar date range
@@ -48,14 +55,18 @@ const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({ value, onChan
     }
 
     // Parse start time
-    const [startHours, startMinutes] = startTime.split(":").map((str) => parseInt(str, 10));
+    const [startHours, startMinutes] = startTime
+      .split(":")
+      .map((str) => parseInt(str, 10));
     let startDateTime = new Date(dateRange.from);
     startDateTime = setHours(startDateTime, startHours);
     startDateTime = setMinutes(startDateTime, startMinutes);
     startDateTime.setSeconds(0, 0);
 
     // Parse end time
-    const [endHours, endMinutes] = endTime.split(":").map((str) => parseInt(str, 10));
+    const [endHours, endMinutes] = endTime
+      .split(":")
+      .map((str) => parseInt(str, 10));
     let endDateTime = new Date(dateRange.to);
     endDateTime = setHours(endDateTime, endHours);
     endDateTime = setMinutes(endDateTime, endMinutes);
@@ -117,12 +128,18 @@ const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({ value, onChan
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="justify-start text-left font-normal">
+        <Button
+          variant="outline"
+          className="justify-start text-left font-normal bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.08)] backdrop-blur-[15px] border-white/10"
+        >
           <DateRangeIcon className="mr-2 h-4 w-4" />
           {formatDateTimeRange(value.startDate, value.endDate)}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent
+        className="w-auto p-0 bg-[rgba(255,255,255,0.08)] backdrop-blur-[15px] border-white/10"
+        align="start"
+      >
         <div className="p-4 space-y-4">
           {/* Calendar for date range selection */}
           <Calendar
@@ -146,7 +163,7 @@ const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({ value, onChan
                   type="time"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border rounded-md"
+                  className="w-full px-3 py-2 text-sm border rounded-md bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.08)] border-white/5"
                 />
               </div>
               <div>
@@ -157,7 +174,7 @@ const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({ value, onChan
                   type="time"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border rounded-md"
+                  className="w-full px-3 py-2 text-sm border rounded-md bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.08)] border-white/5"
                 />
               </div>
             </div>
@@ -165,7 +182,12 @@ const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({ value, onChan
 
           {/* Action buttons */}
           <div className="flex justify-end gap-2 border-t pt-4">
-            <Button variant="outline" size="sm" onClick={handleReset}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleReset}
+              className=""
+            >
               Reset
             </Button>
             <Button size="sm" onClick={handleDone}>
