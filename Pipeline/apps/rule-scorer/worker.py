@@ -1177,10 +1177,235 @@ def enhanced_score_bundle(domain: dict, http: dict, feat: dict):
 
     return result
 
+# ------------ Cross-Domain Redirect Handling ------------
+
+def extract_registrable_domain(url: str) -> Optional[str]:
+    """
+    Extract registrable domain from URL, normalizing www. subdomain.
+    Examples:
+        https://www.example.com/path -> example.com
+        https://example.com -> example.com
+        https://sub.example.com -> sub.example.com
+    """
+    if not url:
+        return None
+
+    try:
+        hostname = urlparse(url).hostname
+        if not hostname:
+            return None
+
+        hostname = hostname.lower()
+
+        # Normalize www. subdomain
+        if hostname.startswith("www.") and "." in hostname[4:]:
+            hostname = hostname[4:]
+
+        return hostname
+    except:
+        return None
+
+def extract_cross_domain_redirect_info(http: dict, feat: dict) -> Tuple[bool, Optional[str], Optional[str], List[str], int]:
+    """
+    Detect if redirect crosses domain boundaries.
+
+    Returns:
+        (is_cross_domain, original_domain, final_domain, redirect_chain, cross_domain_hop_count)
+
+    Examples:
+        phishing.com -> legitimate.com: (True, "phishing.com", "legitimate.com", [...], 1)
+        example.com -> www.example.com: (False, "example.com", "example.com", [...], 0)
+    """
+    # Extract redirect chain from http or feat data
+    redirect_chain = (http or {}).get("redirect_chain") or \
+                     (feat or {}).get("redirect_chain") or []
+
+    # Need at least 2 URLs for a redirect
+    if not redirect_chain or len(redirect_chain) < 2:
+        return False, None, None, [], 0
+
+    # Extract domains from each URL in chain
+    domains = []
+    for url in redirect_chain:
+        domain = extract_registrable_domain(url)
+        if domain:
+            domains.append(domain)
+
+    if len(domains) < 2:
+        return False, None, None, redirect_chain, 0
+
+    # Track unique domains (already normalized with www. stripped)
+    unique_domains = []
+    for d in domains:
+        if d not in unique_domains:
+            unique_domains.append(d)
+
+    # Cross-domain if we have multiple unique domains
+    is_cross_domain = len(unique_domains) > 1
+    original_domain = domains[0] if domains else None
+    final_domain = domains[-1] if domains else None
+    cross_domain_hops = len(unique_domains) - 1
+
+    return is_cross_domain, original_domain, final_domain, redirect_chain, cross_domain_hops
+
+def calculate_redirect_penalty(redirect_chain: List[str], cross_domain_hops: int) -> Tuple[int, List[str]]:
+    """
+    Calculate penalty for redirect behavior.
+
+    Scoring:
+        +10 points per cross-domain hop
+        +15 bonus for URL shorteners in chain
+        +10 bonus for free hosting in chain
+
+    Returns:
+        (penalty_score, penalty_reasons)
+    """
+    penalty = cross_domain_hops * 10
+    reasons = []
+
+    if cross_domain_hops > 0:
+        reasons.append(f"Cross-domain redirect: {cross_domain_hops} hop(s)")
+
+    # Check intermediate domains for suspicious patterns
+    # Skip first (original) and last (final) - only check middle hops
+    if len(redirect_chain) > 2:
+        intermediate_urls = redirect_chain[1:-1]
+
+        # URL shortener patterns
+        shortener_patterns = [
+            "bit.ly", "tinyurl.com", "goo.gl", "ow.ly", "t.co",
+            "rebrandly.com", "short.io", "cutt.ly", "is.gd", "v.gd"
+        ]
+
+        # Free hosting patterns
+        free_hosting_patterns = [
+            "000webhostapp.com", "infinityfreeapp.com", "netlify.app",
+            "vercel.app", "herokuapp.com", "repl.co", "glitch.me"
+        ]
+
+        for url in intermediate_urls:
+            domain = extract_registrable_domain(url) or ""
+
+            # Check for URL shorteners
+            for pattern in shortener_patterns:
+                if pattern in domain:
+                    penalty += 15
+                    reasons.append(f"Redirect via URL shortener: {domain}")
+                    break
+
+            # Check for free hosting
+            for pattern in free_hosting_patterns:
+                if pattern in domain:
+                    penalty += 10
+                    reasons.append(f"Redirect via free hosting: {domain}")
+                    break
+
+    return penalty, reasons
+
+def build_nested_final_website_data(domain: dict, http: dict, feat: dict, final_domain: str, final_score: int, final_verdict: str, final_reasons: List[str]) -> dict:
+    """
+    Build nested data structure containing all information about the final redirect destination.
+
+    This includes DNS, WHOIS, features, artifacts, and individual scoring for the final domain.
+    """
+    nested_data = {
+        "domain": final_domain,
+        "url": (feat or {}).get("url") or (http or {}).get("final_url") or "",
+    }
+
+    # Add DNS data if available (from original domain record or probed data)
+    if domain and domain.get("dns"):
+        nested_data["dns"] = domain.get("dns")
+
+    if domain and domain.get("whois"):
+        nested_data["whois"] = domain.get("whois")
+
+    if domain and domain.get("geoip"):
+        nested_data["geoip"] = domain.get("geoip")
+
+    if domain and domain.get("rdap"):
+        nested_data["rdap"] = domain.get("rdap")
+
+    # Add all features from final domain
+    if feat:
+        # URL features
+        if feat.get("url_features"):
+            nested_data["url_features"] = feat["url_features"]
+
+        # Forms analysis
+        if feat.get("forms"):
+            nested_data["forms"] = feat["forms"]
+
+        # IDN analysis
+        if feat.get("idn"):
+            nested_data["idn"] = feat["idn"]
+
+        # TLS/SSL info
+        if feat.get("ssl_info") or feat.get("tls"):
+            nested_data["tls"] = feat.get("ssl_info") or feat.get("tls")
+
+        # JavaScript analysis
+        if feat.get("javascript"):
+            nested_data["javascript"] = feat["javascript"]
+
+        # Text keywords
+        if feat.get("text_keywords"):
+            nested_data["text_keywords"] = feat["text_keywords"]
+
+        # OCR data
+        if feat.get("ocr"):
+            nested_data["ocr"] = feat["ocr"]
+
+        # Image OCR
+        if feat.get("image_ocr"):
+            nested_data["image_ocr"] = feat["image_ocr"]
+
+        # Image metadata
+        if feat.get("image_metadata"):
+            nested_data["image_metadata"] = feat["image_metadata"]
+
+        # Favicon
+        if feat.get("favicon_md5"):
+            nested_data["favicon_md5"] = feat["favicon_md5"]
+        if feat.get("favicon_sha256"):
+            nested_data["favicon_sha256"] = feat["favicon_sha256"]
+        if feat.get("favicon_color_scheme"):
+            nested_data["favicon_color_scheme"] = feat["favicon_color_scheme"]
+
+        # Page metadata
+        if feat.get("title"):
+            nested_data["title"] = feat["title"]
+        if feat.get("html_length_bytes"):
+            nested_data["html_size"] = feat["html_length_bytes"]
+        if feat.get("external_links") is not None:
+            nested_data["external_links"] = feat["external_links"]
+        if feat.get("internal_links") is not None:
+            nested_data["internal_links"] = feat["internal_links"]
+        if feat.get("images_count") is not None:
+            nested_data["images_count"] = feat["images_count"]
+        if feat.get("iframes") is not None:
+            nested_data["iframe_count"] = feat["iframes"]
+
+        # Artifacts (file paths)
+        if feat.get("html_path"):
+            nested_data["html_path"] = feat["html_path"]
+        if feat.get("screenshot_paths"):
+            nested_data["screenshot_path"] = feat["screenshot_paths"][0] if isinstance(feat["screenshot_paths"], list) else feat["screenshot_paths"]
+        if feat.get("pdf_path"):
+            nested_data["pdf_path"] = feat["pdf_path"]
+
+    # Add individual scoring for final domain
+    nested_data["individual_score"] = final_score
+    nested_data["individual_verdict"] = final_verdict
+    nested_data["individual_reasons"] = final_reasons
+
+    return nested_data
+
 # ------------ Output shaping for your ingestor ------------
 def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
     """
     Produce a compact 'merged' record compatible with apps/chroma-ingestor/ingest.py.
+    - Handles cross-domain redirects by nesting final destination data
     - Puts verdict into 'stage' so your ingestor will keep it in metadata.
     - Adds monitoring metadata when applicable.
     - Keeps 'reasons' (already used by ingestor for text+metadata).
@@ -1190,6 +1415,10 @@ def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
     verdict = scored["verdict"]
     final_verdict = scored.get("final_verdict", verdict)
     stage = f"rules:monitor" if scored.get("monitor_until") else f"rules:{verdict}"
+
+    # Detect cross-domain redirects
+    is_cross_domain, original_domain, final_domain, redirect_chain, cross_domain_hops = \
+        extract_cross_domain_redirect_info(http, feat)
 
     out = {
         "record_type": "merged",
@@ -1219,7 +1448,50 @@ def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
             if key in src and key not in out:
                 out[key] = src[key]
 
-    # DNS/WHOIS from domain
+    # === HANDLE CROSS-DOMAIN REDIRECTS ===
+    if is_cross_domain:
+        # Add redirect tracking metadata
+        out["had_cross_domain_redirect"] = True
+        out["cross_domain_redirect_count"] = cross_domain_hops
+        out["redirect_chain"] = redirect_chain
+        out["redirected_to_domain"] = final_domain
+        out["original_domain"] = original_domain
+
+        # Calculate redirect penalty
+        redirect_penalty, redirect_reasons = calculate_redirect_penalty(redirect_chain, cross_domain_hops)
+        out["redirect_penalty_score"] = redirect_penalty
+
+        # Add redirect reasons to main reasons list
+        if redirect_reasons:
+            out["reasons"] = out["reasons"] + redirect_reasons if isinstance(out["reasons"], list) else out["reasons"] + "," + ",".join(redirect_reasons)
+
+        # Separate scoring components (for transparency)
+        # Original domain score would be from DNS/WHOIS rules
+        # Final domain score would be from feature rules
+        # For now, we'll estimate:  total_score - redirect_penalty = base_score
+        base_score = max(0, out["score"] - redirect_penalty)
+        out["original_domain_score"] = base_score // 2  # Rough split
+        out["final_domain_score"] = base_score - out["original_domain_score"]
+
+        # Build nested final website data
+        # Note: For cross-domain redirects, feat contains data from FINAL domain
+        # while domain contains DNS data (which might be from original or final depending on pipeline)
+        nested_final_data = build_nested_final_website_data(
+            domain=domain,
+            http=http,
+            feat=feat,
+            final_domain=final_domain,
+            final_score=out["final_domain_score"],
+            final_verdict="benign" if out["final_domain_score"] < THRESH_SUSPICIOUS else "suspicious",
+            final_reasons=[r for r in out["reasons"] if "redirect" not in r.lower()] if isinstance(out["reasons"], list) else []
+        )
+        out["redirected_final_website_data"] = nested_final_data
+
+        # For the main record, keep ORIGINAL domain's DNS/WHOIS
+        # (The nested_final_data already has the final domain's data)
+        # We should preserve the original domain data at top level
+
+    # DNS/WHOIS from domain (original domain for cross-domain redirects)
     if domain:
         dcopy = dict(domain)
         _drop_heavy(dcopy)
@@ -1234,6 +1506,8 @@ def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
             if k in hcopy: out[k] = hcopy[k]
 
     # Features (preserve nested structures used by ingestor)
+    # For cross-domain redirects, these are from the FINAL domain (already nested above)
+    # But we still include them at top level for backward compatibility
     if feat:
         fcopy = dict(feat)
         _drop_heavy(fcopy)
@@ -1243,7 +1517,9 @@ def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
                   "has_credential_form","keyword_count",
                   "suspicious_form_count","has_suspicious_forms",
                   "forms_to_ip","forms_to_suspicious_tld","forms_to_private_ip",
-                  "favicon_md5","favicon_sha256","redirect_count","had_redirects"):
+                  "favicon_md5","favicon_sha256","redirect_count","had_redirects",
+                  "ocr","image_ocr","image_metadata","favicon_color_scheme",
+                  "html_path","screenshot_paths","pdf_path"):
             if k in fcopy: out[k] = fcopy[k]
 
     return out

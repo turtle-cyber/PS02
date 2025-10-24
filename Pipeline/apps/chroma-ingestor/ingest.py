@@ -467,19 +467,47 @@ def stable_id(r: Dict[str,Any]) -> str:
     Special handling:
     - Normalizes 'www.' prefix: www.example.com -> example.com (for merging)
     - Keeps other subdomains: mail.example.com, pnb.bank.in remain separate
+    - For cross-domain redirects: uses ORIGINAL domain (first in chain) for ID
     """
     full_domain = None
 
-    # Priority 1: Extract full hostname from URL
-    url = r.get("url") or r.get("final_url")
-    if url:
-        from urllib.parse import urlparse
+    # PRIORITY 0: For cross-domain redirects, use ORIGINAL domain (not final)
+    # This ensures phishing-site.com -> legitimate.com is stored under phishing-site.com
+    if r.get("had_cross_domain_redirect") and r.get("original_domain"):
+        full_domain = r.get("original_domain").lower()
+    # Alternative: check redirect_chain if original_domain not set
+    elif r.get("redirect_chain") and isinstance(r.get("redirect_chain"), list) and len(r.get("redirect_chain")) > 1:
+        # Extract first domain from redirect chain
+        redirect_chain = r.get("redirect_chain")
+        first_url = redirect_chain[0]
         try:
-            hostname = urlparse(url).hostname
+            from urllib.parse import urlparse
+            hostname = urlparse(first_url).hostname
             if hostname:
-                full_domain = hostname.lower()
+                # Check if this is cross-domain by comparing with last URL
+                last_url = redirect_chain[-1]
+                last_hostname = urlparse(last_url).hostname
+                if hostname and last_hostname:
+                    # Normalize www for comparison
+                    norm_first = hostname[4:] if hostname.startswith("www.") else hostname
+                    norm_last = last_hostname[4:] if last_hostname.startswith("www.") else hostname
+                    # If domains differ, it's cross-domain - use first
+                    if norm_first != norm_last:
+                        full_domain = hostname.lower()
         except:
             pass
+
+    # Priority 1: Extract full hostname from URL (if not cross-domain redirect)
+    if not full_domain:
+        url = r.get("url") or r.get("final_url")
+        if url:
+            from urllib.parse import urlparse
+            try:
+                hostname = urlparse(url).hostname
+                if hostname:
+                    full_domain = hostname.lower()
+            except:
+                pass
 
     # Priority 2: Extract from FQDN fields
     if not full_domain:
@@ -844,6 +872,37 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
             keep["forms_to_suspicious_tld"] = forms["forms_to_suspicious_tld"]
         if "forms_to_private_ip" in forms:
             keep["forms_to_private_ip"] = forms["forms_to_private_ip"]
+
+    # === CROSS-DOMAIN REDIRECT HANDLING ===
+    # Store redirect tracking metadata and nested final website data
+    if "had_cross_domain_redirect" in r:
+        keep["had_cross_domain_redirect"] = bool(r["had_cross_domain_redirect"])
+
+    if "cross_domain_redirect_count" in r:
+        keep["cross_domain_redirect_count"] = int(r["cross_domain_redirect_count"])
+
+    if "redirect_chain" in r and r["redirect_chain"]:
+        # Store redirect chain as JSON array
+        keep["redirect_chain"] = json.dumps(r["redirect_chain"]) if isinstance(r["redirect_chain"], list) else r["redirect_chain"]
+
+    if "redirected_to_domain" in r:
+        keep["redirected_to_domain"] = r["redirected_to_domain"]
+
+    if "original_domain" in r:
+        keep["original_domain"] = r["original_domain"]
+
+    if "redirect_penalty_score" in r:
+        keep["redirect_penalty_score"] = int(r["redirect_penalty_score"])
+
+    if "original_domain_score" in r:
+        keep["original_domain_score"] = int(r["original_domain_score"])
+
+    if "final_domain_score" in r:
+        keep["final_domain_score"] = int(r["final_domain_score"])
+
+    # Store nested final website data as JSON
+    if "redirected_final_website_data" in r and isinstance(r["redirected_final_website_data"], dict):
+        keep["redirected_final_website_data"] = json.dumps(r["redirected_final_website_data"])
 
     # CRITICAL: Store file paths for HTML/PDF/screenshots from feature-crawler
     if "html_path" in r:

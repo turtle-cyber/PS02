@@ -431,7 +431,8 @@ function parseMetadataJsonFields(metadata) {
         'dns', 'whois', 'geoip', 'rdap',
         'url_features', 'idn', 'forms', 'text_keywords',
         'tls', 'javascript', 'favicon_color_scheme',
-        'ocr', 'image_ocr', 'image_metadata'
+        'ocr', 'image_ocr', 'image_metadata',
+        'redirect_chain', 'redirected_final_website_data'
     ];
 
     for (const field of jsonFields) {
