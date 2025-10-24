@@ -209,9 +209,21 @@ router.get('/dashboard/url-insights', async (req, res) => {
         }
 
         // Sort by first_seen descending (newest first) to get "last 10"
+        // Handle N/A dates by putting them at the end
         tableData.sort((a, b) => {
+            // Treat N/A as invalid (put at end)
+            if (a.first_seen === 'N/A' && b.first_seen === 'N/A') return 0;
+            if (a.first_seen === 'N/A') return 1;  // a goes to end
+            if (b.first_seen === 'N/A') return -1; // b goes to end
+
             const dateA = new Date(a.first_seen);
             const dateB = new Date(b.first_seen);
+
+            // Handle invalid dates
+            if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0;
+            if (isNaN(dateA.getTime())) return 1;  // a goes to end
+            if (isNaN(dateB.getTime())) return -1; // b goes to end
+
             return dateB - dateA;
         });
 

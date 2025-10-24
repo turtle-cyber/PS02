@@ -165,9 +165,21 @@ router.get('/dashboard/parked-insights', async (req, res) => {
         }
 
         // Sort by parked_since descending (most recent first)
+        // Handle null/invalid dates by putting them at the end
         parkedDomains.sort((a, b) => {
-            const dateA = new Date(a.parked_since_iso || 0);
-            const dateB = new Date(b.parked_since_iso || 0);
+            // Treat null/undefined as invalid (put at end)
+            if (!a.parked_since_iso && !b.parked_since_iso) return 0;
+            if (!a.parked_since_iso) return 1;  // a goes to end
+            if (!b.parked_since_iso) return -1; // b goes to end
+
+            const dateA = new Date(a.parked_since_iso);
+            const dateB = new Date(b.parked_since_iso);
+
+            // Handle invalid dates
+            if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0;
+            if (isNaN(dateA.getTime())) return 1;  // a goes to end
+            if (isNaN(dateB.getTime())) return -1; // b goes to end
+
             return dateB - dateA;
         });
 

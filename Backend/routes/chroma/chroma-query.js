@@ -99,6 +99,39 @@ function extractNameserver(document) {
 }
 
 /**
+ * Helper function to parse formatted date string back to timestamp
+ * Parses "dd-mm-yyyy hh:mm" format to Unix timestamp
+ * @param {string} dateStr - Formatted date string
+ * @returns {number} Unix timestamp in milliseconds or 0 if invalid
+ */
+function parseFormattedDate(dateStr) {
+    if (!dateStr || dateStr === 'N/A') {
+        return 0;
+    }
+
+    try {
+        // Parse "dd-mm-yyyy hh:mm" format
+        const match = dateStr.match(/(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2})/);
+        if (!match) {
+            return 0;
+        }
+
+        const [, day, month, year, hours, minutes] = match;
+        const date = new Date(
+            parseInt(year),
+            parseInt(month) - 1, // Months are 0-indexed
+            parseInt(day),
+            parseInt(hours),
+            parseInt(minutes)
+        );
+
+        return date.getTime();
+    } catch (error) {
+        return 0;
+    }
+}
+
+/**
  * Helper function to fetch DNSTwist variant statistics from Redis
  * @param {string} domain - The domain to fetch stats for
  * @returns {Object|null} DNSTwist stats or null if not available
@@ -206,11 +239,12 @@ router.get('/originals', async (req, res) => {
 
         const collection = await chromaClient.getCollection({ name: ORIGINALS_COLLECTION });
 
-        // Get results with filters
+        // Get more results than needed for client-side sorting
+        const fetchLimit = Math.min((limit + offset) * 2, 1000);
         const results = await collection.get({
             where: Object.keys(where).length > 0 ? where : undefined,
-            limit: limit,
-            offset: offset,
+            limit: fetchLimit,
+            offset: 0,
             include: ['metadatas', 'documents']
         });
 
@@ -223,43 +257,54 @@ router.get('/originals', async (req, res) => {
         });
 
         // Format response - extract IPv4 and nameserver from document
-        const domains = results.ids.map((id, idx) => {
-            const metadata = results.metadatas[idx];
-            const document = results.documents[idx];
+        const allDomains = results.ids
+            .map((id, idx) => {
+                const metadata = results.metadatas[idx];
+                const document = results.documents[idx];
 
-            // Extract IPv4 address from document
-            const ipv4 = extractIPv4(document);
+                // Extract IPv4 address from document
+                const ipv4 = extractIPv4(document);
 
-            // Extract nameserver from document
-            const nameserver = extractNameserver(document);
+                // Extract nameserver from document
+                const nameserver = extractNameserver(document);
 
-            // Format first_seen timestamp to human-readable format
-            const firstSeenFormatted = metadata.first_seen
-                ? formatTimestamp(metadata.first_seen)
-                : null;
+                // Format first_seen timestamp to human-readable format
+                const firstSeenFormatted = metadata.first_seen
+                    ? formatTimestamp(metadata.first_seen)
+                    : null;
 
-            // Create enhanced metadata with extracted fields
-            // Remove first_seen and replace with first_seen_formatted
-            const { first_seen, ...metadataWithoutFirstSeen } = metadata;
-            const enhancedMetadata = {
-                ...metadataWithoutFirstSeen,
-                ipv4: ipv4,
-                nameserver: nameserver,
-                first_seen: firstSeenFormatted,
-                country: metadata.country || null,
-                city: metadata.city || null,
-                asn: metadata.asn || null,
-                asn_org: metadata.asn_org || null,  // ISP name
-                latitude: metadata.latitude || null,
-                longitude: metadata.longitude || null
-            };
+                // Create enhanced metadata with extracted fields
+                // Remove first_seen and replace with first_seen_formatted
+                const { first_seen, ...metadataWithoutFirstSeen } = metadata;
+                const enhancedMetadata = {
+                    ...metadataWithoutFirstSeen,
+                    ipv4: ipv4,
+                    nameserver: nameserver,
+                    first_seen: firstSeenFormatted,
+                    country: metadata.country || null,
+                    city: metadata.city || null,
+                    asn: metadata.asn || null,
+                    asn_org: metadata.asn_org || null,  // ISP name
+                    latitude: metadata.latitude || null,
+                    longitude: metadata.longitude || null
+                };
 
-            return {
-                id: id,
-                metadata: enhancedMetadata,
-                document: document
-            };
-        });
+                return {
+                    id: id,
+                    metadata: enhancedMetadata,
+                    document: document,
+                    first_seen_timestamp: parseFormattedDate(firstSeenFormatted)
+                };
+            })
+            .sort((a, b) => {
+                // Sort by first_seen descending (latest first)
+                return b.first_seen_timestamp - a.first_seen_timestamp;
+            });
+
+        // Apply pagination after sorting
+        const domains = allDomains
+            .slice(offset, offset + limit)
+            .map(({ first_seen_timestamp, ...domain }) => domain);
 
         res.json({
             success: true,
@@ -484,7 +529,8 @@ router.get('/non-lookalikes', async (req, res) => {
                     metadata: enhancedMetadata,
                     document: document,
                     seed_registrable: metadata.seed_registrable,
-                    registrable: metadata.registrable
+                    registrable: metadata.registrable,
+                    first_seen_timestamp: parseFormattedDate(firstSeenFormatted)  // Parse formatted date to timestamp for sorting
                 };
             })
             .filter(domain => {
@@ -525,13 +571,19 @@ router.get('/non-lookalikes', async (req, res) => {
                 // Non-lookalike if both have the same base domain
                 // (e.g., www.example.com and example.com are the same)
                 return seedBase === regBase;
+            })
+            .sort((a, b) => {
+                // Sort by first_seen descending (latest first)
+                const timeA = a.first_seen_timestamp || 0;
+                const timeB = b.first_seen_timestamp || 0;
+                return timeB - timeA;  // Descending order
             });
 
-        // Apply pagination after filtering (use offset here, not in ChromaDB query)
+        // Apply pagination after filtering and sorting
         const paginatedDomains = allFiltered.slice(offset, offset + limit);
 
-        // Remove the temporary seed_registrable and registrable fields used for filtering
-        const domains = paginatedDomains.map(({ seed_registrable, registrable, ...domain }) => domain);
+        // Remove the temporary fields used for filtering and sorting
+        const domains = paginatedDomains.map(({ seed_registrable, registrable, first_seen_timestamp, ...domain }) => domain);
 
         logger.info('---- Queried non-lookalike user submissions ----', {
             collection: VARIANTS_COLLECTION,

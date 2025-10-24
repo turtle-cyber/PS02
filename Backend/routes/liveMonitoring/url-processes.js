@@ -200,9 +200,21 @@ router.get('/live-monitoring/url-processes', async (req, res) => {
         }
 
         // Sort by first_seen_raw descending (newest first)
+        // Handle N/A and invalid dates by putting them at the end
         processedData.sort((a, b) => {
+            // Treat N/A as invalid (put at end)
+            if (a.first_seen_raw === 'N/A' && b.first_seen_raw === 'N/A') return 0;
+            if (a.first_seen_raw === 'N/A') return 1;  // a goes to end
+            if (b.first_seen_raw === 'N/A') return -1; // b goes to end
+
             const dateA = new Date(a.first_seen_raw);
             const dateB = new Date(b.first_seen_raw);
+
+            // Handle invalid dates
+            if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0;
+            if (isNaN(dateA.getTime())) return 1;  // a goes to end
+            if (isNaN(dateB.getTime())) return -1; // b goes to end
+
             return dateB - dateA; // Descending order
         });
 
