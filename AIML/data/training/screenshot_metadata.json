@@ -1,0 +1,303 @@
+[
+  {
+    "registrable": "recindia.nic.in",
+    "url": "https://recindia.nic.in/",
+    "screenshot_path": "/workspace/out/screenshots/recindia.nic.in_12735a9d_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "sjvn.nic.in",
+    "url": "https://sjvn.nic.in/",
+    "screenshot_path": "/workspace/out/screenshots/sjvn.nic.in_7800e24f_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "thdc.co.in",
+    "url": "https://thdc.co.in/",
+    "screenshot_path": "/workspace/out/screenshots/thdc.co.in_21f555a2_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "neepco.co.in",
+    "url": "https://neepco.co.in/hi",
+    "screenshot_path": "/workspace/out/screenshots/neepco.co.in_c118ba69_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "npcil.nic.in",
+    "url": "https://www.npcil.nic.in/Content/Hindi/index.aspx",
+    "screenshot_path": "/workspace/out/screenshots/www.npcil.nic.in_4ba46cc0_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "bharatpetroleum.in",
+    "url": "https://www.bharatpetroleum.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.bharatpetroleum.in_de263b65_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "ongcindia.com",
+    "url": "https://www.ongcindia.com/",
+    "screenshot_path": "/workspace/out/screenshots/www.ongcindia.com_6280f000_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "npci.org.in",
+    "url": "https://www.npci.org.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.npci.org.in_cac9b98a_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "gailonline.com",
+    "url": "https://gailonline.com/",
+    "screenshot_path": "/workspace/out/screenshots/gailonline.com_6592479f_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "nhpcindia.com",
+    "url": "https://www.nhpcindia.com/",
+    "screenshot_path": "/workspace/out/screenshots/www.nhpcindia.com_91fba600_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "unionbankofindia.co.in",
+    "url": "https://www.unionbankofindia.co.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.unionbankofindia.co.in_18924923_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "sbi.co.in",
+    "url": "https://sbi.co.in/redirect/",
+    "screenshot_path": "/workspace/out/screenshots/sbi.co.in_c0feeec6_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "powergrid.in",
+    "url": "https://www.powergrid.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.powergrid.in_7929c3ed_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "rbi.org.in",
+    "url": "https://www.rbi.org.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.rbi.org.in_5d3835d6_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "indianbank.in",
+    "url": "https://www.indianbank.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.indianbank.in_a271e7fe_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "axisbank.com",
+    "url": "https://www.axisbank.com/",
+    "screenshot_path": "/workspace/out/screenshots/www.axisbank.com_db148067_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "hdfcbank.com",
+    "url": "https://www.hdfcbank.com/",
+    "screenshot_path": "/workspace/out/screenshots/www.hdfcbank.com_e78f0b8d_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "centralbankofindia.co.in",
+    "url": "https://www.centralbankofindia.co.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.centralbankofindia.co.in_2fadc2d7_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "kotak.com",
+    "url": "https://www.kotak.com/en/home.html",
+    "screenshot_path": "/workspace/out/screenshots/www.kotak.com_c4185c40_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "icicibank.com",
+    "url": "https://www.icicibank.com/",
+    "screenshot_path": "/workspace/out/screenshots/www.icicibank.com_d4347fe6_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "federalbank.co.in",
+    "url": "https://www.federalbank.co.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.federalbank.co.in_c62c0059_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "canarabank.com",
+    "url": "https://www.canarabank.com/",
+    "screenshot_path": "/workspace/out/screenshots/www.canarabank.com_8730a2b1_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "iob.in",
+    "url": "https://www.iob.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.iob.in_cf845519_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "southindianbank.com",
+    "url": "https://www.southindianbank.com/",
+    "screenshot_path": "/workspace/out/screenshots/www.southindianbank.com_b8d504e9_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "licindia.in",
+    "url": "https://licindia.in/",
+    "screenshot_path": "/workspace/out/screenshots/licindia.in_42939e49_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "tmb.in",
+    "url": "https://www.tmb.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.tmb.in_17f385bf_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "jkbank.com",
+    "url": "https://www.jkbank.com/",
+    "screenshot_path": "/workspace/out/screenshots/www.jkbank.com_6c020dd9_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "kvb.co.in",
+    "url": "https://www.kvb.co.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.kvb.co.in_125c08cd_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "rblbank.com",
+    "url": "https://www.rblbank.com/",
+    "screenshot_path": "/workspace/out/screenshots/www.rblbank.com_9a8e6893_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "karnatakabank.com",
+    "url": "https://karnatakabank.com/",
+    "screenshot_path": "/workspace/out/screenshots/karnatakabank.com_b9f9746a_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "mtnl.in",
+    "url": "https://mtnl.in/",
+    "screenshot_path": "/workspace/out/screenshots/mtnl.in_82a2bc7d_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "ucobank.com",
+    "url": "https://www.ucobank.com/",
+    "screenshot_path": "/workspace/out/screenshots/www.ucobank.com_57826c72_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "gridcontroller.in",
+    "url": "https://gridcontroller.in/lander",
+    "screenshot_path": "/workspace/out/screenshots/gridcontroller.in_44bda6bc_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "bandhanbank.com",
+    "url": "https://www.bandhanbank.com/",
+    "screenshot_path": "/workspace/out/screenshots/www.bandhanbank.com_9af63e75_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "myvi.in",
+    "url": "https://www.myvi.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.myvi.in_0e0592d1_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "pnbindia.in",
+    "url": "https://pnb.bank.in/hi/",
+    "screenshot_path": "/workspace/out/screenshots/www.pnbindia.in_a77215a7_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "bankofindia.co.in",
+    "url": "https://bankofindia.bank.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.bankofindia.co.in_b729cc5f_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "idbibank.in",
+    "url": "https://www.idbi.bank.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.idbibank.in_7553c3ba_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "ntpc.co.in",
+    "url": "https://validate.perfdrive.com/?ssa=c03631f0-05a3-49f1-9caa-934445237127&ssb=23539230767&ssc=https%3A%2F%2Fwww.ntpc.co.in%2F&ssi=676c2e9f-cs5n-49d7-a0ea-44250a8212d6&ssk=botmanager_support@radware.com&ssm=83082354079739697101905121655061&ssn=3c72d2c9de31858f9a7790028d8983551abd4dca6be1-e06c-484e-a4b6e5&sso=58fda0ec-b7cf0645b4eed7b261d5d98ab91978a5304e5fb47a312606&ssp=81472448131760728974176071015677907&ssq=85634759078595376815190785249685322834812&ssr=MTM2LjIzMi4xNTUuMTc4&sst=IC05-Prober/1.0%20(+https://example)&ssu=&ssv=&ssw=&ssx=eyJfX3V6bWYiOiI3ZjkwMDA0ZGNhNmJlMS1lMDZjLTQ4NGUtYTBlYy1iN2NmMDY0NWI0ZWUxLTE3NjA3OTA3ODU3MTEwLTAwMWI2YWM3YTE3MDg5ZjhjODcxMCIsInV6bXgiOiI3ZjkwMDA3YTVjMGQxOC0xZmE1LTRkYTYtODZmOS1lMjU5MTllZmY4NGUxLTE3NjA3OTA3ODU3MTEwLTJlODYyZDE3YzAzNDU0M2UxMCIsInJkIjoibnRwYy5jby5pbiJ9",
+    "screenshot_path": "/workspace/out/screenshots/www.ntpc.co.in_2abe2706_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "suspicious"
+  },
+  {
+    "registrable": "bankofbaroda.in",
+    "url": "https://bankofbaroda.bank.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.bankofbaroda.in_e8d308eb_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "bsnl.co.in",
+    "url": "https://bsnl.co.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.bsnl.co.in_b862995c_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "indusind.com",
+    "url": "https://www.indusind.bank.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.indusind.com_ad0f5b0b_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  },
+  {
+    "registrable": "paytmbank.com",
+    "url": "https://www.paytm.bank.in/",
+    "screenshot_path": "/workspace/out/screenshots/www.paytmbank.com_96207e9a_full.png",
+    "cse_id": "BULK_IMPORT",
+    "verdict": "benign"
+  }
+]

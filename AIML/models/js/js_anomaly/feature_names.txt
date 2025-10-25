@@ -1,0 +1,12 @@
+js_obfuscated
+js_keylogger
+js_form_manipulation
+js_eval_usage
+js_redirect_detected
+js_risk_score
+js_obfuscated_count
+js_eval_count
+js_encoding_count
+external_scripts
+form_count
+has_credential_form

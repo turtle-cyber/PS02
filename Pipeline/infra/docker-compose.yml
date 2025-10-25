@@ -483,9 +483,9 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: 3G  # Increased for 8 models (was 2G for 5 models)
         reservations:
-          memory: 1G
+          memory: 1.5G
     healthcheck:
       test: ["CMD-SHELL", "ls /out/aiml_service.log 2>/dev/null || exit 1"]
       interval: 30s

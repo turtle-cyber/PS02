@@ -73,6 +73,47 @@ class ContentPhishingDetector:
             'ntpc', 'ongc', 'bhel', 'gail', 'powergrid'
         }
 
+        # Gambling-related keywords (specific to avoid false positives)
+        self.gambling_keywords = {
+            # Casinos (specific phrases)
+            'online casino', 'live casino', 'casino online',
+            'play casino', 'casino games', 'casino bonus',
+
+            # Slot machines
+            'slot machine', 'slot machines', 'slots game',
+            'jackpot', 'mega jackpot', 'progressive jackpot',
+
+            # Card games (specific)
+            'online poker', 'texas holdem', 'live poker',
+            'play blackjack', 'live blackjack',
+            'baccarat online', 'roulette online',
+
+            # Betting (specific to avoid 'bet' matching 'better')
+            'place your bet', 'online betting', 'sports betting',
+            'sportsbook', 'bookmaker', 'betting odds',
+
+            # Gambling explicit
+            'gambling site', 'online gambling', 'gamble online',
+            'real money gambling',
+
+            # Lottery (specific)
+            'lottery online', 'buy lottery', 'lottery tickets',
+            'powerball', 'mega millions',
+
+            # Gaming terms (multi-word to reduce false positives)
+            'spin to win', 'free spins', 'bonus spins',
+            'deposit bonus', 'welcome bonus', 'no deposit bonus',
+            'play for real money', 'real money casino',
+
+            # Winnings (specific phrases)
+            'withdraw winnings', 'cash out winnings',
+            'instant payout', 'fast withdrawal',
+
+            # Licenses (gambling-specific)
+            'curacao gaming license', 'malta gaming authority',
+            'gambling license', 'casino license'
+        }
+
     def count_keywords(self, text: str, keywords: Set[str]) -> int:
         """Count keyword occurrences in text (case-insensitive)"""
         if not text:
@@ -192,6 +233,59 @@ class ContentPhishingDetector:
             'cse_keyword_count': cse_count,
             'content_risk_score': min(1.0, risk_score),
             'risk_factors': risk_factors
+        }
+
+    def detect_gambling(self, domain_metadata: Dict) -> Dict:
+        """
+        Detect gambling content in domain
+
+        Args:
+            domain_metadata: Dictionary with domain metadata
+
+        Returns:
+            Gambling detection verdict
+        """
+        doc_text = domain_metadata.get('document_text', '')
+        ocr_text = domain_metadata.get('ocr_text', '')
+        domain = domain_metadata.get('registrable', '')
+
+        combined_text = f"{doc_text} {ocr_text} {domain}".lower()
+
+        # Count gambling keywords
+        gambling_count = self.count_keywords(combined_text, self.gambling_keywords)
+
+        # Check for gambling TLDs
+        gambling_tlds = ['.bet', '.casino', '.poker', '.lotto', '.game']
+        has_gambling_tld = any(domain.lower().endswith(tld) for tld in gambling_tlds)
+
+        # High confidence gambling detection
+        # Increased threshold to reduce false positives (was 5, now 10)
+        if gambling_count >= 10 or has_gambling_tld:
+            return {
+                'verdict': 'GAMBLING',
+                'confidence': min(0.95, 0.80 + min(0.15, gambling_count * 0.02)),
+                'reason': f'Gambling site detected ({gambling_count} gambling keywords)',
+                'gambling_keyword_count': gambling_count,
+                'has_gambling_tld': has_gambling_tld
+            }
+
+        # Moderate confidence - suspicious gambling
+        # Increased threshold (was 2, now 5)
+        elif gambling_count >= 5:
+            return {
+                'verdict': 'SUSPICIOUS_GAMBLING',
+                'confidence': 0.60 + min(0.20, gambling_count * 0.05),
+                'reason': f'Possible gambling content ({gambling_count} keywords)',
+                'gambling_keyword_count': gambling_count,
+                'has_gambling_tld': has_gambling_tld
+            }
+
+        # Not gambling
+        return {
+            'verdict': 'NOT_GAMBLING',
+            'confidence': 0.0,
+            'gambling_keyword_count': gambling_count,
+            'has_gambling_tld': has_gambling_tld
         }
 
     def detect_phishing(self, domain_metadata: Dict) -> Dict:

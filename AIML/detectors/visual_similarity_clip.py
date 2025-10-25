@@ -38,8 +38,14 @@ class CLIPVisualDetector:
         self.cse_domains = []  # Clean domain names from CLIP index
         self.cse_whitelist = []  # Registrable domains from baseline
 
+        # Government/trusted TLD whitelist (auto-benign)
+        self.government_tlds = {
+            'gov', 'gov.in', 'nic.in', 'ac.in', 'edu.in', 'mil',
+            'edu', 'mil.in', 'res.in', 'org.in'
+        }
+
         # Thresholds
-        self.clip_similarity_threshold = 0.80  # From existing code
+        self.clip_similarity_threshold = 0.85  # Raised from 0.80 to reduce false positives
         self.phash_distance_threshold = 10
 
         # Load CSE index
@@ -89,7 +95,8 @@ class CLIPVisualDetector:
         try:
             with open(baseline_path, 'r') as f:
                 baseline = json.load(f)
-            self.cse_whitelist = baseline.get('cse_whitelist', [])
+            # Try 'domains' first (main list), then 'cse_whitelist' as fallback
+            self.cse_whitelist = baseline.get('domains', baseline.get('cse_whitelist', []))
             print(f"Loaded CSE whitelist: {len(self.cse_whitelist)} domains")
         except Exception as e:
             print(f"Warning: Could not load CSE whitelist: {e}")
@@ -209,6 +216,24 @@ class CLIPVisualDetector:
         Returns:
             Detection result dictionary
         """
+        # PRIORITY 1: Check if domain is government/trusted (auto-whitelist)
+        is_government_domain = self._is_government_domain(registrable)
+        if is_government_domain:
+            return {
+                'verdict': 'BENIGN',
+                'confidence': 0.95,
+                'reason': 'Government/trusted domain (auto-whitelisted)',
+                'method': 'government_whitelist',
+                'details': {
+                    'is_whitelisted': True,
+                    'is_government': True,
+                    'clip_similarity': 0.0,
+                    'matched_cse_domain': '',
+                    'matched_cse_idx': -1,
+                    'threshold': self.clip_similarity_threshold
+                }
+            }
+
         # Check if domain is whitelisted (check both whitelist and CLIP index domains)
         is_whitelisted = (registrable in self.cse_whitelist or
                          registrable in self.cse_domains)
@@ -228,16 +253,51 @@ class CLIPVisualDetector:
         # Find most similar CSE
         max_sim, best_idx, matched_domain = self.find_similar_cse_clip(query_emb)
 
+        # Normalize matched domain for comparison (remove hash suffix)
+        matched_domain_clean = matched_domain.rsplit('_', 1)[0] if '_' in matched_domain else matched_domain
+
+        # Check if the query domain matches the CSE domain it's similar to
+        # This handles cases where domain looks like its own CSE baseline (legitimate)
+        domain_matches_cse = (
+            registrable == matched_domain_clean or
+            domain == matched_domain_clean or
+            registrable in matched_domain_clean or
+            matched_domain_clean in registrable
+        )
+
         # Determine verdict
         if is_whitelisted:
+            # Domain is in CSE whitelist
             verdict = 'BENIGN'
             confidence = 0.95
             reason = f'Domain in CSE whitelist (similarity={max_sim:.3f})'
         elif max_sim >= self.clip_similarity_threshold:
-            # High visual similarity but NOT in whitelist → Phishing
-            verdict = 'PHISHING'
-            confidence = 0.7 + min(0.25, (max_sim - 0.80) * 1.25)  # 0.70-0.95
-            reason = f'Visually impersonates {matched_domain} (similarity={max_sim:.3f})'
+            # High visual similarity detected
+            if domain_matches_cse:
+                # Domain matches the CSE it's similar to → Legitimate CSE domain
+                verdict = 'BENIGN'
+                confidence = 0.90
+                reason = f'Legitimate CSE domain matching own baseline (similarity={max_sim:.3f})'
+            else:
+                # High similarity but domain doesn't match
+                # Additional validation: check if domains are related
+                if 0.85 <= max_sim < 0.92:  # Marginal similarity range
+                    domains_related = self._domains_are_similar(registrable, matched_domain_clean)
+                    if not domains_related:
+                        # Probably spurious match (similar layout/colors, unrelated orgs)
+                        verdict = 'UNKNOWN'
+                        confidence = 0.0
+                        reason = f'Visual match but unrelated domains (similarity={max_sim:.3f}, may be spurious)'
+                    else:
+                        # Related domains, likely legitimate
+                        verdict = 'BENIGN'
+                        confidence = 0.80
+                        reason = f'Related domain with similar visuals (similarity={max_sim:.3f})'
+                else:
+                    # Very high similarity (>0.92) → likely phishing
+                    verdict = 'PHISHING'
+                    confidence = 0.7 + min(0.25, (max_sim - 0.85) * 2.0)  # 0.70-0.95
+                    reason = f'Visually impersonates {matched_domain} (similarity={max_sim:.3f})'
         else:
             # Not similar to any CSE
             verdict = 'UNKNOWN'
@@ -258,6 +318,64 @@ class CLIPVisualDetector:
             }
         }
 
+    def _is_government_domain(self, registrable: str) -> bool:
+        """
+        Check if domain has government/trusted TLD
+
+        Args:
+            registrable: Registrable domain
+
+        Returns:
+            True if government domain
+        """
+        if not registrable:
+            return False
+
+        registrable_lower = registrable.lower()
+
+        # Check exact TLD matches (handles .gov, .gov.in, etc.)
+        for gov_tld in self.government_tlds:
+            if registrable_lower.endswith(f'.{gov_tld}') or registrable_lower == gov_tld:
+                return True
+
+        return False
+
+    def _domains_are_similar(self, domain1: str, domain2: str) -> bool:
+        """
+        Check if two domains are related (same organization)
+
+        Args:
+            domain1: First domain
+            domain2: Second domain
+
+        Returns:
+            True if domains appear to be from same organization
+        """
+        if not domain1 or not domain2:
+            return False
+
+        # Extract base names (remove TLD)
+        d1_parts = domain1.lower().split('.')
+        d2_parts = domain2.lower().split('.')
+
+        if len(d1_parts) == 0 or len(d2_parts) == 0:
+            return False
+
+        d1_base = d1_parts[0]
+        d2_base = d2_parts[0]
+
+        # Check if one contains the other
+        if d1_base in d2_base or d2_base in d1_base:
+            return True
+
+        # Check edit distance similarity
+        try:
+            from difflib import SequenceMatcher
+            similarity = SequenceMatcher(None, d1_base, d2_base).ratio()
+            return similarity > 0.7
+        except:
+            return False
+
     def detect_with_phash(self, phash: str, registrable: str) -> Dict:
         """
         Detect phishing using perceptual hash (fallback)
@@ -269,6 +387,16 @@ class CLIPVisualDetector:
         Returns:
             Detection result dictionary
         """
+        # Check government domain first
+        if self._is_government_domain(registrable):
+            return {
+                'verdict': 'BENIGN',
+                'confidence': 0.95,
+                'reason': 'Government/trusted domain (auto-whitelisted)',
+                'method': 'government_whitelist',
+                'details': {'is_whitelisted': True, 'is_government': True}
+            }
+
         is_whitelisted = registrable in self.cse_domains
 
         if is_whitelisted:

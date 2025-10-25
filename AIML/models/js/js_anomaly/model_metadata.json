@@ -1,0 +1,33 @@
+{
+  "model_type": "OneClassSVM",
+  "n_samples": 120,
+  "n_features": 12,
+  "feature_names": [
+    "js_obfuscated",
+    "js_keylogger",
+    "js_form_manipulation",
+    "js_eval_usage",
+    "js_redirect_detected",
+    "js_risk_score",
+    "js_obfuscated_count",
+    "js_eval_count",
+    "js_encoding_count",
+    "external_scripts",
+    "form_count",
+    "has_credential_form"
+  ],
+  "nu": 0.05,
+  "kernel": "rbf",
+  "n_anomalies_in_training": 12,
+  "score_mean": 0.001790759440932027,
+  "score_std": 0.006729578203872386,
+  "score_min": -0.0003594884739337445,
+  "score_max": 0.05257715976474442,
+  "baseline_stats": {
+    "obfuscated_rate": 0.15833333333333333,
+    "keylogger_rate": 0.05,
+    "form_manipulation_rate": 0.075,
+    "eval_usage_rate": 0.008333333333333333,
+    "mean_risk_score": 3.375
+  }
+}

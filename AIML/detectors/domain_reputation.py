@@ -27,6 +27,9 @@ class DomainReputationAnalyzer:
             cse_whitelist: List of legitimate CSE domains
         """
         self.cse_whitelist = cse_whitelist or []
+        self.cse_favicon_db = {}  # {domain: {'md5': ..., 'sha256': ...}}
+        self.trusted_registrars = set()  # Trusted domain registrars
+        self.expected_countries = {}  # {domain_tld: expected_countries}
 
         # High-risk TLDs
         self.high_risk_tlds = {
@@ -55,12 +58,41 @@ class DomainReputationAnalyzer:
             'y': ['у', 'ү'],       # Cyrillic y
         }
 
+        # Trusted registrars (common legitimate registrars)
+        self.trusted_registrars = {
+            'godaddy', 'namecheap', 'google', 'amazon', 'cloudflare',
+            'network solutions', 'tucows', 'enom', 'endurance',
+            'publicdomainregistry', '1&1', 'hover', 'gandi',
+            'national informatics centre',  # India .gov/.nic.in
+            'registry services', 'verisign', 'pir', 'donuts'
+        }
+
+        # Expected country mappings for TLDs
+        self.expected_countries = {
+            'in': {'IN'},  # India TLDs should be in India
+            'gov.in': {'IN'},
+            'nic.in': {'IN'},
+            'co.in': {'IN'},
+            'ac.in': {'IN'},
+            'us': {'US'},
+            'uk': {'GB', 'UK'},
+            'cn': {'CN'},
+            'jp': {'JP'},
+            'de': {'DE'},
+            'fr': {'FR'},
+        }
+
     def load_cse_whitelist(self, baseline_path: str):
-        """Load CSE whitelist from baseline profile"""
+        """Load CSE whitelist and favicon database from baseline profile"""
         with open(baseline_path, 'r') as f:
             baseline = json.load(f)
-        self.cse_whitelist = baseline.get('cse_whitelist', [])
+        self.cse_whitelist = baseline.get('domains', baseline.get('cse_whitelist', []))
+
+        # Load favicon database
+        self.cse_favicon_db = baseline.get('favicons', {})
+
         print(f"Loaded CSE whitelist: {len(self.cse_whitelist)} domains")
+        print(f"Loaded favicon database: {len(self.cse_favicon_db)} favicons")
 
     def calculate_edit_distance(self, str1: str, str2: str) -> int:
         """Calculate Levenshtein distance between two strings"""
@@ -194,6 +226,76 @@ class DomainReputationAnalyzer:
             'is_homograph_attack': is_attack
         }
 
+    def detect_parked_domain(self, metadata: Dict) -> Dict:
+        """
+        Detect if domain is parked
+
+        Args:
+            metadata: Domain metadata dictionary
+
+        Returns:
+            Parked domain detection result
+        """
+        doc_text = metadata.get('document_text', '').lower()
+        domain = metadata.get('registrable', '')
+        doc_length = metadata.get('doc_length', 0)
+
+        # Parking service indicators
+        parking_services = [
+            'sedo', 'godaddy', 'namecheap', 'parking page',
+            'domain for sale', 'this domain is for sale',
+            'buy this domain', 'premium domain',
+            'parked domain', 'domain parking', 'park by',
+            'domain names for sale', 'purchase this domain'
+        ]
+
+        # Count parking indicators
+        parking_indicators = sum(1 for svc in parking_services if svc in doc_text)
+
+        # Check for minimal content with ads
+        has_minimal_content = doc_length < 500
+        has_ads = 'advertisement' in doc_text or 'sponsored' in doc_text or 'google_ad' in doc_text
+
+        # Calculate parking score
+        parking_score = 0.0
+
+        if parking_indicators >= 2:
+            parking_score = 0.8
+        elif parking_indicators == 1:
+            parking_score = 0.5
+
+        if has_minimal_content and has_ads:
+            parking_score += 0.2
+
+        # High confidence parked domain
+        if parking_score >= 0.7:
+            return {
+                'verdict': 'PARKED',
+                'confidence': min(0.95, 0.70 + parking_score * 0.25),
+                'reason': f'Domain appears to be parked ({parking_indicators} parking indicators)',
+                'parking_indicators': parking_indicators,
+                'parking_score': parking_score,
+                'minimal_content': has_minimal_content
+            }
+
+        # Possible parking
+        elif parking_score >= 0.4:
+            return {
+                'verdict': 'POSSIBLE_PARKED',
+                'confidence': 0.50 + parking_score * 0.20,
+                'reason': f'Possible parked domain ({parking_indicators} indicators)',
+                'parking_indicators': parking_indicators,
+                'parking_score': parking_score
+            }
+
+        # Not parked
+        return {
+            'verdict': 'NOT_PARKED',
+            'confidence': 0.0,
+            'parking_score': parking_score,
+            'parking_indicators': parking_indicators
+        }
+
     def analyze_tld_risk(self, domain: str) -> Dict:
         """Analyze TLD risk"""
         parts = domain.split('.')
@@ -274,6 +376,141 @@ class DomainReputationAnalyzer:
             'pattern_risk_factors': risk_factors
         }
 
+    def detect_favicon_impersonation(self, domain: str, metadata: Dict) -> Tuple[bool, Dict]:
+        """
+        Detect brand impersonation via favicon matching
+
+        Args:
+            domain: Registrable domain
+            metadata: Domain metadata with favicon_md5, favicon_sha256
+
+        Returns:
+            (is_impersonation, details)
+        """
+        favicon_md5 = metadata.get('favicon_md5', '')
+        favicon_sha256 = metadata.get('favicon_sha256', '')
+
+        if not favicon_md5 and not favicon_sha256:
+            return False, {
+                'has_favicon': False,
+                'favicon_match': None,
+                'is_favicon_impersonation': False
+            }
+
+        # Check if favicon matches any CSE domain
+        matched_cse_domain = None
+        for cse_domain, favicon_data in self.cse_favicon_db.items():
+            cse_md5 = favicon_data.get('md5', '')
+            cse_sha256 = favicon_data.get('sha256', '')
+
+            # Match on either MD5 or SHA256
+            if (favicon_md5 and favicon_md5 == cse_md5) or \
+               (favicon_sha256 and favicon_sha256 == cse_sha256):
+                matched_cse_domain = cse_domain
+                break
+
+        # Favicon matches CSE but domain doesn't = impersonation
+        is_impersonation = False
+        if matched_cse_domain and domain.lower() != matched_cse_domain.lower():
+            is_impersonation = True
+
+        return is_impersonation, {
+            'has_favicon': True,
+            'favicon_match': matched_cse_domain,
+            'is_favicon_impersonation': is_impersonation,
+            'favicon_md5': favicon_md5,
+            'favicon_sha256': favicon_sha256
+        }
+
+    def analyze_registrar_reputation(self, metadata: Dict) -> Dict:
+        """
+        Analyze domain registrar reputation
+
+        Args:
+            metadata: Domain metadata with registrar
+
+        Returns:
+            Registrar reputation analysis
+        """
+        registrar = metadata.get('registrar', '').lower()
+
+        if not registrar:
+            return {
+                'has_registrar': False,
+                'is_trusted_registrar': False,
+                'registrar_risk_score': 0.3,  # Neutral
+                'registrar_name': ''
+            }
+
+        # Check if trusted
+        is_trusted = any(trusted in registrar for trusted in self.trusted_registrars)
+
+        # Calculate risk
+        if is_trusted:
+            risk_score = 0.1  # Low risk
+        else:
+            risk_score = 0.5  # Unknown registrar = moderate risk
+
+        return {
+            'has_registrar': True,
+            'is_trusted_registrar': is_trusted,
+            'registrar_risk_score': risk_score,
+            'registrar_name': registrar
+        }
+
+    def analyze_country_mismatch(self, domain: str, metadata: Dict) -> Dict:
+        """
+        Detect country/GeoIP mismatches
+
+        Args:
+            domain: Registrable domain
+            metadata: Domain metadata with country
+
+        Returns:
+            Country mismatch analysis
+        """
+        country = metadata.get('country', '')
+        if not country:
+            return {
+                'has_country': False,
+                'is_country_mismatch': False,
+                'expected_countries': [],
+                'actual_country': '',
+                'country_risk_score': 0.0
+            }
+
+        # Extract TLD
+        parts = domain.split('.')
+        if len(parts) >= 2:
+            # Handle multi-part TLDs like .gov.in
+            tld = '.'.join(parts[-2:]) if len(parts) > 2 and parts[-2] in ['gov', 'nic', 'ac', 'co'] else parts[-1]
+        else:
+            tld = parts[-1] if parts else ''
+
+        # Check if we have expected countries for this TLD
+        expected = self.expected_countries.get(tld, set())
+
+        if not expected:
+            # No expectation = no mismatch
+            return {
+                'has_country': True,
+                'is_country_mismatch': False,
+                'expected_countries': [],
+                'actual_country': country,
+                'country_risk_score': 0.0
+            }
+
+        # Check mismatch
+        is_mismatch = country not in expected
+
+        return {
+            'has_country': True,
+            'is_country_mismatch': is_mismatch,
+            'expected_countries': list(expected),
+            'actual_country': country,
+            'country_risk_score': 0.5 if is_mismatch else 0.0
+        }
+
     def analyze_reputation(self, domain: str, metadata: Dict) -> Dict:
         """
         Complete domain reputation analysis
@@ -297,6 +534,15 @@ class DomainReputationAnalyzer:
         # Domain pattern analysis
         pattern_analysis = self.analyze_domain_patterns(domain, metadata)
 
+        # NEW: Favicon impersonation detection
+        is_favicon_impersonation, favicon_details = self.detect_favicon_impersonation(domain, metadata)
+
+        # NEW: Registrar reputation analysis
+        registrar_analysis = self.analyze_registrar_reputation(metadata)
+
+        # NEW: Country/GeoIP mismatch detection
+        country_analysis = self.analyze_country_mismatch(domain, metadata)
+
         # Calculate overall reputation risk
         risk_score = 0.0
 
@@ -304,8 +550,12 @@ class DomainReputationAnalyzer:
             risk_score += 0.6
         if is_homograph:
             risk_score += 0.7
+        if is_favicon_impersonation:  # NEW
+            risk_score += 0.8  # Very high confidence indicator
         risk_score += tld_analysis['tld_risk_score'] * 0.3
         risk_score += pattern_analysis['pattern_risk_score'] * 0.4
+        risk_score += registrar_analysis['registrar_risk_score'] * 0.2  # NEW
+        risk_score += country_analysis['country_risk_score'] * 0.3  # NEW
 
         risk_score = min(1.0, risk_score)
 
@@ -327,6 +577,9 @@ class DomainReputationAnalyzer:
             'details': {
                 **typo_details,
                 **homograph_details,
+                **favicon_details,  # NEW
+                **registrar_analysis,  # NEW
+                **country_analysis,  # NEW
                 **tld_analysis,
                 **pattern_analysis
             }

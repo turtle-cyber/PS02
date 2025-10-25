@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libxrender-dev \
     libgomp1 \
+    libopenblas-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -30,11 +31,36 @@ RUN pip install --no-cache-dir open-clip-torch==2.24.0
 # Install remaining dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy application code (Python files and directories)
+COPY *.py .
+COPY api/ ./api/
+COPY common/ ./common/
+COPY data_prep/ ./data_prep/
+COPY detectors/ ./detectors/
 
-# Create necessary directories
-RUN mkdir -p /out /app/models /app/data
+# Note: models/ directory structure includes:
+#   - models/anomaly/ (Isolation Forest)
+#   - models/vision/cse_index_updated/ (CLIP embeddings)
+#   - models/vision/autoencoder_new/ (Visual autoencoder)
+#   - models/text/semantic_anomaly/ (NEW: Text Sentence-BERT)
+#   - models/url/url_anomaly/ (NEW: URL anomaly detector)
+#   - models/js/js_anomaly/ (NEW: JS behavior detector)
+
+# Copy model files (explicitly include despite .dockerignore)
+COPY models/ ./models/
+
+# Copy essential data files (baseline profiles and training data)
+COPY data/ ./data/
+
+# Create necessary directories for all models
+RUN mkdir -p /out \
+    /app/models/anomaly \
+    /app/models/vision/cse_index_updated \
+    /app/models/vision/autoencoder_new \
+    /app/models/text/semantic_anomaly \
+    /app/models/url/url_anomaly \
+    /app/models/js/js_anomaly \
+    /app/data/training
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1

@@ -1,0 +1,802 @@
+{
+  "version": "2.0",
+  "source": "dump_all.jsonl",
+  "n_domains": 116,
+  "domains": [
+    "recindia.nic.in",
+    "sjvn.nic.in",
+    "thdc.co.in",
+    "neepco.co.in",
+    "npcil.nic.in",
+    "sldcdelhi.org",
+    "bharatpetroleum.in",
+    "ongcindia.com",
+    "npci.org.in",
+    "gailonline.com",
+    "www.pnbindia.in",
+    "nhpcindia.com",
+    "unionbankofindia.co.in",
+    "sbi.co.in",
+    "powergrid.in",
+    "rbi.org.in",
+    "indianbank.in",
+    "www.bankofindia.co.in",
+    "www.ntpc.co.in",
+    "www.idbibank.in",
+    "adanigreenenergy.com",
+    "bankofmaharashtra.in",
+    "axisbank.com",
+    "hdfcbank.com",
+    "centralbankofindia.co.in",
+    "kotak.com",
+    "icicibank.com",
+    "www.yesbank.in",
+    "federalbank.co.in",
+    "www.bankofbaroda.in",
+    "canarabank.com",
+    "iob.in",
+    "www.idfcfirstbank.com",
+    "www.indusind.com",
+    "southindianbank.com",
+    "licindia.in",
+    "tmb.in",
+    "jkbank.com",
+    "kvb.co.in",
+    "www.bsnl.co.in",
+    "rblbank.com",
+    "karnatakabank.com",
+    "mtnl.in",
+    "ucobank.com",
+    "gridcontroller.in",
+    "bandhanbank.com",
+    "www.jio.com",
+    "www.paytmbank.com",
+    "myvi.in",
+    "www.airtel.in",
+    "www.cityunionbank.com",
+    "dot.gov.in",
+    "www.railtelindia.com",
+    "www.nic.in",
+    "indianrailways.gov.in",
+    "www.tatacommunications.com",
+    "cris.org.in",
+    "www.dgshipping.gov.in",
+    "morth.nic.in",
+    "vahan.parivahan.gov.in",
+    "sarathi.parivahan.gov.in",
+    "www.aai.aero",
+    "uidai.gov.in",
+    "eci.gov.in",
+    "delhi.gov.in",
+    "www.nvsp.in",
+    "www.meity.gov.in",
+    "incometaxindia.gov.in",
+    "pnbindia.in",
+    "www.hindustanpetroleum.com",
+    "www.mahadiscom.in",
+    "www.digilocker.gov.in",
+    "www.bel-india.in",
+    "dae.gov.in",
+    "hal-india.co.in",
+    "www.isro.gov.in",
+    "mazagondock.in",
+    "hslvizag.in",
+    "grse.in",
+    "www.mygov.in",
+    "www.drdo.gov.in",
+    "bdl-india.in",
+    "sail.co.in",
+    "www.bhel.com",
+    "avnl.co.in",
+    "iocl.com",
+    "sbicard.com",
+    "onlinesbi.sbi",
+    "yonobusiness.sbi",
+    "sbiepay.sbi",
+    "sbilife.co.in",
+    "icicicareers.com",
+    "icicidirect.com",
+    "icicilombard.com",
+    "iciciprulife.com",
+    "hdfc.com",
+    "netpnb.com",
+    "hdfcergo.com",
+    "nic.gov.in",
+    "hdfclife.com",
+    "email.gov.in",
+    "kavach.mail.gov.in",
+    "accounts.mgovcloud.in",
+    "dc.crsorgi.gov.in",
+    "bobibanking.com",
+    "irctc.co.in",
+    "airtel.in",
+    "airtel.com",
+    "irctc.com",
+    "bankofbaroda.in",
+    "bankofindia.co.in",
+    "idbibank.in",
+    "ntpc.co.in",
+    "bsnl.co.in",
+    "indusind.com",
+    "paytmbank.com"
+  ],
+  "feature_statistics": {
+    "url_length": {
+      "mean": 15.75,
+      "std": 73.42122629450039,
+      "min": 0.0,
+      "max": 801.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 23.0
+    },
+    "url_entropy": {
+      "mean": 1.3553766666666667,
+      "std": 1.833799548337984,
+      "min": 0.0,
+      "max": 5.6829,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 3.631925
+    },
+    "num_subdomains": {
+      "mean": 0.4,
+      "std": 0.640378039608984,
+      "min": 0.0,
+      "max": 2.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 1.0
+    },
+    "is_idn": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "has_repeated_digits": {
+      "mean": 0.008333333333333333,
+      "std": 0.09128709291752769,
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "mixed_script": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "domain_age_days": {
+      "mean": 6513.441666666667,
+      "std": 3143.27020683989,
+      "min": 0.0,
+      "max": 10942.0,
+      "median": 7590.0,
+      "q25": 3915.75,
+      "q75": 8538.25
+    },
+    "is_newly_registered": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "is_very_new": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "days_until_expiry": {
+      "mean": 681.0333333333333,
+      "std": 808.1449442893226,
+      "min": 0.0,
+      "max": 3085.0,
+      "median": 319.5,
+      "q25": 131.75,
+      "q75": 1002.75
+    },
+    "is_self_signed": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "cert_age_days": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "has_credential_form": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "form_count": {
+      "mean": 0.25,
+      "std": 0.6251050331912297,
+      "min": 0.0,
+      "max": 3.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "password_fields": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "email_fields": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "has_suspicious_forms": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "suspicious_form_count": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "html_size": {
+      "mean": 92649.15,
+      "std": 244816.7079731644,
+      "min": 0.0,
+      "max": 1383241.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 23309.25
+    },
+    "external_links": {
+      "mean": 32.84166666666667,
+      "std": 94.94474251717502,
+      "min": 0.0,
+      "max": 776.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 1.0
+    },
+    "iframe_count": {
+      "mean": 0.48333333333333334,
+      "std": 1.2898005404610706,
+      "min": 0.0,
+      "max": 8.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "js_obfuscated": {
+      "mean": 0.15833333333333333,
+      "std": 0.3665838969477526,
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "js_keylogger": {
+      "mean": 0.05,
+      "std": 0.21885876647707198,
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "js_form_manipulation": {
+      "mean": 0.075,
+      "std": 0.26449571488641793,
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "js_eval_usage": {
+      "mean": 0.008333333333333333,
+      "std": 0.09128709291752769,
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "js_risk_score": {
+      "mean": 3.375,
+      "std": 10.333971472118288,
+      "min": 0.0,
+      "max": 55.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "redirect_count": {
+      "mean": 38.575,
+      "std": 80.25313549203247,
+      "min": 0.0,
+      "max": 443.0,
+      "median": 1.0,
+      "q25": 0.0,
+      "q75": 20.75
+    },
+    "had_redirects": {
+      "mean": 0.31666666666666665,
+      "std": 0.46712662406799865,
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 1.0
+    },
+    "a_count": {
+      "mean": 1.2333333333333334,
+      "std": 0.6827198858807548,
+      "min": 0.0,
+      "max": 4.0,
+      "median": 1.0,
+      "q25": 1.0,
+      "q75": 2.0
+    },
+    "mx_count": {
+      "mean": 0.8583333333333333,
+      "std": 2.030423366596003,
+      "min": 0.0,
+      "max": 15.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 1.0
+    },
+    "ns_count": {
+      "mean": 1.75,
+      "std": 2.305455714261319,
+      "min": 0.0,
+      "max": 10.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 4.0
+    },
+    "doc_has_verdict": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "doc_risk_score": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "doc_form_count": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "doc_has_login_keywords": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "doc_has_verify_keywords": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "doc_has_password_keywords": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "doc_has_credential_keywords": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "doc_length": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "ocr_length": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "ocr_has_login_keywords": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    },
+    "ocr_has_verify_keywords": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0,
+      "q25": 0.0,
+      "q75": 0.0
+    }
+  },
+  "screenshots": {
+    "recindia.nic.in": {
+      "path": "/workspace/out/screenshots/recindia.nic.in_12735a9d_full.png",
+      "phash": ""
+    },
+    "sjvn.nic.in": {
+      "path": "/workspace/out/screenshots/sjvn.nic.in_7800e24f_full.png",
+      "phash": ""
+    },
+    "thdc.co.in": {
+      "path": "/workspace/out/screenshots/thdc.co.in_21f555a2_full.png",
+      "phash": ""
+    },
+    "neepco.co.in": {
+      "path": "/workspace/out/screenshots/neepco.co.in_c118ba69_full.png",
+      "phash": ""
+    },
+    "npcil.nic.in": {
+      "path": "/workspace/out/screenshots/www.npcil.nic.in_4ba46cc0_full.png",
+      "phash": ""
+    },
+    "bharatpetroleum.in": {
+      "path": "/workspace/out/screenshots/www.bharatpetroleum.in_de263b65_full.png",
+      "phash": ""
+    },
+    "ongcindia.com": {
+      "path": "/workspace/out/screenshots/www.ongcindia.com_6280f000_full.png",
+      "phash": ""
+    },
+    "npci.org.in": {
+      "path": "/workspace/out/screenshots/www.npci.org.in_cac9b98a_full.png",
+      "phash": ""
+    },
+    "gailonline.com": {
+      "path": "/workspace/out/screenshots/gailonline.com_6592479f_full.png",
+      "phash": ""
+    },
+    "nhpcindia.com": {
+      "path": "/workspace/out/screenshots/www.nhpcindia.com_91fba600_full.png",
+      "phash": ""
+    },
+    "unionbankofindia.co.in": {
+      "path": "/workspace/out/screenshots/www.unionbankofindia.co.in_18924923_full.png",
+      "phash": ""
+    },
+    "sbi.co.in": {
+      "path": "/workspace/out/screenshots/sbi.co.in_c0feeec6_full.png",
+      "phash": ""
+    },
+    "powergrid.in": {
+      "path": "/workspace/out/screenshots/www.powergrid.in_7929c3ed_full.png",
+      "phash": ""
+    },
+    "rbi.org.in": {
+      "path": "/workspace/out/screenshots/www.rbi.org.in_5d3835d6_full.png",
+      "phash": ""
+    },
+    "indianbank.in": {
+      "path": "/workspace/out/screenshots/www.indianbank.in_a271e7fe_full.png",
+      "phash": ""
+    },
+    "axisbank.com": {
+      "path": "/workspace/out/screenshots/www.axisbank.com_db148067_full.png",
+      "phash": ""
+    },
+    "hdfcbank.com": {
+      "path": "/workspace/out/screenshots/www.hdfcbank.com_e78f0b8d_full.png",
+      "phash": ""
+    },
+    "centralbankofindia.co.in": {
+      "path": "/workspace/out/screenshots/www.centralbankofindia.co.in_2fadc2d7_full.png",
+      "phash": ""
+    },
+    "kotak.com": {
+      "path": "/workspace/out/screenshots/www.kotak.com_c4185c40_full.png",
+      "phash": ""
+    },
+    "icicibank.com": {
+      "path": "/workspace/out/screenshots/www.icicibank.com_d4347fe6_full.png",
+      "phash": ""
+    },
+    "federalbank.co.in": {
+      "path": "/workspace/out/screenshots/www.federalbank.co.in_c62c0059_full.png",
+      "phash": ""
+    },
+    "canarabank.com": {
+      "path": "/workspace/out/screenshots/www.canarabank.com_8730a2b1_full.png",
+      "phash": ""
+    },
+    "iob.in": {
+      "path": "/workspace/out/screenshots/www.iob.in_cf845519_full.png",
+      "phash": ""
+    },
+    "southindianbank.com": {
+      "path": "/workspace/out/screenshots/www.southindianbank.com_b8d504e9_full.png",
+      "phash": ""
+    },
+    "licindia.in": {
+      "path": "/workspace/out/screenshots/licindia.in_42939e49_full.png",
+      "phash": ""
+    },
+    "tmb.in": {
+      "path": "/workspace/out/screenshots/www.tmb.in_17f385bf_full.png",
+      "phash": ""
+    },
+    "jkbank.com": {
+      "path": "/workspace/out/screenshots/www.jkbank.com_6c020dd9_full.png",
+      "phash": ""
+    },
+    "kvb.co.in": {
+      "path": "/workspace/out/screenshots/www.kvb.co.in_125c08cd_full.png",
+      "phash": ""
+    },
+    "rblbank.com": {
+      "path": "/workspace/out/screenshots/www.rblbank.com_9a8e6893_full.png",
+      "phash": ""
+    },
+    "karnatakabank.com": {
+      "path": "/workspace/out/screenshots/karnatakabank.com_b9f9746a_full.png",
+      "phash": ""
+    },
+    "mtnl.in": {
+      "path": "/workspace/out/screenshots/mtnl.in_82a2bc7d_full.png",
+      "phash": ""
+    },
+    "ucobank.com": {
+      "path": "/workspace/out/screenshots/www.ucobank.com_57826c72_full.png",
+      "phash": ""
+    },
+    "gridcontroller.in": {
+      "path": "/workspace/out/screenshots/gridcontroller.in_44bda6bc_full.png",
+      "phash": ""
+    },
+    "bandhanbank.com": {
+      "path": "/workspace/out/screenshots/www.bandhanbank.com_9af63e75_full.png",
+      "phash": ""
+    },
+    "myvi.in": {
+      "path": "/workspace/out/screenshots/www.myvi.in_0e0592d1_full.png",
+      "phash": ""
+    },
+    "pnbindia.in": {
+      "path": "/workspace/out/screenshots/www.pnbindia.in_a77215a7_full.png",
+      "phash": ""
+    },
+    "bankofindia.co.in": {
+      "path": "/workspace/out/screenshots/www.bankofindia.co.in_b729cc5f_full.png",
+      "phash": ""
+    },
+    "idbibank.in": {
+      "path": "/workspace/out/screenshots/www.idbibank.in_7553c3ba_full.png",
+      "phash": ""
+    },
+    "ntpc.co.in": {
+      "path": "/workspace/out/screenshots/www.ntpc.co.in_2abe2706_full.png",
+      "phash": ""
+    },
+    "bankofbaroda.in": {
+      "path": "/workspace/out/screenshots/www.bankofbaroda.in_e8d308eb_full.png",
+      "phash": ""
+    },
+    "bsnl.co.in": {
+      "path": "/workspace/out/screenshots/www.bsnl.co.in_b862995c_full.png",
+      "phash": ""
+    },
+    "indusind.com": {
+      "path": "/workspace/out/screenshots/www.indusind.com_ad0f5b0b_full.png",
+      "phash": ""
+    },
+    "paytmbank.com": {
+      "path": "/workspace/out/screenshots/www.paytmbank.com_96207e9a_full.png",
+      "phash": ""
+    }
+  },
+  "favicons": {
+    "recindia.nic.in": {
+      "md5": "15cb4d0dd1f73ae6d24981103d338812",
+      "sha256": "fbe8ed5679ba8757906c731f8173b352a7149890c5e24b50e352982262602b50"
+    },
+    "sjvn.nic.in": {
+      "md5": "4b85a969c65a87bf920cc51c216b246f",
+      "sha256": "49d9e0fa08d681749726b6f2ace2c0084679a269ac45f6c72bca4b5af9652015"
+    },
+    "neepco.co.in": {
+      "md5": "054f8c587100268e71000e8a9bd78493",
+      "sha256": "2372b0bf0fbc2ba917855908249ca69c2686f4ed627888cb2c02a271d9a25ce5"
+    },
+    "npcil.nic.in": {
+      "md5": "aeff32ed31b47f1faba98c43d979d919",
+      "sha256": "0ed1aee9f948947f66467544558f536bafa73736a7db76fe0e82d1c9f61400f9"
+    },
+    "npci.org.in": {
+      "md5": "fb73d19d9b99fd10761c01385dbc15d9",
+      "sha256": "d7c5a6b0e4491e558352e046b3c34ddf99734aa66ff974675f61a955c2a4be57"
+    },
+    "gailonline.com": {
+      "md5": "3a7d55ad9dde3f4a01ecb94d83ffd885",
+      "sha256": "d420696d9286ba0bc4e643901a4771b031ef4eae278317917527743a219ba0f9"
+    },
+    "nhpcindia.com": {
+      "md5": "a935cdb72b81cde5686fc87f7302062e",
+      "sha256": "98f87e8d1db0b459a966bf84d06140ce00f1ef56f7e0bd4068a6bf681abc7c00"
+    },
+    "unionbankofindia.co.in": {
+      "md5": "4859e39ae6c0f1f428f2126a6bb32bd9",
+      "sha256": "a94f8a8553caea8430dd4ca3cc01d4e318d19828f74cb65453ffb7f5d9e2f44d"
+    },
+    "rbi.org.in": {
+      "md5": "b37449aba472f739cc82e408e3e8742d",
+      "sha256": "4251371d4f4602b59f4631b8d6d3589c6a6f10d0f66cebe6a4df90fd28ea7e2e"
+    },
+    "indianbank.in": {
+      "md5": "2fe63c942d89a28c684291347ea3731d",
+      "sha256": "80c63c4567da533777df811d5cd413d74f1b4843d747b691bec770748506e81b"
+    },
+    "axisbank.com": {
+      "md5": "3880bf2c745c6ea30e14190052f0e01d",
+      "sha256": "9029d3cc38a4a41accce28541823add49dfc0640a5bb4f3628e03ccccaf6aae3"
+    },
+    "hdfcbank.com": {
+      "md5": "ecce88e44ba8f8cef798c2d6275b72db",
+      "sha256": "fd8e3ccb48c1848ef22b6a21e2676102388e0e038bae65c96463e243a651ea05"
+    },
+    "kotak.com": {
+      "md5": "03283dc7a2bf4938124f26720adf2133",
+      "sha256": "b89c2039545626b4c0c622c9e6889d44a0a515f9c2e46b928464b034156614f6"
+    },
+    "icicibank.com": {
+      "md5": "e9e70d85e7ad4f6a4d47c6476307c643",
+      "sha256": "0180fc0dd9fbe2641f50cd9e3eab4cc825ea3107c0826db5e976e61197d87658"
+    },
+    "federalbank.co.in": {
+      "md5": "be0ef91ad57c2679a547a8d6bd5596e1",
+      "sha256": "57cd7badc46dee61a4c40914d17822f04c8d25843dfa93df32a33c54c0d90f2b"
+    },
+    "licindia.in": {
+      "md5": "d7b64d7f0b8cd4ce4ee27a61c1195dc0",
+      "sha256": "53609db2de6cb0b7247ef2eb879aa06abb7f588ee4673025e7c54e60da74e5ea"
+    },
+    "tmb.in": {
+      "md5": "22859594d995ae30f67e1863a47aa687",
+      "sha256": "21dca20971505243f38aa3eaa9191e32140bc731d79f5b0b1a4b2677cf399a3c"
+    },
+    "kvb.co.in": {
+      "md5": "6eb221d38d51fb7c233a3e6dd93e58ce",
+      "sha256": "a1290ff7eb0784ae5afd450c85e3ee0cec673fb82eb6ff0bac06b7bebd63c9e4"
+    },
+    "rblbank.com": {
+      "md5": "3a961cb02886cb8b85a21849d9fd60bf",
+      "sha256": "cac0804e3749a8411efe3a34ac1c4a610caa82f016dd23ae1156337048d65871"
+    },
+    "bandhanbank.com": {
+      "md5": "244ce4e084e6677c940e76eeee0c4011",
+      "sha256": "edb727cfa12df6b7dd10e1dd25a08f0bdbe5c89e67cdb271ea4548403803e013"
+    },
+    "myvi.in": {
+      "md5": "6c843eb478596f68fecae90ad6feb8b7",
+      "sha256": "c08a60fe94ec399196494b9c8d52c63c86d4c3a3d1a1af6e2f84b79caf3eb814"
+    },
+    "pnbindia.in": {
+      "md5": "cab2cf9f8ebd86e547b04a40a1abf2b5",
+      "sha256": "c4b6b2ae065ee2cc879ee1663b72f23d6bc161fc669d55e2e9f2b249b0554e41"
+    },
+    "bankofindia.co.in": {
+      "md5": "26f92866e5a2ed2e8bd52c3e1b485a72",
+      "sha256": "3e1b135ef36f54d86877f026160ff70fbfa1802450919187fef4ab45bcd52571"
+    },
+    "idbibank.in": {
+      "md5": "24f8a597e80870fc7b012a211e92c7bc",
+      "sha256": "7574656a9d32fe465a5801645e9a5ff547da76018ae49cc8050bdbab67cae501"
+    },
+    "ntpc.co.in": {
+      "md5": "4b79b212df634bbbcffd46231c4131ab",
+      "sha256": "2ce57bac519aa467d82275e83255b816ccb4a109e3e2a7cae799ba8cb7a388cf"
+    },
+    "bankofbaroda.in": {
+      "md5": "c58b510450ac28d43a5cf4eb948263d2",
+      "sha256": "2a7e9439fbab1db8e211dd7f98f8b5e174a89e5a240b7d86b44de20a167d2675"
+    },
+    "bsnl.co.in": {
+      "md5": "4ce93e381c6d17a785db3af5ff5b40c5",
+      "sha256": "6bf580989888cf919774834e4eb53393a3313d22f21df716a8c9ede2626d71cc"
+    },
+    "indusind.com": {
+      "md5": "3e0128a2aa4373f513f7b55822fe9be0",
+      "sha256": "3e61d1f05513278bc00ed7cfcfbbecb9727ddae4a22b0a86c22c649d6d24eeb3"
+    },
+    "paytmbank.com": {
+      "md5": "2414c460ed4a76e3ace3342cbd1dcba6",
+      "sha256": "8d836aa7b9b99297d9736f254778b4641c146f8a41f7611d1ee038fa15d5acf8"
+    }
+  },
+  "metadata": {
+    "total_samples": 120,
+    "label": "benign",
+    "cse_ids": [
+      "BULK_IMPORT"
+    ]
+  }
+}

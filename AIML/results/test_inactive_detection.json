@@ -1,0 +1,128 @@
+[
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "sldcdelhi.org",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "www.adanigreenenergy.com",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "www.yesbank.in",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "www.drdo.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "email.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "hslvizag.in",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "avnl.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "sbilife.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "icicicareers.com",
+    "url": ""
+  }
+]

@@ -19,7 +19,7 @@ from typing import Dict, List, Optional
 import chromadb
 from chromadb.config import Settings, DEFAULT_TENANT, DEFAULT_DATABASE
 import pandas as pd
-from detect_phishing import UnifiedPhishingDetector
+from unified_detector import UnifiedPhishingDetector
 
 # Configure logging
 logging.basicConfig(
@@ -70,14 +70,37 @@ class AIMlService:
         # Initialize ML detector
         logger.info("Loading AIML phishing detector models...")
         try:
-            self.detector = UnifiedPhishingDetector(
-                model_dir="models",
-                data_dir="data"
-            )
+            # Build config with correct paths (inside container)
+            detector_config = {
+                'anomaly_model_path': 'models/anomaly/anomaly_detector.pkl',
+                'feature_names_path': 'models/anomaly/feature_names.txt',
+                'cse_baseline_path': 'data/training/cse_baseline_profile.json',
+                'clip_index_path': 'models/vision/cse_index_updated',
+                'autoencoder_path': 'models/vision/autoencoder_new/autoencoder_best.pth',
+                'use_clip': True,
+                'use_autoencoder': True,
+                'autoencoder_threshold': 3.5
+            }
+            self.detector = UnifiedPhishingDetector(config=detector_config)
+            self.detector.load_models()  # Load ML models
             logger.info("AIML detector models loaded successfully")
         except Exception as e:
             logger.error(f"Failed to load AIML models: {e}")
             raise
+
+        # Load CSE whitelist for early exit checks
+        self.cse_whitelist = set()
+        try:
+            cse_baseline_file = Path('data/training/cse_baseline_profile.json')
+            if cse_baseline_file.exists():
+                with open(cse_baseline_file, 'r') as f:
+                    baseline = json.load(f)
+                    # Try 'domains' first (main list), then 'cse_whitelist'
+                    whitelist_domains = baseline.get('domains', baseline.get('cse_whitelist', []))
+                    self.cse_whitelist = set(whitelist_domains)
+                    logger.info(f"Loaded CSE whitelist: {len(self.cse_whitelist)} domains")
+        except Exception as e:
+            logger.warning(f"Could not load CSE whitelist: {e}")
 
         # Track processed domains
         self.processed_domains = set()
@@ -237,6 +260,65 @@ class AIMlService:
             logger.error(f"Error fetching domains from ChromaDB: {e}")
             return []
 
+    def load_html_content(self, metadata: Dict) -> str:
+        """
+        Load HTML content from disk if html_path exists
+
+        Args:
+            metadata: Domain metadata with html_path field
+
+        Returns:
+            HTML content string, or empty string if not available
+        """
+        html_path = metadata.get('html_path', '')
+        if not html_path:
+            return ''
+
+        try:
+            # html_path might be absolute or relative
+            path = Path(html_path)
+
+            # If path doesn't exist, try mapping /workspace/out to /out (container path)
+            if not path.exists():
+                # Try workspace → container mapping
+                if html_path.startswith('/workspace/out/'):
+                    local_path = html_path.replace('/workspace/out/', '/out/')
+                    path = Path(local_path)
+
+            if path.exists():
+                with open(path, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read()
+                    logger.debug(f"Loaded HTML content from {path} ({len(content)} bytes)")
+                    return content
+            else:
+                logger.debug(f"HTML file not found: {html_path}")
+                return ''
+
+        except Exception as e:
+            logger.warning(f"Failed to load HTML from {html_path}: {e}")
+            return ''
+
+    def load_ocr_text(self, metadata: Dict) -> str:
+        """
+        Get OCR text from metadata (already extracted by crawler)
+
+        Args:
+            metadata: Domain metadata with ocr_text_excerpt field
+
+        Returns:
+            OCR text string
+        """
+        # OCR text is already in metadata from crawler
+        ocr_excerpt = metadata.get('ocr_text_excerpt', '')
+        ocr_length = metadata.get('ocr_text_length', 0)
+
+        # If we have OCR excerpt, use it
+        if ocr_excerpt:
+            return ocr_excerpt
+
+        # Otherwise return empty
+        return ''
+
     def calculate_feature_quality(self, metadata: Dict) -> float:
         """
         Calculate feature quality score (0-1) based on how many features are available
@@ -269,11 +351,39 @@ class AIMlService:
 
         logger.info(f"Running AIML detection on: {domain}")
 
+        # Extract registrable domain (base domain without subdomains)
+        registrable = metadata.get('registrable', domain)
+
         # Extract crawler verdict for potential fallback
         crawler_verdict = metadata.get('verdict')
         crawler_confidence = metadata.get('confidence', 0.75)
 
         try:
+            # STEP 0: Load HTML content from disk if available
+            # This is CRITICAL - without this, we can't analyze page content
+            html_content = self.load_html_content(metadata)
+            if html_content:
+                metadata['document_text'] = html_content
+                metadata['doc_length'] = len(html_content)
+                logger.debug(f"Loaded HTML for {domain}: {len(html_content)} bytes")
+
+            # Load OCR text if available
+            ocr_text = self.load_ocr_text(metadata)
+            if ocr_text:
+                metadata['ocr_text'] = ocr_text
+                metadata['ocr_length'] = len(ocr_text)
+
+            # Fix screenshot path mapping (same issue as HTML paths)
+            screenshot_path = metadata.get('screenshot_path', '')
+            logger.info(f"DEBUG: screenshot_path before mapping: {screenshot_path}")
+            if screenshot_path and screenshot_path.startswith('/workspace/out/'):
+                # Map /workspace/out/ to /out/ for container
+                fixed_path = screenshot_path.replace('/workspace/out/', '/out/')
+                metadata['screenshot_path'] = fixed_path
+                logger.info(f"Mapped screenshot path: {screenshot_path} -> {fixed_path}")
+            else:
+                logger.info(f"DEBUG: No mapping needed or path doesn't start with /workspace/out/")
+
             # FAST PATH 1: Check if domain is inactive/unregistered (from metadata)
             record_type = metadata.get('record_type', '')
             if record_type == 'inactive':
@@ -282,7 +392,21 @@ class AIMlService:
                     logger.info(f"Domain {domain} is inactive/unregistered - generating status verdict")
                     return self._create_inactive_verdict(domain, inactive_info)
 
-            # FAST PATH 2: Check if crawler already identified as parked
+            # FAST PATH 2: Check if domain is CSE whitelisted (HIGHEST PRIORITY)
+            # CSE domains should ALWAYS return BENIGN regardless of other checks
+            if domain in self.cse_whitelist or registrable in self.cse_whitelist:
+                logger.info(f"Domain {domain} is CSE whitelisted - returning BENIGN immediately")
+                return {
+                    'domain': domain,
+                    'verdict': 'BENIGN',
+                    'confidence': 0.98,
+                    'reason': 'Legitimate CSE domain (whitelisted)',
+                    'source': 'cse_whitelist',
+                    'registrable': registrable,
+                    'timestamp': datetime.now().isoformat()
+                }
+
+            # FAST PATH 3: Check if crawler already identified as parked
             if crawler_verdict and crawler_verdict.lower() == 'parked':
                 logger.info(f"Domain {domain} already identified as PARKED by crawler")
                 return {
@@ -294,13 +418,23 @@ class AIMlService:
                     'timestamp': datetime.now().isoformat()
                 }
 
-            # If domain has crawler verdict but no features, check for parked/inactive indicators first
-            has_form_features = metadata.get('form_count') is not None
-            has_html_features = metadata.get('html_size', 0) > 0
+            # Check what data we actually have available NOW (after loading HTML)
+            has_html_content = bool(metadata.get('document_text'))
+            has_screenshot = bool(metadata.get('screenshot_path'))
+            has_ocr = bool(metadata.get('ocr_text'))
+            html_size = metadata.get('html_size', 0)
 
-            if not has_form_features and not has_html_features:
-                # Before trusting crawler verdict, check if domain appears parked/inactive
-                html_size = metadata.get('html_size', 0)
+            # FAST PATH 3: If truly no data available, check inactive/parked before giving up
+            if not has_html_content and not has_screenshot and not has_ocr and html_size == 0:
+                logger.warning(f"Domain {domain} has no HTML content, screenshot, or OCR available")
+
+                # PRIORITY 1: Check if domain is inactive/unregistered FIRST
+                inactive_info = self.check_inactive_status(domain)
+                if inactive_info:
+                    logger.info(f"Domain {domain} is inactive/unregistered (no data)")
+                    return self._create_inactive_verdict(domain, inactive_info, "No page data available")
+
+                # PRIORITY 2: Check if domain appears parked
                 external_links = metadata.get('external_links', 0)
                 mx_count = metadata.get('mx_count', 0)
                 a_count = metadata.get('a_count', 0)
@@ -308,52 +442,53 @@ class AIMlService:
                 registrable = metadata.get('registrable', domain)
 
                 # Safeguard: Don't mark CSE/known benign domains as parked
-                is_cse_domain = bool(cse_id and cse_id != 'BULK_IMPORT')
+                is_cse_domain = bool(cse_id and cse_id != 'BULK_IMPORT' and cse_id != 'URL from user')
                 is_gov_domain = any(tld in registrable.lower() for tld in ['.gov.', '.nic.in', '.ac.in', '.edu.'])
 
-                # Strong indicators of parked/inactive domain
+                # Strong indicators of parked domain (no HTML but has minimal infrastructure)
                 is_likely_parked = False
                 parking_reason = []
 
                 # Only check parking if NOT a CSE or government domain
                 if not is_cse_domain and not is_gov_domain:
-                    # 1. Minimal HTML content (< 500 bytes) - very likely parked
-                    if html_size > 0 and html_size < 500:
+                    # No DNS infrastructure at all = likely parked/inactive
+                    if mx_count == 0 and a_count <= 1 and external_links == 0:
                         is_likely_parked = True
-                        parking_reason.append(f"minimal HTML ({html_size}B)")
+                        parking_reason.append(f"no infrastructure (mx={mx_count}, a={a_count}, links=0)")
 
-                    # 2. Small page with no external links - likely empty/parked
-                    elif html_size > 0 and html_size < 1000 and external_links == 0:
-                        is_likely_parked = True
-                        parking_reason.append(f"empty page (html={html_size}B, no links)")
-
-                    # 3. No DNS infrastructure - REMOVED (too aggressive, caught government domains)
-                    # This heuristic was catching legitimate .nic.in domains
-
-                # If indicators suggest parking, return PARKED verdict
                 if is_likely_parked:
-                    logger.info(f"Domain {domain} appears parked despite crawler verdict '{crawler_verdict}': {', '.join(parking_reason)}")
+                    logger.info(f"Domain {domain} appears parked (no data): {', '.join(parking_reason)}")
                     return {
                         'domain': domain,
                         'verdict': 'PARKED',
-                        'confidence': 0.75,
+                        'confidence': 0.70,
                         'reason': f"Parked domain detected: {', '.join(parking_reason)}",
                         'source': 'aiml_heuristic',
                         'timestamp': datetime.now().isoformat(),
                         'original_crawler_verdict': crawler_verdict
                     }
 
-                # Otherwise, trust crawler verdict if available
+                # PRIORITY 3: Trust crawler verdict if available
                 if crawler_verdict:
-                    logger.info(f"Domain {domain} has crawler verdict '{crawler_verdict}' but no features - respecting crawler")
+                    logger.info(f"Domain {domain} has crawler verdict '{crawler_verdict}' but no AIML data - using crawler verdict")
                     return {
                         'domain': domain,
                         'verdict': crawler_verdict.upper(),
-                        'confidence': metadata.get('confidence', 0.80),
-                        'reason': f'Verdict from pipeline crawler (no page features for AIML analysis)',
+                        'confidence': metadata.get('confidence', 0.75),
+                        'reason': f'Verdict from pipeline crawler (no page data available for AIML analysis)',
                         'source': 'crawler',
                         'timestamp': datetime.now().isoformat()
                     }
+
+                # PRIORITY 4: No data and no crawler verdict = insufficient data
+                logger.warning(f"Domain {domain} has no data and no crawler verdict")
+                return {
+                    'domain': domain,
+                    'verdict': 'INSUFFICIENT_DATA',
+                    'confidence': 0.0,
+                    'reason': 'No HTML, screenshot, OCR, or crawler verdict available',
+                    'timestamp': datetime.now().isoformat()
+                }
 
             # Calculate feature quality score
             feature_quality = self.calculate_feature_quality(metadata)
@@ -530,15 +665,14 @@ class AIMlService:
                 logger.warning(f"Screenshot not found: {screenshot_path}")
                 screenshot_path = None
 
+            # Build complete metadata dict for detector
+            # The detector expects metadata with all features merged in
+            detection_metadata = {**metadata, **features}
+            detection_metadata['screenshot_path'] = screenshot_path
+
             # Run detection with error handling for individual components
             try:
-                result = self.detector.detect(
-                    domain=domain,
-                    features=features,
-                    screenshot_path=screenshot_path,
-                    favicon_md5=metadata.get('favicon_md5'),
-                    registrar=metadata.get('registrar')
-                )
+                result = self.detector.detect(metadata=detection_metadata)
             except ValueError as ve:
                 # Handle NaN/inf errors in model input
                 error_msg = str(ve)
@@ -699,11 +833,18 @@ class AIMlService:
     def save_verdict(self, result: Dict):
         """Save verdict to JSON file"""
         try:
+            # Get domain from either 'domain' or 'registrable' key
+            domain = result.get('domain') or result.get('registrable', 'unknown')
+
             # Create timestamped filename
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            domain_safe = result['domain'].replace('.', '_').replace('/', '_')
+            domain_safe = domain.replace('.', '_').replace('/', '_')
             filename = f"aiml_verdict_{domain_safe}_{timestamp}.json"
             filepath = self.output_dir / filename
+
+            # Ensure result has 'domain' key for consistency
+            if 'domain' not in result and 'registrable' in result:
+                result['domain'] = result['registrable']
 
             # Save JSON
             with open(filepath, 'w') as f:
@@ -717,7 +858,10 @@ class AIMlService:
                 f.write(json.dumps(result) + '\n')
 
         except Exception as e:
-            logger.error(f"Failed to save verdict for {result['domain']}: {e}")
+            # Safe error logging with fallback
+            domain_for_log = result.get('domain') or result.get('registrable', 'unknown')
+            logger.error(f"Failed to save verdict for {domain_for_log}: {e}")
+            logger.error(f"Result keys: {list(result.keys())}")
 
     def run(self):
         """Main service loop"""

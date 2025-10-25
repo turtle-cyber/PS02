@@ -1,0 +1,5274 @@
+[
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "sldcdelhi.org",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "www.adanigreenenergy.com",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "www.yesbank.in",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "www.drdo.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "email.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.689206839624265,
+        "score": 0.0946034198121325,
+        "reason": "Anomaly score: 0.095"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=0.979)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9787468910217285,
+          "matched_cse_domain": "www.bharatpetroleum.in_de263b65",
+          "matched_cse_idx": 10,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.6288936853408813,
+        "error": 3.2110631465911865,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (3.211)"
+      }
+    },
+    "registrable": "www.bharatpetroleum.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8984672580788914,
+    "risk_score": 0.10153274192110864,
+    "reasons": [
+      "anomaly: Anomaly score: -0.001"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "ANOMALY",
+        "confidence": 0.6003951881081308,
+        "score": -0.0007903762162615457,
+        "reason": "Anomaly score: -0.001"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 1.0,
+          "matched_cse_domain": "www.pnbindia.in_a77215a7",
+          "matched_cse_idx": 8,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.88,
+        "reason": "Low-risk content",
+        "risk_score": 0.12,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 10,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7352346897125244,
+        "error": 2.147653102874756,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.148)"
+      }
+    },
+    "registrable": "pnbindia.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.5243346735951864,
+        "score": 0.012167336797593187,
+        "reason": "Anomaly score: 0.012"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=0.928)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9275069832801819,
+          "matched_cse_domain": "recindia.nic.in_12735a9d",
+          "matched_cse_idx": 13,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.88,
+        "reason": "Low-risk content",
+        "risk_score": 0.12,
+        "details": {
+          "has_forms": true,
+          "form_count": 2,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "nic.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.8038824319839477,
+        "error": 1.4611756801605225,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (1.461)"
+      }
+    },
+    "registrable": "recindia.nic.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.5589009235794942,
+        "score": 0.029450461789747084,
+        "reason": "Anomaly score: 0.029"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=0.969)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9689699411392212,
+          "matched_cse_domain": "sjvn.nic.in_7800e24f",
+          "matched_cse_idx": 7,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "nic.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7564608812332153,
+        "error": 1.9353911876678467,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (1.935)"
+      }
+    },
+    "registrable": "sjvn.nic.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8920847296375267,
+    "risk_score": 0.10791527036247334,
+    "reasons": [
+      "anomaly: Anomaly score: -0.006"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "ANOMALY",
+        "confidence": 0.6032018801689181,
+        "score": -0.006403760337836073,
+        "reason": "Anomaly score: -0.006"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 1.0000001192092896,
+          "matched_cse_domain": "gailonline.com_6592479f",
+          "matched_cse_idx": 15,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.6000000000000001,
+        "reason": "Low-risk content",
+        "risk_score": 0.39999999999999997,
+        "details": {
+          "has_forms": true,
+          "form_count": 2,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 4,
+          "urgency_keyword_count": 6,
+          "financial_keyword_count": 2,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 34,
+          "content_risk_score": 0.7,
+          "risk_factors": [
+            "High credential keywords (4)",
+            "Urgency language (6)",
+            "CSE impersonation (34)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ],
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7426794528961181,
+        "error": 2.0732054710388184,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.073)"
+      }
+    },
+    "registrable": "gailonline.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.7954322941589571,
+    "risk_score": 0.20456770584104286,
+    "reasons": [
+      "anomaly: Anomaly score: -0.015",
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "ANOMALY",
+        "confidence": 0.6074673079509221,
+        "score": -0.014934615901844195,
+        "reason": "Anomaly score: -0.015"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 1.0,
+          "matched_cse_domain": "www.npci.org.in_cac9b98a",
+          "matched_cse_idx": 30,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.5800000000000001,
+        "reason": "Moderate risk content",
+        "risk_score": 0.4,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 6,
+          "urgency_keyword_count": 2,
+          "financial_keyword_count": 23,
+          "scam_keyword_count": 1,
+          "cse_keyword_count": 22,
+          "content_risk_score": 1.0,
+          "risk_factors": [
+            "High credential keywords (6)",
+            "Urgency language (2)",
+            "Scam keywords (1)",
+            "CSE impersonation (22)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.79,
+        "risk_score": 0.21,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": true,
+          "pattern_risk_score": 0.3,
+          "pattern_risk_factors": [
+            "Deep subdomain (5)"
+          ]
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7664572834968566,
+        "error": 1.835427165031433,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (1.835)"
+      }
+    },
+    "registrable": "www.npci.org.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8982951223988226,
+    "risk_score": 0.10170487760117745,
+    "reasons": [
+      "anomaly: Anomaly score: -0.017"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "ANOMALY",
+        "confidence": 0.6085703662198787,
+        "score": -0.017140732439757445,
+        "reason": "Anomaly score: -0.017"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 1.0,
+          "matched_cse_domain": "thdc.co.in_21f555a2",
+          "matched_cse_idx": 52,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.88,
+        "reason": "Low-risk content",
+        "risk_score": 0.12,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 1,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "co.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7300159931182861,
+        "error": 2.1998400688171387,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.200)"
+      }
+    },
+    "registrable": "thdc.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.8075426622507135,
+        "score": 0.15377133112535674,
+        "reason": "Anomaly score: 0.154"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=0.993)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9927829504013062,
+          "matched_cse_domain": "www.ongcindia.com_6280f000",
+          "matched_cse_idx": 2,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.9199999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.08000000000000002,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 5,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 1,
+          "content_risk_score": 0.2,
+          "risk_factors": [
+            "Urgency language (5)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.6518326759338379,
+        "error": 2.981673240661621,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.982)"
+      }
+    },
+    "registrable": "ongcindia.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.npcil.nic.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.ntpc.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "neepco.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.pnbindia.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "sbi.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.9081966709658517,
+    "risk_score": 0.09180332903414831,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6558569209549943,
+        "score": 0.07792846047749713,
+        "reason": "Anomaly score: 0.078"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 1.0,
+          "matched_cse_domain": "www.indianbank.in_a271e7fe",
+          "matched_cse_idx": 58,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.604,
+        "reason": "Moderate risk content",
+        "risk_score": 0.52,
+        "details": {
+          "has_forms": true,
+          "form_count": 3,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 12,
+          "urgency_keyword_count": 15,
+          "financial_keyword_count": 60,
+          "scam_keyword_count": 2,
+          "cse_keyword_count": 4,
+          "content_risk_score": 1.0,
+          "risk_factors": [
+            "High credential keywords (12)",
+            "Urgency language (15)",
+            "Scam keywords (2)",
+            "CSE impersonation (4)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7736164569854735,
+        "error": 1.7638354301452637,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (1.764)"
+      }
+    },
+    "registrable": "indianbank.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6469133213924627,
+        "score": 0.07345666069623136,
+        "reason": "Anomaly score: 0.073"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=0.995)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9951941967010498,
+          "matched_cse_domain": "www.unionbankofindia.co.in_18924923",
+          "matched_cse_idx": 23,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.9199999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.08000000000000002,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 2,
+          "financial_keyword_count": 3,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.2,
+          "risk_factors": [
+            "Urgency language (2)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "co.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.6328343629837035,
+        "error": 3.171656370162964,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (3.172)"
+      }
+    },
+    "registrable": "unionbankofindia.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.bankofindia.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.831337588971263,
+        "score": 0.1656687944856315,
+        "reason": "Anomaly score: 0.166"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "canarabank.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "licindia.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.5998581443220254,
+        "score": 0.04992907216101272,
+        "reason": "Anomaly score: 0.050"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9999998807907104,
+          "matched_cse_domain": "www.rbi.org.in_5d3835d6",
+          "matched_cse_idx": 28,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.6000000000000001,
+        "reason": "Low-risk content",
+        "risk_score": 0.39999999999999997,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 4,
+          "urgency_keyword_count": 3,
+          "financial_keyword_count": 26,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 29,
+          "content_risk_score": 0.7,
+          "risk_factors": [
+            "High credential keywords (4)",
+            "Urgency language (3)",
+            "CSE impersonation (29)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.6459633827209472,
+        "error": 3.0403661727905273,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (3.040)"
+      }
+    },
+    "registrable": "rbi.org.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.780233899414756,
+        "score": 0.14011694970737798,
+        "reason": "Anomaly score: 0.140"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 1,
+          "financial_keyword_count": 3,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "iob.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6900095185011945,
+        "score": 0.09500475925059726,
+        "reason": "Anomaly score: 0.095"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.999836266040802,
+          "matched_cse_domain": "www.nhpcindia.com_91fba600",
+          "matched_cse_idx": 5,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.88,
+        "reason": "Low-risk content",
+        "risk_score": 0.12,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7238825559616089,
+        "error": 2.261174440383911,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.261)"
+      }
+    },
+    "registrable": "nhpcindia.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "gridcontroller.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.idbibank.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.9114293302837326,
+    "risk_score": 0.08857066971626741,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6827392529369872,
+        "score": 0.09136962646849361,
+        "reason": "Anomaly score: 0.091"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=0.925)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9252632260322571,
+          "matched_cse_domain": "www.axisbank.com_db148067",
+          "matched_cse_idx": 38,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.5800000000000001,
+        "reason": "Moderate risk content",
+        "risk_score": 0.4,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 35,
+          "urgency_keyword_count": 3,
+          "financial_keyword_count": 100,
+          "scam_keyword_count": 6,
+          "cse_keyword_count": 12,
+          "content_risk_score": 1.0,
+          "risk_factors": [
+            "High credential keywords (35)",
+            "Urgency language (3)",
+            "Scam keywords (6)",
+            "CSE impersonation (12)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.6851022243499756,
+        "error": 2.648977756500244,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.649)"
+      }
+    },
+    "registrable": "axisbank.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.831960698136685,
+        "score": 0.16598034906834253,
+        "reason": "Anomaly score: 0.166"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 1.0,
+          "matched_cse_domain": "www.powergrid.in_7929c3ed",
+          "matched_cse_idx": 1,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.9199999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.08000000000000002,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 2,
+          "content_risk_score": 0.2,
+          "risk_factors": [
+            "CSE impersonation (2)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.6265325546264648,
+        "error": 3.2346744537353516,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (3.235)"
+      }
+    },
+    "registrable": "powergrid.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.9077565675466673,
+    "risk_score": 0.09224343245333262,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6071448002359469,
+        "score": 0.05357240011797343,
+        "reason": "Anomaly score: 0.054"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 1.0000001192092896,
+          "matched_cse_domain": "www.hdfcbank.com_e78f0b8d",
+          "matched_cse_idx": 50,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.604,
+        "reason": "Moderate risk content",
+        "risk_score": 0.52,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 33,
+          "urgency_keyword_count": 12,
+          "financial_keyword_count": 113,
+          "scam_keyword_count": 1,
+          "cse_keyword_count": 13,
+          "content_risk_score": 1.0,
+          "risk_factors": [
+            "High credential keywords (33)",
+            "Urgency language (12)",
+            "Scam keywords (1)",
+            "CSE impersonation (13)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7534535765647887,
+        "error": 1.9654642343521118,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (1.965)"
+      }
+    },
+    "registrable": "hdfcbank.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8232333215226616,
+    "risk_score": 0.17676667847733837,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6803512715122904,
+        "score": 0.09017563575614518,
+        "reason": "Anomaly score: 0.090"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.5880000000000001,
+        "reason": "Moderate risk content",
+        "risk_score": 0.44000000000000006,
+        "details": {
+          "has_forms": true,
+          "form_count": 2,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 21,
+          "urgency_keyword_count": 7,
+          "financial_keyword_count": 82,
+          "scam_keyword_count": 3,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.8,
+          "risk_factors": [
+            "High credential keywords (21)",
+            "Urgency language (7)",
+            "Scam keywords (3)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "bandhanbank.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7954904024676658,
+        "score": 0.1477452012338329,
+        "reason": "Anomaly score: 0.148"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.9199999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.08000000000000002,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 2,
+          "financial_keyword_count": 4,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.2,
+          "risk_factors": [
+            "Urgency language (2)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "ucobank.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.9038208779062114,
+    "risk_score": 0.0961791220937887,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.5668560809582461,
+        "score": 0.03342804047912307,
+        "reason": "Anomaly score: 0.033"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 1.0,
+          "matched_cse_domain": "www.federalbank.co.in_c62c0059",
+          "matched_cse_idx": 31,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.624,
+        "reason": "Moderate risk content",
+        "risk_score": 0.6200000000000001,
+        "details": {
+          "has_forms": true,
+          "form_count": 2,
+          "has_password_field": false,
+          "has_login_field": true,
+          "has_financial_field": false,
+          "form_risk": "MEDIUM",
+          "form_score": 0.5,
+          "credential_keyword_count": 40,
+          "urgency_keyword_count": 6,
+          "financial_keyword_count": 154,
+          "scam_keyword_count": 7,
+          "cse_keyword_count": 1,
+          "content_risk_score": 0.8,
+          "risk_factors": [
+            "High credential keywords (40)",
+            "Urgency language (6)",
+            "Scam keywords (7)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "co.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7325075149536132,
+        "error": 2.174924850463867,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.175)"
+      }
+    },
+    "registrable": "federalbank.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.tmb.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8195335057910266,
+    "risk_score": 0.1804664942089734,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6394335268377902,
+        "score": 0.0697167634188951,
+        "reason": "Anomaly score: 0.070"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.5880000000000001,
+        "reason": "Moderate risk content",
+        "risk_score": 0.44000000000000006,
+        "details": {
+          "has_forms": true,
+          "form_count": 2,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 38,
+          "urgency_keyword_count": 12,
+          "financial_keyword_count": 94,
+          "scam_keyword_count": 8,
+          "cse_keyword_count": 1,
+          "content_risk_score": 0.8,
+          "risk_factors": [
+            "High credential keywords (38)",
+            "Urgency language (12)",
+            "Scam keywords (8)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "co.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "kvb.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6045023862552465,
+        "score": 0.052251193127623274,
+        "reason": "Anomaly score: 0.052"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9999999403953552,
+          "matched_cse_domain": "www.centralbankofindia.co.in_2fadc2d7",
+          "matched_cse_idx": 24,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.9199999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.08000000000000002,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 2,
+          "financial_keyword_count": 2,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.2,
+          "risk_factors": [
+            "Urgency language (2)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "co.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.6322918415069579,
+        "error": 3.17708158493042,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (3.177)"
+      }
+    },
+    "registrable": "centralbankofindia.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.bankofbaroda.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.9039433106662114,
+    "risk_score": 0.09605668933378861,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.5039419333148047,
+        "score": 0.001970966657402373,
+        "reason": "Anomaly score: 0.002"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9999998211860657,
+          "matched_cse_domain": "www.icicibank.com_d4347fe6",
+          "matched_cse_idx": 54,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.604,
+        "reason": "Moderate risk content",
+        "risk_score": 0.52,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 36,
+          "urgency_keyword_count": 3,
+          "financial_keyword_count": 111,
+          "scam_keyword_count": 1,
+          "cse_keyword_count": 7,
+          "content_risk_score": 1.0,
+          "risk_factors": [
+            "High credential keywords (36)",
+            "Urgency language (3)",
+            "Scam keywords (1)",
+            "CSE impersonation (7)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.6831069231033324,
+        "error": 2.668930768966675,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.669)"
+      }
+    },
+    "registrable": "icicibank.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.kotak.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7598124451064854,
+        "score": 0.1299062225532427,
+        "reason": "Anomaly score: 0.130"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.85,
+        "reason": "Domain in CSE whitelist",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": true
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "karnatakabank.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8124968055058398,
+    "risk_score": 0.1875031944941602,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.566067943158366,
+        "score": 0.033033971579182975,
+        "reason": "Anomaly score: 0.033"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.5880000000000001,
+        "reason": "Moderate risk content",
+        "risk_score": 0.44000000000000006,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 41,
+          "urgency_keyword_count": 4,
+          "financial_keyword_count": 141,
+          "scam_keyword_count": 3,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.8,
+          "risk_factors": [
+            "High credential keywords (41)",
+            "Urgency language (4)",
+            "Scam keywords (3)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "rblbank.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.bsnl.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7784838761813466,
+        "score": 0.1392419380906733,
+        "reason": "Anomaly score: 0.139"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.9199999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.08000000000000002,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 1,
+          "urgency_keyword_count": 8,
+          "financial_keyword_count": 1,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.2,
+          "risk_factors": [
+            "Urgency language (8)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "southindianbank.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.indusind.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7868008019927841,
+        "score": 0.14340040099639206,
+        "reason": "Anomaly score: 0.143"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 1,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "jkbank.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "bankofmaharashtra.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8890213403606286,
+    "risk_score": 0.11097865963937133,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7039926737953972,
+        "score": 0.1019963368976986,
+        "reason": "Anomaly score: 0.102"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.85,
+        "reason": "Domain in CSE whitelist",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": true
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.604,
+        "reason": "Moderate risk content",
+        "risk_score": 0.52,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 6,
+          "urgency_keyword_count": 8,
+          "financial_keyword_count": 4,
+          "scam_keyword_count": 3,
+          "cse_keyword_count": 2,
+          "content_risk_score": 1.0,
+          "risk_factors": [
+            "High credential keywords (6)",
+            "Urgency language (8)",
+            "Scam keywords (3)",
+            "CSE impersonation (2)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "mtnl.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.5915618142720166,
+    "risk_score": 0.4084381857279834,
+    "reasons": [
+      "anomaly: Anomaly score: -0.066",
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "ANOMALY",
+        "confidence": 0.6328004021577053,
+        "score": -0.0656008043154106,
+        "reason": "Anomaly score: -0.066"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.5880000000000001,
+        "reason": "Moderate risk content",
+        "risk_score": 0.44000000000000006,
+        "details": {
+          "has_forms": true,
+          "form_count": 2,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 54,
+          "urgency_keyword_count": 2,
+          "financial_keyword_count": 143,
+          "scam_keyword_count": 35,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.8,
+          "risk_factors": [
+            "High credential keywords (54)",
+            "Urgency language (2)",
+            "Scam keywords (35)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "idfcfirstbank.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8202805601932588,
+    "risk_score": 0.1797194398067412,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6475597579169986,
+        "score": 0.0737798789584993,
+        "reason": "Anomaly score: 0.074"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.5880000000000001,
+        "reason": "Moderate risk content",
+        "risk_score": 0.44000000000000006,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 3,
+          "urgency_keyword_count": 4,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 6,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.8,
+          "risk_factors": [
+            "High credential keywords (3)",
+            "Urgency language (4)",
+            "Scam keywords (6)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "jio.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.paytmbank.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6382517342918046,
+        "score": 0.0691258671459023,
+        "reason": "Anomaly score: 0.069"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.6799999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.32000000000000006,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 5,
+          "urgency_keyword_count": 10,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 19,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.8,
+          "risk_factors": [
+            "High credential keywords (5)",
+            "Urgency language (10)",
+            "Scam keywords (19)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "myvi.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7059890023342141,
+        "score": 0.10299450116710707,
+        "reason": "Anomaly score: 0.103"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.6799999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.32000000000000006,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 9,
+          "urgency_keyword_count": 4,
+          "financial_keyword_count": 28,
+          "scam_keyword_count": 8,
+          "cse_keyword_count": 1,
+          "content_risk_score": 0.8,
+          "risk_factors": [
+            "High credential keywords (9)",
+            "Urgency language (4)",
+            "Scam keywords (8)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "airtel.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8103037669175764,
+    "risk_score": 0.18969623308242353,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.5789227538484449,
+        "score": 0.03946137692422247,
+        "reason": "Anomaly score: 0.039"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.604,
+        "reason": "Moderate risk content",
+        "risk_score": 0.52,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 53,
+          "urgency_keyword_count": 3,
+          "financial_keyword_count": 155,
+          "scam_keyword_count": 3,
+          "cse_keyword_count": 4,
+          "content_risk_score": 1.0,
+          "risk_factors": [
+            "High credential keywords (53)",
+            "Urgency language (3)",
+            "Scam keywords (3)",
+            "CSE impersonation (4)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "cityunionbank.com",
+    "url": ""
+  },
+  {
+    "verdict": "GAMBLING",
+    "confidence": 0.95,
+    "risk_score": 0.9,
+    "reasons": [
+      "Gambling site detected (28 gambling keywords)"
+    ],
+    "status_check": "gambling",
+    "gambling_details": {
+      "verdict": "GAMBLING",
+      "confidence": 0.95,
+      "reason": "Gambling site detected (28 gambling keywords)",
+      "gambling_keyword_count": 28,
+      "has_gambling_tld": false
+    },
+    "detector_results": {},
+    "registrable": "hindustanpetroleum.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.railtelindia.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7586561230339877,
+        "score": 0.12932806151699383,
+        "reason": "Anomaly score: 0.129"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.85,
+        "reason": "Domain in CSE whitelist",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": true
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "gov.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "dot.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "cris.org.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "indianrailways.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.8044017301582378,
+        "score": 0.1522008650791189,
+        "reason": "Anomaly score: 0.152"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.85,
+        "reason": "Domain in CSE whitelist",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": true
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "nic.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "www.nic.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.7867133991221227,
+    "risk_score": 0.21328660087787726,
+    "reasons": [
+      "anomaly: Anomaly score: -0.034"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "ANOMALY",
+        "confidence": 0.6167919175372607,
+        "score": -0.03358383507452156,
+        "reason": "Anomaly score: -0.034"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.6799999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.32,
+        "details": {
+          "has_forms": true,
+          "form_count": 3,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 3,
+          "urgency_keyword_count": 4,
+          "financial_keyword_count": 3,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.5,
+          "risk_factors": [
+            "High credential keywords (3)",
+            "Urgency language (4)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "tatacommunications.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7008672399972639,
+        "score": 0.10043361999863193,
+        "reason": "Anomaly score: 0.100"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.85,
+        "reason": "Domain in CSE whitelist",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": true
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.8,
+        "reason": "Low-risk content",
+        "risk_score": 0.2,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 2,
+          "content_risk_score": 0.2,
+          "risk_factors": [
+            "CSE impersonation (2)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "nic.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "morth.nic.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6364112997089987,
+        "score": 0.06820564985449934,
+        "reason": "Anomaly score: 0.068"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.6799999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.32,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 23,
+          "urgency_keyword_count": 10,
+          "financial_keyword_count": 3,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 1,
+          "content_risk_score": 0.5,
+          "risk_factors": [
+            "High credential keywords (23)",
+            "Urgency language (10)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "gov.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "dgshipping.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "vahan.parivahan.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "sarathi.parivahan.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "GAMBLING",
+    "confidence": 0.9400000000000001,
+    "risk_score": 0.9,
+    "reasons": [
+      "Gambling site detected (7 gambling keywords)"
+    ],
+    "status_check": "gambling",
+    "gambling_details": {
+      "verdict": "GAMBLING",
+      "confidence": 0.9400000000000001,
+      "reason": "Gambling site detected (7 gambling keywords)",
+      "gambling_keyword_count": 7,
+      "has_gambling_tld": false
+    },
+    "detector_results": {},
+    "registrable": "mahadiscom.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "uidai.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "delhi.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "eci.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8123026129113349,
+    "risk_score": 0.18769738708866512,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6091212641646588,
+        "score": 0.05456063208232942,
+        "reason": "Anomaly score: 0.055"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.5880000000000001,
+        "reason": "Moderate risk content",
+        "risk_score": 0.44000000000000006,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 6,
+          "urgency_keyword_count": 1,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 5,
+          "cse_keyword_count": 28,
+          "content_risk_score": 0.8,
+          "risk_factors": [
+            "High credential keywords (6)",
+            "Scam keywords (5)",
+            "CSE impersonation (28)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "mygov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.nvsp.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.meity.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "dae.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.digilocker.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.isro.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "incometaxindia.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "hslvizag.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.bel-india.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "hal-india.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "bdl-india.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "mazagondock.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "sail.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.bhel.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "www.aai.aero",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "grse.in",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "avnl.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "iocl.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "sbicard.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "yonobusiness.sbi",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "onlinesbi.sbi",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "sbiepay.sbi",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "sbilife.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "INACTIVE",
+    "confidence": 0.95,
+    "risk_score": 0.0,
+    "reasons": [
+      "Domain is inactive: connect_failed"
+    ],
+    "status_check": "inactive",
+    "inactive_reason": "connect_failed",
+    "inactive_status": "inactive",
+    "detector_results": {},
+    "registrable": "icicicareers.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "hdfcergo.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "icicilombard.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "netpnb.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "icicibank.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "icicidirect.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "iciciprulife.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "pnbindia.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "nic.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "hdfc.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "hdfcbank.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "bobibanking.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "accounts.mgovcloud.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "kavach.mail.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "irctc.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.5508555066543674,
+        "score": 0.025427753327183722,
+        "reason": "Anomaly score: 0.025"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9999999403953552,
+          "matched_cse_domain": "sbi.co.in_c0feeec6",
+          "matched_cse_idx": 47,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.84,
+        "reason": "Low-risk content",
+        "risk_score": 0.16000000000000003,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 2,
+          "financial_keyword_count": 6,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 4,
+          "content_risk_score": 0.4,
+          "risk_factors": [
+            "Urgency language (2)",
+            "CSE impersonation (4)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "co.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7167035341262817,
+        "error": 2.3329646587371826,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.333)"
+      }
+    },
+    "registrable": "sbi.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "dc.crsorgi.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "bankofbaroda.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "airtel.in",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "irctc.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "hdfclife.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "airtel.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.7989959868019761,
+    "risk_score": 0.20100401319802388,
+    "reasons": [
+      "content: High-risk content detected"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.5029356830889717,
+        "score": 0.0014678415444858706,
+        "reason": "Anomaly score: 0.001"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=0.946)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9457160234451294,
+          "matched_cse_domain": "www.bankofindia.co.in_b729cc5f",
+          "matched_cse_idx": 6,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "PHISHING",
+        "confidence": 0.8099999999999999,
+        "reason": "High-risk content detected",
+        "risk_score": 0.7,
+        "details": {
+          "has_forms": true,
+          "form_count": 2,
+          "has_password_field": false,
+          "has_login_field": true,
+          "has_financial_field": false,
+          "form_risk": "MEDIUM",
+          "form_score": 0.5,
+          "credential_keyword_count": 44,
+          "urgency_keyword_count": 10,
+          "financial_keyword_count": 71,
+          "scam_keyword_count": 4,
+          "cse_keyword_count": 5,
+          "content_risk_score": 1.0,
+          "risk_factors": [
+            "High credential keywords (44)",
+            "Urgency language (10)",
+            "Scam keywords (4)",
+            "CSE impersonation (5)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "co.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7524461388587951,
+        "error": 1.9755386114120483,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (1.976)"
+      }
+    },
+    "registrable": "bankofindia.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.7796832126312712,
+    "risk_score": 0.2203167873687288,
+    "reasons": [
+      "anomaly: Anomaly score: -0.203"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "ANOMALY",
+        "confidence": 0.7015752977047048,
+        "score": -0.20315059540940972,
+        "reason": "Anomaly score: -0.203"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.8,
+        "reason": "Low-risk content",
+        "risk_score": 0.2,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 2,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 1,
+          "content_risk_score": 0.2,
+          "risk_factors": [
+            "Urgency language (2)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "co.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "ntpc.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.5781450739350604,
+        "score": 0.039072536967530214,
+        "reason": "Anomaly score: 0.039"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.9999999403953552,
+          "matched_cse_domain": "www.npcil.nic.in_4ba46cc0",
+          "matched_cse_idx": 16,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.88,
+        "reason": "Low-risk content",
+        "risk_score": 0.12,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "nic.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7440720081329345,
+        "error": 2.0592799186706543,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.059)"
+      }
+    },
+    "registrable": "npcil.nic.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7076634481116546,
+        "score": 0.1038317240558273,
+        "reason": "Anomaly score: 0.104"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.85,
+        "reason": "Domain in CSE whitelist",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": true
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.88,
+        "reason": "Low-risk content",
+        "risk_score": 0.12,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 1,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 1,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.3,
+          "risk_factors": [
+            "Scam keywords (1)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ],
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "gridcontroller.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6661612605485386,
+        "score": 0.08308063027426932,
+        "reason": "Anomaly score: 0.083"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 1.0,
+          "matched_cse_domain": "www.idbibank.in_7553c3ba",
+          "matched_cse_idx": 56,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.6799999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.32000000000000006,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 88,
+          "urgency_keyword_count": 6,
+          "financial_keyword_count": 111,
+          "scam_keyword_count": 7,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.8,
+          "risk_factors": [
+            "High credential keywords (88)",
+            "Urgency language (6)",
+            "Scam keywords (7)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7459923267364501,
+        "error": 2.040076732635498,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.040)"
+      }
+    },
+    "registrable": "idbibank.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.5692341844748228,
+        "score": 0.034617092237411384,
+        "reason": "Anomaly score: 0.035"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=0.832)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 0.8316602110862732,
+          "matched_cse_domain": "www.bankofbaroda.in_e8d308eb",
+          "matched_cse_idx": 48,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.76,
+        "reason": "Low-risk content",
+        "risk_score": 0.24,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 55,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 83,
+          "scam_keyword_count": 3,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.6,
+          "risk_factors": [
+            "High credential keywords (55)",
+            "Scam keywords (3)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7058391332626343,
+        "error": 2.4416086673736572,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.442)"
+      }
+    },
+    "registrable": "bankofbaroda.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6392425199405117,
+        "score": 0.06962125997025587,
+        "reason": "Anomaly score: 0.070"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.95,
+        "reason": "Domain in CSE whitelist (similarity=1.000)",
+        "method": "clip",
+        "details": {
+          "is_whitelisted": true,
+          "clip_similarity": 1.0,
+          "matched_cse_domain": "www.kotak.com_c4185c40",
+          "matched_cse_idx": 46,
+          "threshold": 0.8
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.76,
+        "reason": "Low-risk content",
+        "risk_score": 0.24,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 52,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 153,
+          "scam_keyword_count": 4,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.6,
+          "risk_factors": [
+            "High credential keywords (52)",
+            "Scam keywords (4)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "NORMAL",
+        "confidence": 0.7399539947509766,
+        "error": 2.1004600524902344,
+        "threshold": 3.5,
+        "reason": "Low visual reconstruction error (2.100)"
+      }
+    },
+    "registrable": "kotak.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6952409923550718,
+        "score": 0.09762049617753588,
+        "reason": "Anomaly score: 0.098"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.8,
+        "reason": "Low-risk content",
+        "risk_score": 0.2,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 1,
+          "urgency_keyword_count": 6,
+          "financial_keyword_count": 6,
+          "scam_keyword_count": 2,
+          "cse_keyword_count": 1,
+          "content_risk_score": 0.5,
+          "risk_factors": [
+            "Urgency language (6)",
+            "Scam keywords (2)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "co.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "bsnl.co.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8130378655758133,
+    "risk_score": 0.1869621344241867,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6068604124767495,
+        "score": 0.053430206238374744,
+        "reason": "Anomaly score: 0.053"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.604,
+        "reason": "Moderate risk content",
+        "risk_score": 0.52,
+        "details": {
+          "has_forms": true,
+          "form_count": 1,
+          "has_password_field": false,
+          "has_login_field": false,
+          "has_financial_field": false,
+          "form_risk": "LOW",
+          "form_score": 0.2,
+          "credential_keyword_count": 59,
+          "urgency_keyword_count": 8,
+          "financial_keyword_count": 99,
+          "scam_keyword_count": 18,
+          "cse_keyword_count": 3,
+          "content_risk_score": 1.0,
+          "risk_factors": [
+            "High credential keywords (59)",
+            "Urgency language (8)",
+            "Scam keywords (18)",
+            "CSE impersonation (3)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "indusind.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 0.8247351384015619,
+    "risk_score": 0.17526486159843813,
+    "reasons": [
+      "content: Moderate risk content"
+    ],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.6780662842294523,
+        "score": 0.08903314211472613,
+        "reason": "Anomaly score: 0.089"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "SUSPICIOUS",
+        "confidence": 0.5800000000000001,
+        "reason": "Moderate risk content",
+        "risk_score": 0.4,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 42,
+          "urgency_keyword_count": 4,
+          "financial_keyword_count": 119,
+          "scam_keyword_count": 3,
+          "cse_keyword_count": 4,
+          "content_risk_score": 1.0,
+          "risk_factors": [
+            "High credential keywords (42)",
+            "Urgency language (4)",
+            "Scam keywords (3)",
+            "CSE impersonation (4)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "paytmbank.com",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7439720068524316,
+        "score": 0.1219860034262158,
+        "reason": "Anomaly score: 0.122"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 2,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": true,
+          "suspicious_chars": [
+            [
+              "l",
+              "i"
+            ],
+            [
+              "l",
+              "i"
+            ]
+          ],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "com",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "railtelindia.com",
+    "url": ""
+  },
+  {
+    "verdict": "N/A",
+    "confidence": 0.9,
+    "risk_score": 0.0,
+    "reasons": [
+      "Insufficient data for analysis (no HTML, screenshot, or OCR)"
+    ],
+    "status_check": "insufficient_data",
+    "detector_results": {},
+    "registrable": "parivahan.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7679722702436335,
+        "score": 0.13398613512181673,
+        "reason": "Anomaly score: 0.134"
+      },
+      "visual": {
+        "verdict": "BENIGN",
+        "confidence": 0.85,
+        "reason": "Domain in CSE whitelist",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": true
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 1.0,
+        "reason": "Low-risk content",
+        "risk_score": 0.0,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 0,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.0,
+          "risk_factors": []
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.97,
+        "risk_score": 0.03,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "gov.in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": true,
+          "tld_risk_score": 0.1,
+          "tld_risk_level": "LOW",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "eci.gov.in",
+    "url": ""
+  },
+  {
+    "verdict": "BENIGN",
+    "confidence": 1.0,
+    "risk_score": 0.0,
+    "reasons": [],
+    "detector_results": {
+      "anomaly": {
+        "verdict": "NORMAL",
+        "confidence": 0.7303378599161777,
+        "score": 0.11516892995808886,
+        "reason": "Anomaly score: 0.115"
+      },
+      "visual": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "reason": "No visual comparison available (phash-only mode)",
+        "method": "phash",
+        "details": {
+          "is_whitelisted": false
+        }
+      },
+      "content": {
+        "verdict": "BENIGN",
+        "confidence": 0.9199999999999999,
+        "reason": "Low-risk content",
+        "risk_score": 0.08000000000000002,
+        "details": {
+          "has_forms": false,
+          "form_risk": "NONE",
+          "form_score": 0.0,
+          "credential_keyword_count": 0,
+          "urgency_keyword_count": 5,
+          "financial_keyword_count": 0,
+          "scam_keyword_count": 0,
+          "cse_keyword_count": 0,
+          "content_risk_score": 0.2,
+          "risk_factors": [
+            "Urgency language (5)"
+          ]
+        }
+      },
+      "domain": {
+        "verdict": "BENIGN",
+        "confidence": 0.91,
+        "risk_score": 0.09,
+        "details": {
+          "reason": "Exact match with CSE domain",
+          "is_idn": false,
+          "has_homograph_chars": false,
+          "suspicious_chars": [],
+          "impersonation_target": null,
+          "is_homograph_attack": false,
+          "tld": "in",
+          "is_high_risk_tld": false,
+          "is_trusted_tld": false,
+          "tld_risk_score": 0.3,
+          "tld_risk_level": "MEDIUM",
+          "is_ip_address": false,
+          "excessive_hyphens": false,
+          "excessive_digits": false,
+          "excessive_subdomains": false,
+          "pattern_risk_score": 0.0,
+          "pattern_risk_factors": []
+        }
+      },
+      "autoencoder": {
+        "verdict": "UNKNOWN",
+        "confidence": 0.0,
+        "error": 0.0,
+        "reason": "Screenshot not found"
+      }
+    },
+    "registrable": "nvsp.in",
+    "url": ""
+  }
+]

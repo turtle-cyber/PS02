@@ -30,6 +30,14 @@ except ImportError:
 from detectors.content_detector import ContentPhishingDetector
 from detectors.domain_reputation import DomainReputationAnalyzer
 
+# Import text feature extraction for keyword detection
+try:
+    from data_prep.extract_text_features import TextFeatureExtractor
+    TEXT_EXTRACTOR_AVAILABLE = True
+except ImportError:
+    TEXT_EXTRACTOR_AVAILABLE = False
+    print("Warning: TextFeatureExtractor not available - keyword detection will be limited")
+
 # Import PyTorch for autoencoder
 try:
     import torch
@@ -93,16 +101,22 @@ class UnifiedPhishingDetector:
         self.autoencoder = None
         self.autoencoder_transform = None
 
+        # Text feature extractor for keyword detection
+        self.text_extractor = None
+        if TEXT_EXTRACTOR_AVAILABLE:
+            self.text_extractor = TextFeatureExtractor()
+
         # Feature names for anomaly model
         self.feature_names = None
 
         # Verdict weights (configurable)
+        # Adjusted to prioritize reliable detectors
         self.weights = {
-            'anomaly': 0.20,
-            'visual': 0.30,
-            'content': 0.20,
-            'domain': 0.15,
-            'autoencoder': 0.15
+            'anomaly': 0.10,     # Reduced (often has feature errors)
+            'visual': 0.20,      # Reduced (high false positives with small index)
+            'content': 0.25,     # Increased (works reliably)
+            'domain': 0.35,      # Increased (most reliable, was too low)
+            'autoencoder': 0.10  # Reduced (supplementary detector)
         }
 
     def _get_default_config(self) -> Dict:
@@ -195,6 +209,8 @@ class UnifiedPhishingDetector:
         try:
             # Extract features in correct order
             features = {}
+            missing_features = []
+
             for feature_name in self.feature_names:
                 value = metadata.get(feature_name)
 
@@ -204,9 +220,19 @@ class UnifiedPhishingDetector:
                 # Keep numeric values
                 elif isinstance(value, (int, float)):
                     features[feature_name] = value
-                # Skip None/missing
+                # Handle missing features with smart defaults
                 else:
-                    features[feature_name] = 0  # Default to 0
+                    # Try to derive missing features from available data
+                    derived_value = self._derive_missing_feature(feature_name, metadata)
+                    if derived_value is not None:
+                        features[feature_name] = derived_value
+                    else:
+                        features[feature_name] = 0  # Default to 0
+                        missing_features.append(feature_name)
+
+            # Log warnings for missing features (but don't fail)
+            if missing_features:
+                print(f"Warning: {len(missing_features)} features missing, using defaults: {missing_features[:5]}...")
 
             # Create DataFrame
             df = pd.DataFrame([features])
@@ -215,6 +241,165 @@ class UnifiedPhishingDetector:
         except Exception as e:
             print(f"Error preparing features: {e}")
             return None
+
+    def _derive_missing_feature(self, feature_name: str, metadata: Dict) -> Optional[float]:
+        """
+        Try to derive missing features from available metadata
+
+        Args:
+            feature_name: Name of the missing feature
+            metadata: Available metadata
+
+        Returns:
+            Derived value or None if cannot derive
+        """
+        # PRIORITY 1: Feature name mappings (simple renames)
+        feature_mappings = {
+            'doc_has_verdict': lambda m: int(bool(m.get('has_verdict', False))),
+            'doc_risk_score': lambda m: float(m.get('risk_score', 0.0)),
+            'doc_form_count': lambda m: int(m.get('form_count', 0)),
+            'ocr_length': lambda m: int(m.get('ocr_text_length', 0)),
+        }
+
+        if feature_name in feature_mappings:
+            try:
+                return feature_mappings[feature_name](metadata)
+            except:
+                return None
+
+        # PRIORITY 2: Keyword extraction from HTML text
+        if feature_name in ['doc_has_login_keywords', 'doc_has_verify_keywords',
+                           'doc_has_password_keywords', 'doc_has_credential_keywords']:
+            return self._extract_keyword_feature(feature_name, metadata, source='html')
+
+        # PRIORITY 3: Keyword extraction from OCR text
+        if feature_name in ['ocr_has_login_keywords', 'ocr_has_verify_keywords']:
+            return self._extract_keyword_feature(feature_name, metadata, source='ocr')
+
+        # PRIORITY 4: Special cases
+        if feature_name == 'doc_length':
+            # Try to get actual text length from document_text, fallback to html_size
+            document_text = metadata.get('document_text', '')
+            if document_text:
+                # If document_text is HTML, extract clean text length
+                if '<' in document_text and '>' in document_text:
+                    try:
+                        from bs4 import BeautifulSoup
+                        soup = BeautifulSoup(document_text, 'html.parser')
+                        clean_text = soup.get_text()
+                        return len(clean_text.strip())
+                    except:
+                        return len(document_text)
+                else:
+                    return len(document_text)
+            else:
+                # Fallback to html_size
+                return metadata.get('html_size', 0)
+
+        if feature_name == 'cert_age_days':
+            # Fallback to domain_age_days if no cert data available
+            # In practice, cert age would be calculated from TLS cert issuance date
+            return metadata.get('domain_age_days', 0)
+
+        # PRIORITY 5: URL pattern features - can derive from domain/URL
+        url_derivations = {
+            'ampersand_count': lambda m: m.get('url', '').count('&') if 'url' in m else 0,
+            'at_count': lambda m: m.get('url', '').count('@') if 'url' in m else 0,
+            'dash_count': lambda m: m.get('registrable', '').count('-') if 'registrable' in m else 0,
+            'digit_count': lambda m: sum(c.isdigit() for c in m.get('registrable', '')) if 'registrable' in m else 0,
+            'dot_count': lambda m: m.get('registrable', '').count('.') if 'registrable' in m else 0,
+            'slash_count': lambda m: m.get('url', '').count('/') if 'url' in m else 0,
+            'question_count': lambda m: m.get('url', '').count('?') if 'url' in m else 0,
+
+            # Subdomain features
+            'avg_subdomain_length': lambda m: self._calc_avg_subdomain_length(m.get('domain', '')),
+            'max_subdomain_length': lambda m: self._calc_max_subdomain_length(m.get('domain', '')),
+            'subdomain_digit_ratio': lambda m: self._calc_subdomain_digit_ratio(m.get('domain', '')),
+        }
+
+        # Check if we have a derivation function for this feature
+        if feature_name in url_derivations:
+            try:
+                return url_derivations[feature_name](metadata)
+            except:
+                return None
+
+        return None
+
+    def _extract_keyword_feature(self, feature_name: str, metadata: Dict, source: str = 'html') -> int:
+        """
+        Extract keyword-based features from HTML or OCR text
+
+        Args:
+            feature_name: Feature to extract (e.g., 'doc_has_login_keywords')
+            metadata: Domain metadata
+            source: 'html' or 'ocr'
+
+        Returns:
+            1 if keywords found, 0 otherwise
+        """
+        if not self.text_extractor:
+            return 0
+
+        # Get text source
+        if source == 'html':
+            text = metadata.get('document_text', '')
+        elif source == 'ocr':
+            text = metadata.get('ocr_text_excerpt', '') or metadata.get('ocr_text', '')
+        else:
+            return 0
+
+        if not text:
+            return 0
+
+        # Determine which keywords to search for
+        if 'login' in feature_name:
+            keywords = self.text_extractor.login_keywords
+        elif 'verify' in feature_name:
+            keywords = self.text_extractor.verify_keywords
+        elif 'password' in feature_name:
+            keywords = self.text_extractor.password_keywords
+        elif 'credential' in feature_name:
+            keywords = self.text_extractor.credential_keywords
+        else:
+            return 0
+
+        # Check for keywords (case-insensitive)
+        has_keywords = self.text_extractor.has_keywords(text, keywords, threshold=1)
+        return int(has_keywords)
+
+    def _calc_avg_subdomain_length(self, domain: str) -> float:
+        """Calculate average subdomain length"""
+        if not domain:
+            return 0.0
+        parts = domain.split('.')
+        if len(parts) <= 2:  # No subdomains
+            return 0.0
+        subdomains = parts[:-2]  # Exclude domain and TLD
+        return sum(len(s) for s in subdomains) / len(subdomains) if subdomains else 0.0
+
+    def _calc_max_subdomain_length(self, domain: str) -> int:
+        """Calculate maximum subdomain length"""
+        if not domain:
+            return 0
+        parts = domain.split('.')
+        if len(parts) <= 2:  # No subdomains
+            return 0
+        subdomains = parts[:-2]  # Exclude domain and TLD
+        return max(len(s) for s in subdomains) if subdomains else 0
+
+    def _calc_subdomain_digit_ratio(self, domain: str) -> float:
+        """Calculate ratio of digits in subdomains"""
+        if not domain:
+            return 0.0
+        parts = domain.split('.')
+        if len(parts) <= 2:  # No subdomains
+            return 0.0
+        subdomains = '.'.join(parts[:-2])  # Join all subdomains
+        if not subdomains:
+            return 0.0
+        digit_count = sum(c.isdigit() for c in subdomains)
+        return digit_count / len(subdomains) if subdomains else 0.0
 
     def run_anomaly_detection(self, metadata: Dict) -> Dict:
         """Run anomaly detection"""
@@ -262,9 +447,8 @@ class UnifiedPhishingDetector:
         if screenshot_path_hint:
             filename = Path(screenshot_path_hint).name
             screenshot_dirs = [
-                Path('/home/turtleneck/Desktop/PS02/Pipeline/out/screenshots'),
-                Path('Pipeline/out/screenshots'),
-                Path('../Pipeline/out/screenshots')
+                Path('/out/screenshots'),  # Docker container mount point
+                Path('/home/turtleneck/Desktop/PS02/Pipeline/out/screenshots'),  # Local testing fallback
             ]
 
             for screenshot_dir in screenshot_dirs:
@@ -276,9 +460,8 @@ class UnifiedPhishingDetector:
 
         # Fall back to pattern matching
         screenshot_dirs = [
-            Path('/home/turtleneck/Desktop/PS02/Pipeline/out/screenshots'),
-            Path('Pipeline/out/screenshots'),
-            Path('../Pipeline/out/screenshots')
+            Path('/out/screenshots'),  # Docker container mount point
+            Path('/home/turtleneck/Desktop/PS02/Pipeline/out/screenshots'),  # Local testing fallback
         ]
 
         for screenshot_dir in screenshot_dirs:
@@ -442,7 +625,7 @@ class UnifiedPhishingDetector:
                 'reason': f'Autoencoder detection error: {str(e)}'
             }
 
-    def aggregate_verdicts(self, results: Dict) -> Dict:
+    def aggregate_verdicts(self, results: Dict, metadata: Dict = None) -> Dict:
         """
         Aggregate verdicts from all detectors
 
@@ -453,32 +636,73 @@ class UnifiedPhishingDetector:
 
         Args:
             results: Dictionary with results from each detector
+            metadata: Optional domain metadata for TLD-aware weighting
 
         Returns:
             Final aggregated verdict
         """
         # Map verdicts to risk scores
         verdict_risk_map = {
+            # Malicious/High Risk
             'PHISHING': 1.0,
             'MALICIOUS': 1.0,
+            'GAMBLING': 0.9,  # Treat as high risk per requirements
+
+            # Suspicious/Medium Risk
             'SUSPICIOUS': 0.6,
             'ANOMALY': 0.7,
             'SIMILAR': 0.8,  # Visual similarity to CSE but not whitelisted
+            'SUSPICIOUS_GAMBLING': 0.65,
+
+            # Benign/Safe
             'BENIGN': 0.0,
             'NORMAL': 0.0,
             'DISSIMILAR': 0.0,
+            'NOT_GAMBLING': 0.0,
+            'NOT_PARKED': 0.0,
+
+            # Status Categories (not risk-scored in normal flow)
+            'INACTIVE': 0.0,
+            'PARKED': 0.0,
+            'N/A': 0.0,
+            'UNREGISTERED': 0.0,
+            'POSSIBLE_PARKED': 0.1,
+
+            # Unknown/Error
             'UNKNOWN': 0.3,  # Neutral
             'ERROR': 0.0     # Ignore errors
         }
+
+        # Check if domain has trusted TLD (for weight adjustment)
+        is_trusted_tld = False
+        if metadata:
+            registrable = metadata.get('registrable', '')
+            is_trusted_tld = self._has_trusted_tld(registrable)
+
+        # Adjust detector weights based on TLD trust
+        adjusted_weights = self.weights.copy()
+        if is_trusted_tld:
+            # For trusted TLDs (government, edu, etc.):
+            # - Boost domain detector weight (more important)
+            # - Reduce visual detector weight (less reliable)
+            # - Keep content and anomaly weights neutral
+            adjusted_weights['domain'] = self.weights['domain'] * 2.0  # Double domain weight
+            adjusted_weights['visual'] = self.weights['visual'] * 0.5  # Halve visual weight
+            adjusted_weights['content'] = self.weights['content'] * 1.2  # Slight boost to content
+            adjusted_weights['anomaly'] = self.weights['anomaly'] * 0.8  # Slight reduction
 
         # Calculate weighted risk score
         total_risk = 0.0
         total_weight = 0.0
 
-        for detector_name, weight in self.weights.items():
+        for detector_name, weight in adjusted_weights.items():
             result = results.get(detector_name, {})
             verdict = result.get('verdict', 'UNKNOWN')
             confidence = result.get('confidence', 0.0)
+
+            # Skip detectors that returned ERROR or UNKNOWN with 0 confidence
+            if verdict in ['ERROR', 'UNKNOWN'] and confidence == 0.0:
+                continue  # Exclude from ensemble
 
             risk = verdict_risk_map.get(verdict, 0.3)
 
@@ -502,7 +726,9 @@ class UnifiedPhishingDetector:
             final_confidence = 0.5 + final_risk_score * 0.3
         else:
             final_verdict = 'BENIGN'
-            final_confidence = max(0.4, 1.0 - final_risk_score)
+            # Boost confidence for trusted TLDs
+            base_confidence = max(0.4, 1.0 - final_risk_score)
+            final_confidence = min(0.95, base_confidence * 1.15) if is_trusted_tld else base_confidence
 
         # Collect reasons
         reasons = []
@@ -518,6 +744,137 @@ class UnifiedPhishingDetector:
             'detector_results': results
         }
 
+    def _has_trusted_tld(self, registrable: str) -> bool:
+        """
+        Check if domain has a trusted TLD (government, education, etc.)
+
+        Args:
+            registrable: Registrable domain
+
+        Returns:
+            True if has trusted TLD
+        """
+        if not registrable:
+            return False
+
+        trusted_tlds = {
+            'gov', 'gov.in', 'nic.in', 'ac.in', 'edu.in', 'mil',
+            'edu', 'mil.in', 'res.in'
+        }
+
+        registrable_lower = registrable.lower()
+        for tld in trusted_tlds:
+            if registrable_lower.endswith(f'.{tld}') or registrable_lower == tld:
+                return True
+
+        return False
+
+    def is_insufficient_data(self, metadata: Dict) -> bool:
+        """
+        Check if domain has insufficient data for analysis
+
+        Args:
+            metadata: Domain metadata
+
+        Returns:
+            True if insufficient data
+        """
+        # Check if we have HTML content loaded
+        has_html = bool(metadata.get('document_text'))
+        doc_length = metadata.get('doc_length', 0)
+
+        # Check if HTML file exists (even if not loaded yet)
+        html_path = metadata.get('html_path', '')
+        html_size = metadata.get('html_size', 0)
+
+        # Check screenshot
+        screenshot_path = metadata.get('screenshot_path', '')
+        has_screenshot = bool(screenshot_path) and (Path(screenshot_path).exists() if screenshot_path else False)
+
+        # Check OCR
+        has_ocr = bool(metadata.get('ocr_text')) or bool(metadata.get('ocr_text_excerpt'))
+
+        # Need at least one data source
+        # Either: (1) HTML content loaded, (2) HTML file exists, (3) screenshot exists, (4) OCR available
+        has_any_data = has_html or (html_path and html_size > 0) or has_screenshot or has_ocr
+
+        if not has_any_data:
+            return True
+
+        # HTML too short to analyze meaningfully (only if it's the only source)
+        if has_html and doc_length < 50 and not has_screenshot and not has_ocr:
+            return True
+
+        return False
+
+    def check_domain_status(self, metadata: Dict) -> Optional[Dict]:
+        """
+        Check domain status before running ML detectors.
+        Returns immediate verdict for INACTIVE/PARKED/GAMBLING/N/A cases.
+
+        Args:
+            metadata: Domain metadata
+
+        Returns:
+            Status verdict dict or None if should continue to ML detectors
+        """
+        registrable = metadata.get('registrable', 'unknown')
+
+        # 1. Check INACTIVE status (highest priority - site is down)
+        if metadata.get('is_inactive'):
+            inactive_reason = metadata.get('inactive_reason', 'unknown')
+            inactive_status = metadata.get('inactive_status', 'inactive')
+            return {
+                'verdict': 'INACTIVE',
+                'confidence': 0.95,
+                'risk_score': 0.0,
+                'reasons': [f'Domain is inactive: {inactive_reason}'],
+                'status_check': 'inactive',
+                'inactive_reason': inactive_reason,
+                'inactive_status': inactive_status,
+                'detector_results': {}
+            }
+
+        # 2. Check N/A (insufficient data - cannot analyze)
+        if self.is_insufficient_data(metadata):
+            return {
+                'verdict': 'N/A',
+                'confidence': 0.90,
+                'risk_score': 0.0,
+                'reasons': ['Insufficient data for analysis (no HTML, screenshot, or OCR)'],
+                'status_check': 'insufficient_data',
+                'detector_results': {}
+            }
+
+        # 3. Check PARKED domain patterns
+        parked_result = self.domain_analyzer.detect_parked_domain(metadata)
+        if parked_result['verdict'] == 'PARKED':
+            return {
+                'verdict': 'PARKED',
+                'confidence': parked_result['confidence'],
+                'risk_score': 0.0,
+                'reasons': [parked_result['reason']],
+                'status_check': 'parked',
+                'parking_details': parked_result,
+                'detector_results': {}
+            }
+
+        # 4. Check GAMBLING patterns (treat as phishing per requirements)
+        gambling_result = self.content_detector.detect_gambling(metadata)
+        if gambling_result['verdict'] == 'GAMBLING':
+            return {
+                'verdict': 'GAMBLING',
+                'confidence': gambling_result['confidence'],
+                'risk_score': 0.9,  # Treat as high risk
+                'reasons': [gambling_result['reason']],
+                'status_check': 'gambling',
+                'gambling_details': gambling_result,
+                'detector_results': {}
+            }
+
+        # Continue to ML detectors
+        return None
+
     def detect(self, metadata: Dict) -> Dict:
         """
         Run complete detection pipeline on a domain
@@ -528,6 +885,31 @@ class UnifiedPhishingDetector:
         Returns:
             Complete detection result
         """
+        registrable = metadata.get('registrable', 'unknown')
+
+        # PRIORITY 1: Check if domain is in CSE baseline (known good)
+        if self.domain_analyzer and hasattr(self.domain_analyzer, 'cse_whitelist'):
+            if registrable in self.domain_analyzer.cse_whitelist:
+                return {
+                    'verdict': 'BENIGN',
+                    'confidence': 0.98,
+                    'risk_score': 0.0,
+                    'reasons': ['Domain in CSE baseline whitelist'],
+                    'domain': registrable,
+                    'registrable': registrable,
+                    'url': metadata.get('document', ''),
+                    'detector_results': {}
+                }
+
+        # PRIORITY 2: Check domain status (early exit for INACTIVE/PARKED/GAMBLING/N/A)
+        status_result = self.check_domain_status(metadata)
+        if status_result:
+            status_result['domain'] = registrable  # For aiml_service.py compatibility
+            status_result['registrable'] = registrable
+            status_result['url'] = metadata.get('document', '')
+            return status_result
+
+        # Continue with ML detection for active domains with sufficient data
         # Run all detectors
         results = {
             'anomaly': self.run_anomaly_detection(metadata),
@@ -537,11 +919,13 @@ class UnifiedPhishingDetector:
             'autoencoder': self.run_autoencoder_detection(metadata)
         }
 
-        # Aggregate verdicts
-        final_result = self.aggregate_verdicts(results)
+        # Aggregate verdicts (pass metadata for TLD-aware weighting)
+        final_result = self.aggregate_verdicts(results, metadata)
 
-        # Add domain info
-        final_result['registrable'] = metadata.get('registrable', 'unknown')
+        # Add domain info (use both 'domain' and 'registrable' for compatibility)
+        registrable = metadata.get('registrable', 'unknown')
+        final_result['domain'] = registrable  # For aiml_service.py compatibility
+        final_result['registrable'] = registrable  # Keep for backward compatibility
         final_result['url'] = metadata.get('document', '')
 
         return final_result
