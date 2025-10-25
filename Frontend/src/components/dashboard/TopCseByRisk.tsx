@@ -11,7 +11,6 @@ interface ThreatApiData {
   phishing?: Bucket;
   suspicious?: Bucket;
   benign?: Bucket;
-  inactive?: Bucket;
   parked?: Bucket;
 }
 
@@ -26,7 +25,6 @@ const STATUS_ORDER: Array<keyof ThreatApiData> = [
   "phishing",
   "suspicious",
   "parked",
-  "inactive",
   "benign",
 ];
 
@@ -37,8 +35,7 @@ const STATUS_CONFIG: Record<
   phishing: { label: "Phishing", color: "#DC2626" }, // red
   suspicious: { label: "Suspicious", color: "#EA580C" }, // orange
   parked: { label: "Parked", color: "#EAB308" }, // yellow
-  inactive: { label: "Inactive", color: "#22C55E" }, // green
-  benign: { label: "Benign", color: "#3B82F6" }, // blue
+  benign: { label: "Benign", color: "#22C55E" }, // blue
 };
 
 function cleanName(n?: string) {

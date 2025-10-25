@@ -322,7 +322,7 @@ export const OriginCountriesMap: React.FC<OriginCountriesMapProps> = React.memo(
           </div>
 
           {/* Right-side Top-N bars */}
-          <div className="mt-2 grid grid-cols-2 gap-4">
+          <div className="mt-2 grid grid-cols-3 gap-4">
             {(hasData ? top : []).map((row, idx) => (
               <div key={`${row.country}-${idx}`}>
                 <div className="flex justify-between items-center mb-1">

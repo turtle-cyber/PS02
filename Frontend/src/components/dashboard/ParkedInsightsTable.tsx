@@ -8,6 +8,7 @@ import {
   TableBody,
   TableContainer,
   Skeleton,
+  Chip,
 } from "@mui/material";
 
 interface ParkedInsightsRow {
@@ -31,18 +32,44 @@ export const ParkedInsightsTable: React.FC<ParkedInsightsTableProps> = ({
   const data = Array.isArray(rows) ? rows : [];
   const empty = !loading && data.length === 0;
 
-  const getVerdictColor = (verdict: string) => {
-    switch (verdict) {
-      case "Phishing Confirmed":
-        return "#D32F2F";
-      case "parked":
-        return "#FBC02D";
-      case "Safe Domain":
-        return "#72BBDF";
-      default:
-        return "#6B7280";
-    }
+  const verdictChipSX = (v: string) => {
+  const key = (v || "").toLowerCase();
+  if (key === "phishing") 
+    return { 
+      bgcolor: "rgba(139, 55, 58, 0.2)", 
+      color: "#E1E1E1",
+      border: "1px solid rgba(229, 9, 20, 0.4)"
+    };
+  if (key === "suspicious") 
+    return { 
+      bgcolor: "rgba(253, 216, 53, 0.2)", 
+      color: "#E1E1E1",
+      border: "1px solid rgba(255, 176, 32, 0.4)"
+    };
+  if (key === "parked") 
+    return { 
+      bgcolor: "rgba(234, 179, 8, 0.2)", 
+      color: "#E1E1E1",
+      border: "1px solid rgba(234, 179, 8, 0.4)"
+    };
+  if (key === "inactive") 
+    return { 
+      bgcolor: "rgba(34, 197, 94, 0.2)", 
+      color: "#E1E1E1",
+      border: "1px solid rgba(34, 197, 94, 0.4)"
+    };
+  if (key === "benign" || key === "clean") 
+    return { 
+      bgcolor: "rgba(67, 160, 71, 0.2)", 
+      color: "#E1E1E1",
+      border: "1px solid rgba(31, 191, 117, 0.4)"
+    };
+  return { 
+    bgcolor: "rgba(100, 116, 139, 0.2)", 
+    color: "#94A3B8",
+    border: "1px solid rgba(100, 116, 139, 0.4)"
   };
+};
 
   const clean = (s?: string) => {
     const t = (s || "").trim();
@@ -139,7 +166,6 @@ export const ParkedInsightsTable: React.FC<ParkedInsightsTableProps> = ({
                 const domain = clean(row.domain);
                 const parkedSince = clean(row.parked_since);
                 const verdict = row.verdict || "—";
-                const verdictColor = getVerdictColor(verdict);
 
                 return (
                   <TableRow
@@ -157,8 +183,12 @@ export const ParkedInsightsTable: React.FC<ParkedInsightsTableProps> = ({
                       {parkedSince}
                     </TableCell>
 
-                    <TableCell sx={{ color: verdictColor, fontWeight: 500 }}>
-                      {verdict}
+                    <TableCell>
+                      <Chip
+                        label={verdict.charAt(0).toUpperCase() + verdict.slice(1).toLowerCase()}
+                        size="small"
+                        sx={verdictChipSX(verdict)}
+                      />
                     </TableCell>
                   </TableRow>
                 );

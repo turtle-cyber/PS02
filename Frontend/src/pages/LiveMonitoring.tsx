@@ -303,7 +303,7 @@ const LiveMonitoring: React.FC = () => {
       name: "Suspicious",
       key: "suspicious",
       value: suspicious,
-      color: grad("#60A5FA", "#93C5FD"),
+      color: grad("#EA580C", "#eb6c27ff"),
     },
     {
       name: "Benign",
@@ -572,6 +572,19 @@ const LiveMonitoring: React.FC = () => {
                 <span
                   className="inline-flex h-3 w-3 rounded-sm"
                   style={{
+                    background: "linear-gradient(90deg, #EA580C, #eb6c27ff)",
+                  }}
+                />
+                <span className="text-sm text-gray-400">Suspicious</span>
+                <span className="text-sm font-semibold text-white ml-2">
+                  {suspicious}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span
+                  className="inline-flex h-3 w-3 rounded-sm"
+                  style={{
                     background: "linear-gradient(90deg, #F59E0B, #FBBF24)",
                   }}
                 />
@@ -581,18 +594,6 @@ const LiveMonitoring: React.FC = () => {
                 </span>
               </div>
 
-              <div className="flex items-center gap-2">
-                <span
-                  className="inline-flex h-3 w-3 rounded-sm"
-                  style={{
-                    background: "linear-gradient(90deg, #60A5FA, #93C5FD)",
-                  }}
-                />
-                <span className="text-sm text-gray-400">Suspicious</span>
-                <span className="text-sm font-semibold text-white ml-2">
-                  {suspicious}
-                </span>
-              </div>
 
               <div className="flex items-center gap-2">
                 <span

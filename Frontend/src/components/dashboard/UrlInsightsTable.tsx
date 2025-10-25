@@ -35,12 +35,44 @@ export const UrlInsightsTable: React.FC<UrlInsightsTableProps> = ({
   const empty = !loading && data.length === 0;
 
   const verdictChipSX = (v: string) => {
-    const key = (v || "").toLowerCase();
-    if (key === "phishing") return { bgcolor: "#E50914", color: "#fff" };
-    if (key === "suspicious") return { bgcolor: "#FFB020", color: "#fff" };
-    if (key === "benign") return { bgcolor: "#1FBF75", color: "#fff" };
-    return { bgcolor: "#6B7280", color: "#fff" };
+  const key = (v || "").toLowerCase();
+  if (key === "phishing") 
+    return { 
+      bgcolor: "rgba(139, 55, 58, 0.2)", 
+      color: "#E1E1E1",
+      border: "1px solid rgba(229, 9, 20, 0.4)"
+    };
+  if (key === "suspicious") 
+    return { 
+      bgcolor: "rgba(253, 216, 53, 0.2)", 
+      color: "#E1E1E1",
+      border: "1px solid rgba(255, 176, 32, 0.4)"
+    };
+  if (key === "parked") 
+    return { 
+      bgcolor: "rgba(234, 179, 8, 0.2)", 
+      color: "#E1E1E1",
+      border: "1px solid rgba(234, 179, 8, 0.4)"
+    };
+  if (key === "inactive") 
+    return { 
+      bgcolor: "rgba(34, 197, 94, 0.2)", 
+      color: "#E1E1E1",
+      border: "1px solid rgba(34, 197, 94, 0.4)"
+    };
+  if (key === "benign" || key === "clean") 
+    return { 
+      bgcolor: "rgba(67, 160, 71, 0.2)", 
+      color: "#E1E1E1",
+      border: "1px solid rgba(31, 191, 117, 0.4)"
+    };
+  return { 
+    bgcolor: "rgba(100, 116, 139, 0.2)", 
+    color: "#94A3B8",
+    border: "1px solid rgba(100, 116, 139, 0.4)"
   };
+};
+
 
   const clean = (s?: string) => {
     const t = (s || "").trim();
@@ -183,7 +215,7 @@ export const UrlInsightsTable: React.FC<UrlInsightsTableProps> = ({
 
                     <TableCell>
                       <Chip
-                        label={verdict || "—"}
+                        label={verdict.charAt(0).toUpperCase() + verdict.slice(1).toLowerCase()}
                         size="small"
                         sx={verdictChipSX(verdict)}
                       />
