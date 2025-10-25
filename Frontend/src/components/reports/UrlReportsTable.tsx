@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -106,11 +105,6 @@ export const UrlReportsTable: React.FC<UrlReportsTableProps> = ({
           <TableHeader className="sticky top-0 z-10 bg-black/40 backdrop-blur-sm">
             <TableRow className="border-white/10 hover:bg-transparent">
               <TableHead className="w-12">
-                <Checkbox
-                  checked={rows.length > 0 && selectedRows.size === rows.length}
-                  onCheckedChange={toggleAll}
-                  aria-label="Select all"
-                />
               </TableHead>
               <TableHead className="text-slate-400">Source URL</TableHead>
               <TableHead className="text-slate-400">IP Address</TableHead>
@@ -170,11 +164,6 @@ export const UrlReportsTable: React.FC<UrlReportsTableProps> = ({
                     tabIndex={0}
                   >
                     <TableCell onClick={(e) => e.stopPropagation()}>
-                      <Checkbox
-                        checked={selectedRows.has(row.id)}
-                        onCheckedChange={(e) => toggleRow(row.id, e as any)}
-                        aria-label={`Select ${sourceUrl ?? row.id}`}
-                      />
                     </TableCell>
 
                     <TableCell>

@@ -1,16 +1,15 @@
 import * as React from "react";
-import { LiquidCard } from "@/components/ui/liquid-card";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
+  Box,
   Table,
-  TableBody,
-  TableCell,
   TableHead,
-  TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Skeleton } from "@mui/material";
+  TableCell,
+  TableBody,
+  TableContainer,
+  Chip,
+  Skeleton,
+} from "@mui/material";
 
 interface UrlInsightsRow {
   source_url: string;
@@ -21,120 +20,181 @@ interface UrlInsightsRow {
 }
 
 interface UrlInsightsTableProps {
-  rows?: UrlInsightsRow[]; // ← optional to allow "not passed"
+  rows?: UrlInsightsRow[];
   loading?: boolean;
+  /** Optional: cap the table height (default 400) */
+  maxHeight?: number | string;
 }
-
-const getVerdictColor = (verdict: string) => {
-  switch (verdict) {
-    case "phishing":
-      return "bg-[#E50914] text-white capitalize";
-    case "suspicious":
-      return "bg-[#FFB020] text-black capitalize";
-    case "benign":
-      return "bg-[#1FBF75] text-white capitalize";
-    default:
-      return "";
-  }
-};
-
-const headers = [
-  "Source URL",
-  "IP Address",
-  "Hosting Provider",
-  "CSE Intended",
-  "Verdict",
-];
 
 export const UrlInsightsTable: React.FC<UrlInsightsTableProps> = ({
   rows,
   loading,
+  maxHeight = 460,
 }) => {
   const data = Array.isArray(rows) ? rows : [];
+  const empty = !loading && data.length === 0;
 
-  const renderSkeletonRows = (count = 5) =>
-    Array.from({ length: count }).map((_, i) => (
-      <TableRow key={`skeleton-${i}`} className="border-white/5">
-        <TableCell>
-          <Skeleton variant="rectangular" width={200} height={16} />
-        </TableCell>
-        <TableCell>
-          <Skeleton variant="rectangular" width={140} height={16} />
-        </TableCell>
-        <TableCell>
-          <Skeleton variant="rectangular" width={180} height={16} />
-        </TableCell>
-        <TableCell>
-          <Skeleton variant="rectangular" width={140} height={16} />
-        </TableCell>
-        <TableCell>
-          <Skeleton variant="rectangular" width={80} height={24} />
-        </TableCell>
-      </TableRow>
-    ));
+  const verdictChipSX = (v: string) => {
+    const key = (v || "").toLowerCase();
+    if (key === "phishing") return { bgcolor: "#E50914", color: "#fff" };
+    if (key === "suspicious") return { bgcolor: "#FFB020", color: "#fff" };
+    if (key === "benign") return { bgcolor: "#1FBF75", color: "#fff" };
+    return { bgcolor: "#6B7280", color: "#fff" };
+  };
 
-  const renderEmptyState = () => (
-    <TableRow className="border-white/5">
-      <TableCell colSpan={headers.length}>
-        <div className="text-sm text-slate-400 py-4">
-          No URL insights to display.
-        </div>
-      </TableCell>
-    </TableRow>
-  );
+  const clean = (s?: string) => {
+    const t = (s || "").trim();
+    if (!t || t.toLowerCase() === "unknown" || t.toLowerCase() === "n/a")
+      return "—";
+    return t;
+  };
 
   return (
-    <LiquidCard variant="glass" className="p-6 min-h-[460px]" allowOverflow>
-      <ScrollArea className="h-[400px] pr-4">
-        <Table aria-busy={!!loading}>
-          <TableHeader>
-            <TableRow className="border-white/10 hover:bg-transparent">
-              {headers.map((h) => (
-                <TableHead
-                  key={h}
-                  className="text-gray-400 font-medium md:px-2 md:text-xs"
-                >
-                  {h}
-                </TableHead>
-              ))}
+    <Box sx={{ width: "100%" }}>
+      <TableContainer
+        sx={{
+          maxHeight,
+          overflow: "auto",
+          borderRadius: 2,
+          border: "1px solid rgba(255,255,255,0.08)",
+
+          "& .MuiTableCell-stickyHeader": {
+            top: 0,
+            zIndex: 2,
+            backgroundColor: "rgba(53, 53, 53, 0.5)",
+            backdropFilter: "saturate(150%) blur(2px)",
+            borderBottom: "1px solid rgba(255,255,255,0.08)",
+          },
+          "& thead th:first-of-type": { borderTopLeftRadius: 12 },
+          "& thead th:last-of-type": { borderTopRightRadius: 12 },
+          scrollbarColor: "rgba(255,255,255,0.28) transparent",
+          "&::-webkit-scrollbar": { width: 6, height: 6 },
+          "&::-webkit-scrollbar-thumb": {
+            background: "rgba(255,255,255,0.28)",
+            borderRadius: 8,
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            background: "rgba(255,255,255,0.38)",
+          },
+          "&::-webkit-scrollbar-corner": { background: "transparent" },
+        }}
+      >
+        <Table
+          stickyHeader
+          sx={{
+            minWidth: 760,
+            backgroundColor: "transparent",
+            "& td, & th": { borderBottomColor: "rgba(255,255,255,0.08)" },
+
+            "& thead .MuiTableCell-root": {
+              py: 1.8,
+              fontWeight: 700,
+              color: "rgba(241,245,249,0.92)",
+              fontSize: 13.5,
+              letterSpacing: 0.2,
+            },
+            "& tbody .MuiTableCell-root": {
+              py: 1.6,
+              fontSize: 13,
+            },
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell>Source URL</TableCell>
+              <TableCell>IP Address</TableCell>
+              <TableCell>Hosting Provider</TableCell>
+              <TableCell>CSE Intended</TableCell>
+              <TableCell>Verdict</TableCell>
             </TableRow>
-          </TableHeader>
+          </TableHead>
 
           <TableBody>
-            {loading
-              ? renderSkeletonRows(5)
-              : data.length === 0
-              ? renderEmptyState()
-              : data.map((row, idx) => (
+            {loading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={`sk-${i}`} hover>
+                  <TableCell>
+                    <Skeleton variant="text" width="80%" height={24} />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton variant="text" width={140} height={24} />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton variant="text" width="70%" height={24} />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton variant="text" width={140} height={24} />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton variant="rounded" width={80} height={28} />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : empty ? (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  align="center"
+                  sx={{ py: 6, color: "rgba(255,255,255,0.6)" }}
+                >
+                  No URL insights to display.
+                </TableCell>
+              </TableRow>
+            ) : (
+              data.map((row, idx) => {
+                const sourceUrl = clean(row.source_url);
+                const ipAddress = clean(row.ip_address);
+                const hostingProvider = clean(row.hosting_provider);
+                const cseIntended = clean(row.cse_intended);
+                const verdict = (row.verdict || "").toLowerCase();
+
+                return (
                   <TableRow
                     key={`${row.source_url}-${row.ip_address}-${idx}`}
-                    className="border-white/5 hover:bg-white/[0.03] transition-colors"
+                    hover
+                    sx={{
+                      "&:hover": { backgroundColor: "rgba(255,255,255,0.05)" },
+                    }}
                   >
-                    <TableCell className="text-blue-400 text-sm md:text-xs md:px-2 max-w-[200px] truncate">
-                      {row.source_url}
+                    <TableCell
+                      sx={{
+                        maxWidth: 280,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        color: "#60A5FA",
+                      }}
+                      title={sourceUrl}
+                    >
+                      {sourceUrl}
                     </TableCell>
-                    <TableCell className="text-slate-300 text-sm md:text-xs md:px-2">
-                      {row.ip_address}
+
+                    <TableCell sx={{ color: "#D1D5DB" }}>
+                      {ipAddress}
                     </TableCell>
-                    <TableCell className="text-slate-300 text-sm md:text-xs md:px-2">
-                      {row.hosting_provider}
+
+                    <TableCell sx={{ color: "#D1D5DB" }}>
+                      {hostingProvider}
                     </TableCell>
-                    <TableCell className="text-slate-300 text-sm md:text-xs md:px-2">
-                      {row.cse_intended}
+
+                    <TableCell sx={{ color: "#D1D5DB" }}>
+                      {cseIntended}
                     </TableCell>
-                    <TableCell className="md:px-2">
-                      <Badge
-                        className={`${getVerdictColor(row.verdict)} border-0`}
-                      >
-                        {row.verdict}
-                      </Badge>
+
+                    <TableCell>
+                      <Chip
+                        label={verdict || "—"}
+                        size="small"
+                        sx={verdictChipSX(verdict)}
+                      />
                     </TableCell>
                   </TableRow>
-                ))}
+                );
+              })
+            )}
           </TableBody>
         </Table>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
-    </LiquidCard>
+      </TableContainer>
+    </Box>
   );
 };

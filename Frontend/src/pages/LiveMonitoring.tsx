@@ -31,6 +31,7 @@ import {
   GET_URL_PROCESSES,
 } from "@/endpoints/liveMonitoring.endpoints";
 import { toast } from "sonner";
+import { CustomLiquidCardTable } from "@/components/ui/custom-liquid-card-table";
 
 /* ---------- TYPES ---------- */
 type TimeRange = "5m" | "30m" | "1h" | "24h";
@@ -414,7 +415,7 @@ const LiveMonitoring: React.FC = () => {
           }}
         >
           {/* URL Processes - with pulse animation */}
-          <LiquidCard
+          <CustomLiquidCardTable
             variant="glass"
             className="p-6 animate-pulse-glow"
             style={{ animation: "pulseGlow 4.5s ease-in-out infinite" }}
@@ -428,7 +429,7 @@ const LiveMonitoring: React.FC = () => {
               data={urlProcessData}
               loading={urlProcessLoading}
             />
-          </LiquidCard>
+          </CustomLiquidCardTable>
 
           {/* Live URL Scan - plain dark card */}
           <LiquidCard variant="glass" className="p-6">

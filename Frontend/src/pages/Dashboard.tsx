@@ -33,6 +33,8 @@ import {
   GET_URL_INSIGHTS,
   GET_URL_WATCH_GRAPH,
 } from "@/endpoints/dashboard.endpoints";
+import { LiquidCard } from "@/components/ui/liquid-card";
+import { CustomLiquidCardTable } from "@/components/ui/custom-liquid-card-table";
 
 interface DateRangeValue {
   startDate: Date;
@@ -372,7 +374,9 @@ const Dashboard = () => {
             >
               URL Insights
             </Typography>
+            <CustomLiquidCardTable variant="glass">
             <UrlInsightsTable rows={urlInsightsData?.table_data || []} />
+            </CustomLiquidCardTable>
           </div>
         </div>
 
@@ -411,10 +415,12 @@ const Dashboard = () => {
             >
               Parked Insights
             </Typography>
+            <CustomLiquidCardTable variant="glass">
             <ParkedInsightsTable
               rows={parkedInsightData}
               loading={parkedInsightLoading}
             />
+            </CustomLiquidCardTable>
           </div>
         </div>
       </Container>
