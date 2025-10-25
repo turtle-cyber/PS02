@@ -237,24 +237,39 @@ class DomainReputationAnalyzer:
             Parked domain detection result
         """
         doc_text = metadata.get('document_text', '').lower()
+        # CRITICAL FIX: Also check OCR text from metadata (images may contain parking text)
+        ocr_text = (metadata.get('ocr_text_excerpt', '') or metadata.get('ocr_text', '')).lower()
         domain = metadata.get('registrable', '')
         doc_length = metadata.get('doc_length', 0)
+        html_size = metadata.get('html_size', 0)
+        external_links = metadata.get('external_links', 0)
 
-        # Parking service indicators
+        # Combine both HTML and OCR text for comprehensive parking detection
+        combined_text = doc_text + ' ' + ocr_text
+
+        # Parking service indicators (expanded to catch more patterns)
         parking_services = [
             'sedo', 'godaddy', 'namecheap', 'parking page',
             'domain for sale', 'this domain is for sale',
             'buy this domain', 'premium domain',
             'parked domain', 'domain parking', 'park by',
-            'domain names for sale', 'purchase this domain'
+            'domain names for sale', 'purchase this domain',
+            'is this your domain',  # Common parking page phrase
+            'create your website',  # GoDaddy/Spaceship parking
+            'get started with a website',  # Parking lander
+            'register this domain',  # Parking call-to-action
+            'afternic'  # Afternic parking service
         ]
 
-        # Count parking indicators
-        parking_indicators = sum(1 for svc in parking_services if svc in doc_text)
+        # Count parking indicators in BOTH HTML and OCR text
+        parking_indicators = sum(1 for svc in parking_services if svc in combined_text)
 
         # Check for minimal content with ads
         has_minimal_content = doc_length < 500
-        has_ads = 'advertisement' in doc_text or 'sponsored' in doc_text or 'google_ad' in doc_text
+        has_ads = 'advertisement' in combined_text or 'sponsored' in combined_text or 'google_ad' in combined_text
+
+        # Check for bloated HTML with no real links (common modern parking page pattern)
+        has_bloated_html_no_links = (html_size > 10000 and html_size < 500000 and external_links == 0)
 
         # Calculate parking score
         parking_score = 0.0
@@ -267,6 +282,10 @@ class DomainReputationAnalyzer:
         if has_minimal_content and has_ads:
             parking_score += 0.2
 
+        # Boost score for bloated HTML with no links (strong parking indicator)
+        if has_bloated_html_no_links:
+            parking_score += 0.3
+
         # High confidence parked domain
         if parking_score >= 0.7:
             return {
@@ -275,7 +294,8 @@ class DomainReputationAnalyzer:
                 'reason': f'Domain appears to be parked ({parking_indicators} parking indicators)',
                 'parking_indicators': parking_indicators,
                 'parking_score': parking_score,
-                'minimal_content': has_minimal_content
+                'minimal_content': has_minimal_content,
+                'bloated_html_no_links': has_bloated_html_no_links
             }
 
         # Possible parking

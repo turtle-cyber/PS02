@@ -275,24 +275,34 @@ class AIMlService:
             return ''
 
         try:
-            # html_path might be absolute or relative
-            path = Path(html_path)
+            # Try multiple path variations for better compatibility
+            path_candidates = []
 
-            # If path doesn't exist, try mapping /workspace/out to /out (container path)
-            if not path.exists():
-                # Try workspace → container mapping
-                if html_path.startswith('/workspace/out/'):
-                    local_path = html_path.replace('/workspace/out/', '/out/')
-                    path = Path(local_path)
+            # Original path
+            path_candidates.append(Path(html_path))
 
-            if path.exists():
-                with open(path, 'r', encoding='utf-8', errors='ignore') as f:
-                    content = f.read()
-                    logger.debug(f"Loaded HTML content from {path} ({len(content)} bytes)")
-                    return content
-            else:
-                logger.debug(f"HTML file not found: {html_path}")
-                return ''
+            # Workspace → container mapping
+            if html_path.startswith('/workspace/out/'):
+                path_candidates.append(Path(html_path.replace('/workspace/out/', '/out/')))
+
+            # Direct /out/html/ mapping using just the filename
+            html_filename = Path(html_path).name
+            path_candidates.append(Path('/out/html') / html_filename)
+
+            # Try ../out/html (relative path)
+            path_candidates.append(Path('../out/html') / html_filename)
+
+            # Try each path candidate
+            for i, path in enumerate(path_candidates):
+                if path.exists():
+                    with open(path, 'r', encoding='utf-8', errors='ignore') as f:
+                        content = f.read()
+                        logger.debug(f"Loaded HTML from path candidate #{i+1}: {path} ({len(content)} bytes)")
+                        return content
+
+            # None of the paths worked
+            logger.warning(f"HTML file not found in any of {len(path_candidates)} path candidates. Original: {html_path}")
+            return ''
 
         except Exception as e:
             logger.warning(f"Failed to load HTML from {html_path}: {e}")
@@ -421,7 +431,8 @@ class AIMlService:
             # Check what data we actually have available NOW (after loading HTML)
             has_html_content = bool(metadata.get('document_text'))
             has_screenshot = bool(metadata.get('screenshot_path'))
-            has_ocr = bool(metadata.get('ocr_text'))
+            # Check both ocr_text (loaded) and ocr_text_excerpt (from metadata)
+            has_ocr = bool(metadata.get('ocr_text') or metadata.get('ocr_text_excerpt'))
             html_size = metadata.get('html_size', 0)
 
             # FAST PATH 3: If truly no data available, check inactive/parked before giving up
@@ -490,76 +501,59 @@ class AIMlService:
                     'timestamp': datetime.now().isoformat()
                 }
 
-            # Calculate feature quality score
-            feature_quality = self.calculate_feature_quality(metadata)
-            logger.info(f"Domain {domain} feature quality: {feature_quality:.2%}")
+            # CRITICAL: Check for parking indicators from metadata BEFORE trusting crawler
+            # This runs even if HTML/screenshot loading failed, using OCR and metadata features
+            ocr_excerpt = (metadata.get('ocr_text_excerpt', '') or metadata.get('ocr_text', '')).lower()
+            external_links = metadata.get('external_links', 0)
+            cse_id = metadata.get('cse_id', '')
+            registrable = metadata.get('registrable', domain)
 
-            # If feature quality is low (<30%), check for parking indicators before falling back
-            if feature_quality < 0.30:
-                logger.info(f"Domain {domain} has low feature quality ({feature_quality:.2%}) - checking parking indicators")
+            # Safeguard: Don't mark CSE/known benign domains as parked
+            is_cse_domain = bool(cse_id and cse_id != 'BULK_IMPORT' and cse_id != 'URL from user')
+            is_gov_domain = any(tld in registrable.lower() for tld in ['.gov.', '.nic.in', '.ac.in', '.edu.'])
 
-                # Check for parked/inactive indicators even with low features
-                html_size = metadata.get('html_size', 0)
-                external_links = metadata.get('external_links', 0)
-                mx_count = metadata.get('mx_count', 0)
-                a_count = metadata.get('a_count', 0)
-                cse_id = metadata.get('cse_id', '')
-                registrable = metadata.get('registrable', domain)
+            if not is_cse_domain and not is_gov_domain:
+                # Check OCR for parking keywords
+                parking_keywords = [
+                    'is this your domain',
+                    'create your website',
+                    'buy this domain',
+                    'domain for sale',
+                    'this domain is for sale',
+                    'get started with a website',
+                    'register this domain',
+                    'premium domain'
+                ]
+                has_parking_ocr = any(kw in ocr_excerpt for kw in parking_keywords)
 
-                # Safeguard: Don't mark CSE/known benign domains as parked
-                is_cse_domain = bool(cse_id and cse_id != 'BULK_IMPORT')
-                is_gov_domain = any(tld in registrable.lower() for tld in ['.gov.', '.nic.in', '.ac.in', '.edu.'])
+                # Check for bloated HTML with no real links (common parking page pattern)
+                has_bloated_html_no_links = (html_size > 10000 and html_size < 500000 and external_links == 0)
 
-                is_likely_parked = False
-                parking_reason = []
+                if has_parking_ocr or has_bloated_html_no_links:
+                    parking_reason = []
+                    if has_parking_ocr:
+                        parking_reason.append("OCR contains parking keywords")
+                    if has_bloated_html_no_links:
+                        parking_reason.append(f"large HTML ({html_size}B) with no external links")
 
-                # Only check parking if NOT a CSE or government domain
-                if not is_cse_domain and not is_gov_domain:
-                    # Parking detection with low features
-                    if html_size > 0 and html_size < 500:
-                        is_likely_parked = True
-                        parking_reason.append(f"minimal HTML ({html_size}B)")
-                    elif html_size > 0 and html_size < 1000 and external_links == 0:
-                        is_likely_parked = True
-                        parking_reason.append(f"empty page (html={html_size}B, no links)")
-                    # Removed aggressive DNS infrastructure check
-
-                if is_likely_parked:
-                    logger.info(f"Domain {domain} detected as parked with low features: {', '.join(parking_reason)}")
+                    logger.info(f"Domain {domain} detected as PARKED from metadata: {', '.join(parking_reason)}")
                     return {
                         'domain': domain,
                         'verdict': 'PARKED',
-                        'confidence': 0.70,
-                        'reason': f"Parked domain detected (low features): {', '.join(parking_reason)}",
-                        'source': 'aiml_heuristic',
-                        'feature_quality': feature_quality,
-                        'timestamp': datetime.now().isoformat()
+                        'confidence': 0.85 if has_parking_ocr else 0.75,
+                        'reason': f"Parked domain detected: {', '.join(parking_reason)}",
+                        'source': 'aiml_metadata_check',
+                        'timestamp': datetime.now().isoformat(),
+                        'original_crawler_verdict': crawler_verdict
                     }
 
-                # Not parked - fall back to crawler verdict
-                if crawler_verdict:
-                    # Trust crawler verdict when features are insufficient
-                    # If crawler says PHISHING, trust it even without full AIML analysis
-                    return {
-                        'domain': domain,
-                        'verdict': crawler_verdict.upper(),
-                        'confidence': crawler_confidence,
-                        'reason': f'Verdict from crawler (insufficient features for AIML: {feature_quality:.0%} complete)',
-                        'source': 'crawler',
-                        'feature_quality': feature_quality,
-                        'timestamp': datetime.now().isoformat()
-                    }
-                else:
-                    # No verdict and low features - mark as insufficient data
-                    logger.warning(f"Domain {domain} has low features and no crawler verdict")
-                    return {
-                        'domain': domain,
-                        'verdict': 'INSUFFICIENT_DATA',
-                        'confidence': 0.0,
-                        'reason': f'Insufficient features for analysis ({feature_quality:.0%} complete, no crawler verdict)',
-                        'feature_quality': feature_quality,
-                        'timestamp': datetime.now().isoformat()
-                    }
+            # Calculate feature quality score (for logging only, not for early exit)
+            feature_quality = self.calculate_feature_quality(metadata)
+            logger.info(f"Domain {domain} feature quality: {feature_quality:.2%}")
+
+            # Note: We removed the feature quality threshold check
+            # Even with low feature quality, the ML detectors (visual, content, domain) can still work
+            # Let unified_detector handle missing features internally with proper error handling
 
             # Extract features from ChromaDB metadata with proper NaN handling
             def safe_get(key, default=0):

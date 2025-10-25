@@ -236,6 +236,11 @@ class UnifiedPhishingDetector:
 
             # Create DataFrame
             df = pd.DataFrame([features])
+
+            # CRITICAL FIX: Reindex to ensure EXACT column order matching model training
+            # This prevents "feature names unseen at fit time" errors
+            df = df[self.feature_names]
+
             return df
 
         except Exception as e:
