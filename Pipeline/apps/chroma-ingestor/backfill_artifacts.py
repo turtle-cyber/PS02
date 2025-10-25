@@ -26,7 +26,7 @@ CHROMA_PORT = os.getenv("CHROMA_PORT", "8000")
 if Path("/data/out").exists():
     ARTIFACTS_BASE = Path("/data/out")
 else:
-    ARTIFACTS_BASE = Path("/Pipeline/out")
+    ARTIFACTS_BASE = Path("/home/turtleneck/Desktop/PS02/Pipeline/out")
 VARIANTS_COLLECTION = "domains"
 ORIGINALS_COLLECTION = "original_domains"
 

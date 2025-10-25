@@ -282,10 +282,13 @@ const Dashboard = () => {
   };
 
   /*------ API Data Unpacking ------*/
-  const { urlInsightsData, urlInsightsLoading } = useGetUrlInsightsData(dateRange);
-  const { countriesData, countriesLoading } = useGetOriginatingCountries(dateRange);
+  const { urlInsightsData, urlInsightsLoading } =
+    useGetUrlInsightsData(dateRange);
+  const { countriesData, countriesLoading } =
+    useGetOriginatingCountries(dateRange);
   const { urlWatchData, urlWatchLoading } = useGetUrlWatch(dateRange);
-  const { parkedInsightData, parkedInsightLoading } = useGetParkedInsight(dateRange);
+  const { parkedInsightData, parkedInsightLoading } =
+    useGetParkedInsight(dateRange);
   const { overviewData, overviewLoading } = useGetOverview(dateRange);
   const { domainsData, domainsLoading } = useGetDomains(dateRange);
   const { threatLandscapeData, threatLandscapeLoading } =
@@ -375,7 +378,7 @@ const Dashboard = () => {
               URL Insights
             </Typography>
             <CustomLiquidCardTable variant="glass">
-            <UrlInsightsTable rows={urlInsightsData?.table_data || []} />
+              <UrlInsightsTable rows={urlInsightsData?.table_data || []} />
             </CustomLiquidCardTable>
           </div>
         </div>
@@ -415,11 +418,11 @@ const Dashboard = () => {
             >
               Parked Insights
             </Typography>
-            <CustomLiquidCardTable variant="glass">
-            <ParkedInsightsTable
-              rows={parkedInsightData}
-              loading={parkedInsightLoading}
-            />
+            <CustomLiquidCardTable variant="glass" className="h-[450px]">
+              <ParkedInsightsTable
+                rows={parkedInsightData}
+                loading={parkedInsightLoading}
+              />
             </CustomLiquidCardTable>
           </div>
         </div>

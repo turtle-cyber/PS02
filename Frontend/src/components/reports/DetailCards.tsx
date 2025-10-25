@@ -58,15 +58,15 @@ export const DetailCards: React.FC<any> = ({ data }) => {
             <div className="ml-4 mb-4 mr-4">
               <MetricRow
                 label="A Count"
-                value={data?.data?.metadata?.a_count}
+                value={data?.data?.metadata?.a_count || "N/A"}
               />
               <MetricRow
                 label="NS Count"
-                value={data?.data?.metadata?.ns_count}
+                value={data?.data?.metadata?.ns_count || "N/A"}
               />
               <MetricRow
                 label="MX Count"
-                value={data?.data?.metadata?.mx_count}
+                value={data?.data?.metadata?.mx_count || "N/A"}
               />
             </div>
           </LiquidCard>
@@ -81,11 +81,11 @@ export const DetailCards: React.FC<any> = ({ data }) => {
               />
               <MetricRow
                 label="Is Very New"
-                value={data?.data?.metadata?.is_very_new}
+                value={data?.data?.metadata?.is_very_new || "N/A"}
               />
               <MetricRow
                 label="Days Until Expiry"
-                value={data?.data?.metadata?.days_until_expiry}
+                value={data?.data?.metadata?.days_until_expiry || "N/A"}
               />
             </div>
           </LiquidCard>
@@ -136,59 +136,59 @@ export const DetailCards: React.FC<any> = ({ data }) => {
             />
             <MetricRow
               label="Has Features"
-              value={data?.data?.metadata?.has_features}
+              value={data?.data?.metadata?.has_features || "N/A"}
             />
             <MetricRow
               label="URL Length"
-              value={data?.data?.metadata?.url_length}
+              value={data?.data?.metadata?.url_length || "N/A"}
             />
             <MetricRow
               label="URL Entropy"
-              value={data?.data?.metadata?.url_entropy}
+              value={data?.data?.metadata?.url_entropy || "N/A"}
             />
             <MetricRow
               label="Subdomains Entropy"
-              value={data?.data?.metadata?.subdomain_entropy}
+              value={data?.data?.metadata?.subdomain_entropy || "N/A"}
             />
             <MetricRow
               label="Has Repeated Digits"
-              value={data?.data?.metadata?.has_repeated_digits}
+              value={data?.data?.metadata?.has_repeated_digits || "N/A"}
             />
             <MetricRow
               label="Mixed Script"
-              value={data?.data?.metadata?.mixed_script}
+              value={data?.data?.metadata?.mixed_script || "N/A"}
             />
             <MetricRow
               label="Form Count"
-              value={data?.data?.metadata?.formCount}
+              value={data?.data?.metadata?.formCount || "N/A"}
             />
             <MetricRow
               label="Password Fields"
-              value={data?.data?.metadata?.password_fields}
+              value={data?.data?.metadata?.password_fields || "N/A"}
             />
             <MetricRow
               label="Email Fields"
-              value={data?.data?.metadata?.email_fields}
+              value={data?.data?.metadata?.email_fields || "N/A"}
             />
             <MetricRow
               label="Phishing Keywords"
-              value={data?.data?.metadata?.phishing_keywords}
+              value={data?.data?.metadata?.phishing_keywords || "N/A"}
             />
             <MetricRow
               label="Keywords Count"
-              value={data?.data?.metadata?.keyword_count}
+              value={data?.data?.metadata?.keyword_count || "N/A"}
             />
             <MetricRow
               label="HTML Size"
-              value={data?.data?.metadata?.html_size}
+              value={data?.data?.metadata?.html_size || "N/A"}
             />
             <MetricRow
               label="External Links"
-              value={data?.data?.metadata?.external_links}
+              value={data?.data?.metadata?.external_links || "N/A"}
             />
             <MetricRow
               label="Iframe Count"
-              value={data?.data?.metadata?.iframe_count}
+              value={data?.data?.metadata?.iframe_count || "N/A"}
             />
           </div>
         </LiquidCard>
@@ -203,11 +203,11 @@ export const DetailCards: React.FC<any> = ({ data }) => {
           <div className="ml-4 mb-4 mr-4">
             <MetricRow
               label="Favicon MD5"
-              value={data?.data?.metadata?.favicon_md5}
+              value={data?.data?.metadata?.favicon_md5 || "N/A"}
             />
             <MetricRow
               label="Favicon SHA256"
-              value={data?.data?.metadata?.favicon_sha256}
+              value={data?.data?.metadata?.favicon_sha256 || "N/A"}
             />
           </div>
         </LiquidCard>

@@ -25,9 +25,9 @@ export const CSE_DATA = [
   { category: "BFSI", name: "Reserve Bank of India (RBI)", url: "https://www.rbi.org.in" },
   { category: "BFSI", name: "National Payments Corporation of India (NPCI)", url: "https://www.npci.org.in" },
   { category: "BFSI", name: "Life Insurance Corporation of India (LIC)", url: "https://licindia.in" },
-  { category: "BFSI", name: "State Bank of India (SBI)", url: "https://sbi.co.in" },
+  { category: "BFSI", name: "State Bank of India", url: "https://sbi.co.in" },
   { category: "BFSI", name: "Bank of Baroda", url: "https://www.bankofbaroda.in" },
-  { category: "BFSI", name: "Punjab National Bank (PNB)", url: "https://www.pnbindia.in" },
+  { category: "BFSI", name: "Punjab National Bank", url: "https://www.pnbindia.in" },
   { category: "BFSI", name: "Union Bank of India", url: "https://www.unionbankofindia.co.in" },
   { category: "BFSI", name: "Canara Bank", url: "https://www.canarabank.com" },
   { category: "BFSI", name: "Bank of India", url: "https://www.bankofindia.co.in" },
@@ -74,6 +74,7 @@ export const CSE_DATA = [
   { category: "Transport", name: "Ministry of Road Transport & Highways", url: "https://morth.nic.in" },
   { category: "Transport", name: "VAHAN", url: "https://vahan.parivahan.gov.in" },
   { category: "Transport", name: "SARATHI", url: "https://sarathi.parivahan.gov.in" },
+  { category: "Transport", name: "Indian Railways", url: "https://https://www.irctc.co.in" },
 
   // Government
   { category: "Government", name: "UIDAI", url: "https://uidai.gov.in" },
@@ -85,6 +86,7 @@ export const CSE_DATA = [
   { category: "Government", name: "Government of NCT of Delhi", url: "https://delhi.gov.in" },
   { category: "Government", name: "DigiLocker", url: "https://www.digilocker.gov.in" },
   { category: "Government", name: "MyGov", url: "https://www.mygov.in" },
+  { category: "Government", name: "Civil Registration System - MHA", url: "https://dc.crsorgi.gov.in/" },
 
   // Strategic & Public Enterprises
   { category: "Strategic & Public Enterprises", name: "DRDO", url: "https://www.drdo.gov.in" },

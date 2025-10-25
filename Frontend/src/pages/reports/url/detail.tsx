@@ -91,17 +91,19 @@ const UrlDetailPage = () => {
               },
               {
                 label: "Location",
-                value: reportDetailData?.data?.metadata?.city && reportDetailData?.data?.metadata?.country
-                  ? `${reportDetailData.data.metadata.city}, ${reportDetailData.data.metadata.country}`
-                  : reportDetailData?.data?.metadata?.country || "N/A",
+                value:
+                  reportDetailData?.data?.metadata?.city &&
+                  reportDetailData?.data?.metadata?.country
+                    ? `${reportDetailData.data.metadata.city}, ${reportDetailData.data.metadata.country}`
+                    : reportDetailData?.data?.metadata?.country || "N/A",
               },
               {
                 label: "A Count",
-                value: reportDetailData?.data?.metadata?.a_count,
+                value: reportDetailData?.data?.metadata?.a_count || "N/A",
               },
               {
                 label: "MX Count",
-                value: reportDetailData?.data?.metadata?.mx_count,
+                value: reportDetailData?.data?.metadata?.mx_count || "N/A",
               },
               {
                 label: "Registrar",
@@ -109,7 +111,8 @@ const UrlDetailPage = () => {
               },
               {
                 label: "Domain Age",
-                value: reportDetailData?.data?.metadata?.domain_age_days || "N/A",
+                value:
+                  reportDetailData?.data?.metadata?.domain_age_days || "N/A",
               },
             ]}
             lastScan={displayData.lastScan}
