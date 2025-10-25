@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { addDays, setHours, setMinutes } from "date-fns";
+import { addDays } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,14 +34,14 @@ const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({
 
   // Internal state for time inputs
   const [startTime, setStartTime] = useState(() => {
-    const hours = value.startDate.getHours().toString().padStart(2, "0");
-    const minutes = value.startDate.getMinutes().toString().padStart(2, "0");
+    const hours = value.startDate.getUTCHours().toString().padStart(2, "0");
+    const minutes = value.startDate.getUTCMinutes().toString().padStart(2, "0");
     return `${hours}:${minutes}`;
   });
 
   const [endTime, setEndTime] = useState(() => {
-    const hours = value.endDate.getHours().toString().padStart(2, "0");
-    const minutes = value.endDate.getMinutes().toString().padStart(2, "0");
+    const hours = value.endDate.getUTCHours().toString().padStart(2, "0");
+    const minutes = value.endDate.getUTCMinutes().toString().padStart(2, "0");
     return `${hours}:${minutes}`;
   });
 
@@ -59,18 +59,18 @@ const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({
       .split(":")
       .map((str) => parseInt(str, 10));
     let startDateTime = new Date(dateRange.from);
-    startDateTime = setHours(startDateTime, startHours);
-    startDateTime = setMinutes(startDateTime, startMinutes);
-    startDateTime.setSeconds(0, 0);
+    startDateTime.setUTCHours(startHours);
+    startDateTime.setUTCMinutes(startMinutes);
+    startDateTime.setUTCSeconds(0, 0);
 
     // Parse end time
     const [endHours, endMinutes] = endTime
       .split(":")
       .map((str) => parseInt(str, 10));
     let endDateTime = new Date(dateRange.to);
-    endDateTime = setHours(endDateTime, endHours);
-    endDateTime = setMinutes(endDateTime, endMinutes);
-    endDateTime.setSeconds(59, 999);
+    endDateTime.setUTCHours(endHours);
+    endDateTime.setUTCMinutes(endMinutes);
+    endDateTime.setUTCSeconds(59, 999);
 
     onChange({
       startDate: startDateTime,
@@ -86,10 +86,10 @@ const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({
     const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
     const startDateTime = new Date(last24Hours);
-    startDateTime.setHours(0, 0, 0, 0);
+    startDateTime.setUTCHours(0, 0, 0, 0);
 
     const endDateTime = new Date(now);
-    endDateTime.setHours(23, 59, 59, 999);
+    endDateTime.setUTCHours(23, 59, 59, 999);
 
     setDateRange({
       from: startDateTime,
@@ -112,15 +112,16 @@ const DateTimeRangeFilter: React.FC<DateTimeRangeFilterProps> = ({
       month: "short",
       day: "numeric",
       year: "numeric",
+      timeZone: "UTC",
     };
 
     const startDate = start.toLocaleDateString("en-US", options);
     const endDate = end.toLocaleDateString("en-US", options);
 
-    const startHours = start.getHours().toString().padStart(2, "0");
-    const startMinutes = start.getMinutes().toString().padStart(2, "0");
-    const endHours = end.getHours().toString().padStart(2, "0");
-    const endMinutes = end.getMinutes().toString().padStart(2, "0");
+    const startHours = start.getUTCHours().toString().padStart(2, "0");
+    const startMinutes = start.getUTCMinutes().toString().padStart(2, "0");
+    const endHours = end.getUTCHours().toString().padStart(2, "0");
+    const endMinutes = end.getUTCMinutes().toString().padStart(2, "0");
 
     return `${startDate} ${startHours}:${startMinutes} - ${endDate} ${endHours}:${endMinutes}`;
   };

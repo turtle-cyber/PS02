@@ -263,10 +263,10 @@ const Dashboard = () => {
     const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
     const startDate = new Date(last24Hours);
-    startDate.setHours(0, 0, 0, 0);
+    startDate.setUTCHours(0, 0, 0, 0);
 
     const endDate = new Date(now);
-    endDate.setHours(23, 59, 59, 999);
+    endDate.setUTCHours(23, 59, 59, 999);
 
     return { startDate, endDate };
   });
