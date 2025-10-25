@@ -108,7 +108,7 @@ app.use(helmet({
     contentSecurityPolicy: false  // Allow inline styles for simple HTML
 }));
 app.use(cors());
-app.use(express.json());
+app.use(express.json({limit:'300kb'}));
 app.use(express.urlencoded({ extended: true }));
 
 // Rate limiting
@@ -443,8 +443,8 @@ app.post('/api/submit-bulk', async (req, res) => {
         });
         return res.status(400).json({
             success: false,
-            error: `Batch size exceeds maximum of ${MAX_BATCH_SIZE} URLs`,
-            provided: urls.length,
+            error: `Batch size exceeds maximum limit. Provided: ${urls.length} URLs, Maximum allowed: ${MAX_BATCH_SIZE} URLs`,
+            count: urls.length,
             max: MAX_BATCH_SIZE
         });
     }
