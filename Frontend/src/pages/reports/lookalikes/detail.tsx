@@ -61,8 +61,6 @@ const LookalikeDetailPage = () => {
       }
     : data;
 
-  console.log(lookalikeData);
-
   return (
     <div className="min-h-screen">
       {/* Main content */}
