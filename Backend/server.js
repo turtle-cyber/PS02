@@ -108,7 +108,7 @@ app.use(helmet({
     contentSecurityPolicy: false  // Allow inline styles for simple HTML
 }));
 app.use(cors());
-app.use(express.json({limit:'300kb'}));
+app.use(express.json({limit:'300mb'}));
 app.use(express.urlencoded({ extended: true }));
 
 // Rate limiting
