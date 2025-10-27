@@ -46,9 +46,12 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/reports/url" element={<UrlReportsPage />} />
               <Route path="/reports/lookalikes" element={<LookalikesPage />} />
-              <Route path="/reports/url/detail" element={<UrlDetailPage />} />
               <Route
-                path="/reports/lookalikes/detail"
+                path="/reports/url/detail/:id"
+                element={<UrlDetailPage />}
+              />
+              <Route
+                path="/reports/lookalikes/detail/:id"
                 element={<LookalikeDetailPage />}
               />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

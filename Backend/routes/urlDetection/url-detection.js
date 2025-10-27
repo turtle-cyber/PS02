@@ -1,11 +1,20 @@
 const express = require('express');
-const { ChromaClient } = require('chromadb'); 
+const { ChromaClient } = require('chromadb');
 const router = express.Router();
 
 // Chroma DB client setup
 const chroma = new ChromaClient({
     path: `http://${process.env.CHROMA_HOST || 'chroma'}:${process.env.CHROMA_PORT || '8000'}`
 });
+
+// Simple custom embedding function (no-op) to avoid requiring default-embed package
+class SimpleEmbeddingFunction {
+    async generate(texts) {
+        // Return simple embeddings (vectors of zeros)
+        // This is fine if you're just storing/retrieving data without semantic search
+        return texts.map(() => new Array(384).fill(0));
+    }
+}
 
 // Helper function to fetch data directly from Chroma DB
 async function fetchData() {
@@ -15,7 +24,8 @@ async function fetchData() {
         // Use getOrCreateCollection to avoid "collection not found" errors
         const col = await client.getOrCreateCollection({
             name: 'domains',
-            metadata: { "hnsw:space": "cosine" }
+            metadata: { "hnsw:space": "cosine" },
+            embeddingFunction: new SimpleEmbeddingFunction()
         });
 
         // Query Chroma DB to get all records (including metadata with file paths)

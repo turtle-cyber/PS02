@@ -6,12 +6,28 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const { URL } = require('url');
+const { getCseName } = require('./utils/cse_list');
+
 const urlDetectionRouter = require('./routes/urlDetection/url-detection');
 const monitoringStatsRouter = require('./routes/monitoring/monitoring-stats');
 const dnstwistStatsRouter = require('./routes/dnstwist/dnstwist-stats');
 const fcrawlerStatsRouter = require('./routes/featureCrawler/fcrawler-stats');
 const artifactsRouter = require('./routes/artifacts/artifacts');
 const chromaQueryRouter = require('./routes/chroma/chroma-query');
+const urlInsightsRouter = require('./routes/dashboard/url-insights');
+const originatingCountriesRouter = require('./routes/dashboard/originating-countries');
+const urlWatchRouter = require('./routes/dashboard/url-watch');
+const parkedInsightsRouter = require('./routes/dashboard/parked-insights');
+const overviewRouter = require('./routes/dashboard/overview');
+const domainStatsRouter = require('./routes/dashboard/domain-stats');
+const threatLandscapeRouter = require('./routes/dashboard/threat-landscape');
+
+// Live Monitoring Routes
+const liveUrlScanRouter = require('./routes/liveMonitoring/live-url-scan');
+const currentScanRouter = require('./routes/liveMonitoring/current-scan');
+const taggingDistributionRouter = require('./routes/liveMonitoring/tagging-distribution');
+const uniqueDomainCountRouter = require('./routes/liveMonitoring/unique-domain-count');
+const urlProcessesRouter = require('./routes/liveMonitoring/url-processes');
 
 // ============================================
 // Configuration
@@ -92,7 +108,7 @@ app.use(helmet({
     contentSecurityPolicy: false  // Allow inline styles for simple HTML
 }));
 app.use(cors());
-app.use(express.json());
+app.use(express.json({limit:'300kb'}));
 app.use(express.urlencoded({ extended: true }));
 
 // Rate limiting
@@ -154,6 +170,20 @@ app.use('/api', dnstwistStatsRouter);
 app.use('/api', fcrawlerStatsRouter);
 app.use('/api', artifactsRouter);
 app.use('/api/chroma', chromaQueryRouter);
+app.use('/api', urlInsightsRouter);
+app.use('/api', originatingCountriesRouter);
+app.use('/api', urlWatchRouter);
+app.use('/api', parkedInsightsRouter);
+app.use('/api', overviewRouter);
+app.use('/api', domainStatsRouter);
+app.use('/api', threatLandscapeRouter);
+
+// Live Monitoring Routes
+app.use('/api', liveUrlScanRouter);
+app.use('/api', currentScanRouter);
+app.use('/api', taggingDistributionRouter);
+app.use('/api', uniqueDomainCountRouter);
+app.use('/api', urlProcessesRouter);
 
 /**
  * Health check endpoint
@@ -185,7 +215,7 @@ app.post('/api/submit', async (req, res) => {
 
     logger.info('🎯 New submission request', {
         input: inputUrl,
-        cse_id: cse_id,
+        cse_id: getCseName(inputUrl),
         notes: notes,
         use_full_pipeline: useFullPipeline,
         ip: req.ip
@@ -229,6 +259,11 @@ app.post('/api/submit', async (req, res) => {
             });
         }
 
+        // Determine CSE name for this URL
+        const determinedCseName = getCseName(inputUrl);
+        // Use determined CSE name, or fall back to request-level cse_id if not found
+        const finalCseId = determinedCseName !== 'Unknown' ? determinedCseName : (cse_id || 'Unknown');
+
         // Determine target topic and message format based on pipeline choice
         let targetTopic;
         let message;
@@ -244,7 +279,7 @@ app.post('/api/submit', async (req, res) => {
                 fqdn: extractedDomain,
                 source: 'frontend_api',
                 timestamp: Math.floor(Date.now() / 1000),
-                cse_id: cse_id,
+                cse_id: finalCseId,
                 notes: notes,
                 original_input: inputUrl,
                 submitter_ip: req.ip,
@@ -262,7 +297,7 @@ app.post('/api/submit', async (req, res) => {
                 seed_registrable: extractedDomain,  // For tracking: no variants in direct flow
                 source: 'frontend_api_direct',
                 timestamp: Math.floor(Date.now() / 1000),
-                cse_id: cse_id,
+                cse_id: finalCseId,
                 notes: notes,
                 original_input: inputUrl,
                 submitter_ip: req.ip
@@ -408,8 +443,8 @@ app.post('/api/submit-bulk', async (req, res) => {
         });
         return res.status(400).json({
             success: false,
-            error: `Batch size exceeds maximum of ${MAX_BATCH_SIZE} URLs`,
-            provided: urls.length,
+            error: `Batch size exceeds maximum limit. Provided: ${urls.length} URLs, Maximum allowed: ${MAX_BATCH_SIZE} URLs`,
+            count: urls.length,
             max: MAX_BATCH_SIZE
         });
     }
@@ -472,6 +507,11 @@ app.post('/api/submit-bulk', async (req, res) => {
                     continue;
                 }
 
+                // Determine CSE name for this specific URL
+                const determinedCseName = getCseName(inputUrl);
+                // Use determined CSE name, or fall back to request-level cse_id if not found
+                const finalCseId = determinedCseName !== 'Unknown' ? determinedCseName : (cse_id || 'Unknown');
+
                 // Create message based on pipeline choice
                 let message;
                 if (useFullPipeline) {
@@ -479,7 +519,7 @@ app.post('/api/submit-bulk', async (req, res) => {
                         fqdn: extractedDomain,
                         source: 'frontend_api_bulk',
                         timestamp: Math.floor(Date.now() / 1000),
-                        cse_id: cse_id,
+                        cse_id: finalCseId,
                         notes: notes,
                         original_input: inputUrl,
                         submitter_ip: req.ip,
@@ -494,7 +534,7 @@ app.post('/api/submit-bulk', async (req, res) => {
                         seed_registrable: extractedDomain,  // For tracking: no variants in direct flow
                         source: 'frontend_api_bulk_direct',
                         timestamp: Math.floor(Date.now() / 1000),
-                        cse_id: cse_id,
+                        cse_id: finalCseId,
                         notes: notes,
                         original_input: inputUrl,
                         submitter_ip: req.ip,

@@ -1,34 +1,82 @@
 import * as React from "react";
 import { LiquidCard } from "@/components/ui/liquid-card";
+import { Skeleton } from "@mui/material";
 
-interface DomainsCardProps {
-  domainsSummary: {
-    lookAlike: number;
-    mxRecords: number;
-    activeDetected: number;
-    parked: number;
+export const DomainsCard: React.FC<any> = ({ data, loading }) => {
+  const formatNumber = (num: number | null | undefined) => {
+    if (num == null) return "N/A";
+    return num.toLocaleString();
   };
-}
 
-export const DomainsCard: React.FC<DomainsCardProps> = ({ domainsSummary }) => {
+  const formatK = (num: number | null | undefined) => {
+    if (num == null) return "N/A";
+    if (num >= 1000) return `${Math.round(num / 100) / 10}K`;
+    return num.toString();
+  };
+
   return (
-    <LiquidCard variant="glass" className="p-6 min-h-[360px]">
-      <div className="grid grid-cols-2 gap-20">
-        <div>
-          <p className="text-slate-400 text-sm mb-1">Look-Alike Domains</p>
-          <p className="text-white text-2xl font-semibold">{domainsSummary.lookAlike.toLocaleString()}</p>
+    <LiquidCard variant="glass" className="p-6 min-h-[460px]">
+      <div className="flex flex-col h-full gap-6">
+        {/* Top Section: Look-Alike Domains + MX Records */}
+        <div className="grid grid-cols-2 gap-0 border-b border-white/10 pb-6">
+          {/* Look-Alike Domains */}
+          <div className="flex flex-col justify-center border-r border-white/10 pr-6">
+            <div className="text-[2.5rem] leading-none font-bold text-white mb-2">
+              {loading ? (
+                <Skeleton sx={{ width: 120, height: 50, borderRadius: 2 }} />
+              ) : (
+                formatNumber(data?.lookalike_domains)
+              )}
+            </div>
+            <div className="text-slate-400 text-sm font-normal">
+              Look-Alike Domains
+            </div>
+            {data?.tlds && !loading && (
+              <div className="text-slate-500 text-xs mt-1">
+                TLDs: {formatK(data.tlds)}
+              </div>
+            )}
+          </div>
+
+          {/* MX Records */}
+          <div className="flex flex-col justify-center pl-6">
+            <div className="text-[2.5rem] leading-none font-bold text-white mb-2">
+              {loading ? (
+                <Skeleton sx={{ width: 120, height: 50, borderRadius: 2 }} />
+              ) : (
+                formatNumber(data?.domains_with_mx)
+              )}
+            </div>
+            <div className="text-slate-400 text-sm font-normal">MX Records</div>
+          </div>
         </div>
-        <div>
-          <p className="text-slate-400 text-sm mb-1">MX Records</p>
-          <p className="text-white text-2xl font-semibold">{domainsSummary.mxRecords.toLocaleString()}</p>
+
+        {/* Total Active Domains Detected */}
+        <div className="flex flex-col justify-center border-b border-white/10 py-6">
+          <div className="text-slate-400 text-sm font-normal mb-2">
+            Total Active Domains Detected
+          </div>
+          <div className="text-[2.5rem] leading-none font-bold text-white">
+            {loading ? (
+              <Skeleton sx={{ width: 120, height: 50, borderRadius: 2 }} />
+            ) : (
+              formatNumber(data?.total_active_domains)
+            )}
+          </div>
         </div>
-        <div>
-          <p className="text-slate-400 text-sm mb-1">Total Active Domains Detected</p>
-          <p className="text-white text-2xl font-semibold">{domainsSummary.activeDetected.toLocaleString()}</p>
-        </div>
-        <div>
-          <p className="text-slate-400 text-sm mb-1">Total Parked Domains</p>
-          <p className="text-white text-2xl font-semibold">{domainsSummary.parked.toLocaleString()}</p>
+
+        {/* Total Parked Domains */}
+        <div className="flex flex-col justify-center pt-6">
+          <div className="text-slate-400 text-sm font-normal mb-2">
+            Total Parked Domains
+          </div>
+          <div className="text-[2.5rem] leading-none font-bold text-white">
+            {loading ? (
+              <Skeleton sx={{ width: 120, height: 50, borderRadius: 2 }} />
+            ) : (
+              formatNumber(data?.total_parked_domains)
+            )}
+          </div>
         </div>
       </div>
     </LiquidCard>

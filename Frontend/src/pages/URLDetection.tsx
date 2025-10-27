@@ -18,7 +18,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { http } from "@/hooks/config";
 import Papa from "papaparse";
-import { BULK_SUBMIT, MONITORING_URL, SUBMIT_URL, URLS_SCANNED } from "@/endpoints/urldetection.endpoints";
+import {
+  BULK_SUBMIT,
+  MONITORING_URL,
+  SUBMIT_URL,
+  URLS_SCANNED,
+} from "@/endpoints/urldetection.endpoints";
 
 /* ---------- KPI Card (animated) ---------- */
 type KPICardProps = {
@@ -78,7 +83,13 @@ const KPICard: React.FC<KPICardProps> = ({
         {title}
       </Typography>
       <Typography sx={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF" }}>
-        {loading? <Skeleton/> : <span>{formatted} {unit}</span>}
+        {loading ? (
+          <Skeleton />
+        ) : (
+          <span>
+            {formatted} {unit}
+          </span>
+        )}
       </Typography>
     </Box>
   );
@@ -144,53 +155,56 @@ const CustomCheckbox = styled(MuiCheckbox)({
   "& .MuiSvgIcon-root": { fontSize: "20px" },
 });
 
-
 /* ----------- GET based API Hooks ---------*/
 const useGetScannedUrl = () => {
   const [scannedUrlData, setScannedUrlData] = useState<any>([]);
   const [scannedUrlLoading, setScannedUrlLoading] = useState(false);
 
-  const fetchScannedUrlData = useCallback(async ()=>  {
-      setScannedUrlLoading(true)
-    try{
-      const response = await http.get(URLS_SCANNED)
-      setScannedUrlData(response?.data || [])
-    } catch(error) {
-      toast.error('Error Fetching Count Of Scanned URLs')
-      console.error('Error Fetching Count Of Scanned URLs', error)
-    }finally {
-      setScannedUrlLoading(false)
+  const fetchScannedUrlData = useCallback(async () => {
+    setScannedUrlLoading(true);
+    try {
+      const response = await http.get(URLS_SCANNED);
+      setScannedUrlData(response?.data || []);
+    } catch (error) {
+      toast.error("Error Fetching Count Of Scanned URLs");
+      console.error("Error Fetching Count Of Scanned URLs", error);
+    } finally {
+      setScannedUrlLoading(false);
     }
-  },[])
-  useEffect(()=>{
-    fetchScannedUrlData()
-  },[fetchScannedUrlData])
+  }, []);
+  useEffect(() => {
+    fetchScannedUrlData();
+  }, [fetchScannedUrlData]);
 
-  return {scannedUrlData, scannedUrlLoading, refetch: fetchScannedUrlData}
-}
+  return { scannedUrlData, scannedUrlLoading, refetch: fetchScannedUrlData };
+};
 
 const useGetMonitoringUrl = () => {
   const [monitoringUrlData, setMonitoringUrlData] = useState<any>([]);
   const [monitoringUrlLoading, setMonitoringUrlLoading] = useState(false);
 
-  const fetchMonitoringUrlData = useCallback(async ()=>  {
-      setMonitoringUrlLoading(true)
-    try{
-      const response = await http.get(MONITORING_URL)
-      setMonitoringUrlData(response?.data || [])
-    } catch(error) {
-      toast.error('Error Fetching Count Of Monitoring URLs')
-      console.error('Error Fetching Count Of Monitoring URLs', error)
-    }finally {
-      setMonitoringUrlLoading(false)
+  const fetchMonitoringUrlData = useCallback(async () => {
+    setMonitoringUrlLoading(true);
+    try {
+      const response = await http.get(MONITORING_URL);
+      setMonitoringUrlData(response?.data || []);
+    } catch (error) {
+      toast.error("Error Fetching Count Of Monitoring URLs");
+      console.error("Error Fetching Count Of Monitoring URLs", error);
+    } finally {
+      setMonitoringUrlLoading(false);
     }
-  },[])
-  useEffect(()=>{
-    fetchMonitoringUrlData()
-  },[fetchMonitoringUrlData])
+  }, []);
+  useEffect(() => {
+    fetchMonitoringUrlData();
+  }, [fetchMonitoringUrlData]);
 
-  return {monitoringUrlData, monitoringUrlLoading, refetch: fetchMonitoringUrlData}
-}
+  return {
+    monitoringUrlData,
+    monitoringUrlLoading,
+    refetch: fetchMonitoringUrlData,
+  };
+};
 
 /* ---------- Page ---------- */
 const URLDetection = () => {
@@ -200,8 +214,8 @@ const URLDetection = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isLookalike, setIsLookAlike] = useState(false);
 
-  const {scannedUrlData, scannedUrlLoading} = useGetScannedUrl();
-  const {monitoringUrlData, monitoringUrlLoading} = useGetMonitoringUrl();
+  const { scannedUrlData, scannedUrlLoading } = useGetScannedUrl();
+  const { monitoringUrlData, monitoringUrlLoading } = useGetMonitoringUrl();
 
   /* ---------- Submit API Hook ---------- */
   const handleSubmit = async (inputUrl?: string, isLookalike?: boolean) => {
@@ -209,7 +223,6 @@ const URLDetection = () => {
 
     const payload = {
       url: urlToSubmit,
-      cse_id: "URL from user",
       notes: "User input",
       use_full_pipeline: isLookalike || false,
     };
@@ -255,8 +268,7 @@ const URLDetection = () => {
           const payload = {
             urls: urls,
             use_full_pipeline: isLookalike || false,
-            cse_id: "BULK_IMPORT",
-            notes: "CSV import from security report",
+            notes: "CSV import",
           };
 
           const resp = await http.post(BULK_SUBMIT, payload);
@@ -335,9 +347,22 @@ const URLDetection = () => {
             justifyContent: "center",
           }}
         >
-          <KPICard title="URLs Scanned" data={scannedUrlData?.rowCount} loading={scannedUrlLoading}/>
-          <KPICard title="Average Risk Score" data={44} unit="%" loading={scannedUrlLoading}/>
-          <KPICard title="Active Watchlist" data={monitoringUrlData?.summary?.total_monitoring} loading={monitoringUrlLoading}/>
+          <KPICard
+            title="URLs Scanned"
+            data={scannedUrlData?.rowCount}
+            loading={scannedUrlLoading}
+          />
+          <KPICard
+            title="Average Risk Score"
+            data={44}
+            unit="%"
+            loading={scannedUrlLoading}
+          />
+          <KPICard
+            title="Active Watchlist"
+            data={monitoringUrlData?.summary?.total_monitoring}
+            loading={monitoringUrlLoading}
+          />
         </Box>
 
         {/* World Map + Search */}

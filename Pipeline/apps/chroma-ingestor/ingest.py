@@ -565,11 +565,22 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
         keep["a_count"] = len(r["dns"].get("A",[]) or [])
         keep["mx_count"] = len(r["dns"].get("MX",[]) or [])
         keep["ns_count"] = len(r["dns"].get("NS",[]) or [])
+    if "geoip" in r:
+        geo = r["geoip"]
+        keep["country"] = geo.get("country")
+        keep["city"] = geo.get("city")
+        keep["latitude"] = geo.get("latitude")
+        keep["longitude"] = geo.get("longitude")
+        keep["asn_org"] = geo.get("asn_org")  # ISP name
 
-    # Store full WHOIS record
-    if "whois" in r and isinstance(r["whois"], dict):
-        keep["whois"] = json.dumps(r["whois"])
-        # Also keep key fields for filtering
+    # Also store ASN from rdap (separate source, more reliable)
+    rdap = r.get("rdap", {})
+    if rdap.get("asn"):
+        keep["asn"] = rdap.get("asn")
+    # Fallback to geoip ASN if rdap ASN not available
+    elif "geoip" in r and r["geoip"].get("asn"):
+        keep["asn"] = r["geoip"].get("asn")
+    if "whois" in r:
         whois = r["whois"]
         keep["registrar"] = whois.get("registrar")
         if "domain_age_days" in whois:

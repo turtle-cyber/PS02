@@ -4,17 +4,18 @@ import { cn } from "@/lib/utils";
 interface LiquidCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   variant?: 'default' | 'glass';
+  allowOverflow?: boolean;
 }
 
 export const LiquidCard = React.forwardRef<HTMLDivElement, LiquidCardProps>(
-  ({ className, children, variant = 'default', ...props }, ref) => {
-    
+  ({ className, children, variant = 'default', allowOverflow = false, ...props }, ref) => {
+
     const glassStyles = 'rounded-2xl border border-white/10 backdrop-blur-[20px]' +
       ' bg-[rgba(255,255,255,0.05)] shadow-[0_0_24px_rgba(229,9,20,0.10)]' +
       ' ring-1 ring-white/5 transition-all duration-300' +
       ' hover:bg-[rgba(255,255,255,0.08)] hover:border-white/15' +
       ' hover:shadow-[0_0_32px_rgba(229,9,20,0.15)]' +
-      ' relative overflow-hidden';
+      ` relative ${allowOverflow ? 'overflow-visible' : 'overflow-hidden'}`;
 
     const defaultStyles = "rounded-2xl border border-white/6 backdrop-blur-md" +
       " bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))]" +

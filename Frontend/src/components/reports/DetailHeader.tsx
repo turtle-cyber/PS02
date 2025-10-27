@@ -15,19 +15,23 @@ interface DetailHeaderProps {
   metaLeft: Array<{ label: string; value: string | number }>;
   metaRight: Array<{ label: string; value: string | number }>;
   lastScan: string;
-  additionalMetrics?: Array<{ label: string; value: string | number; highlight?: boolean }>;
+  additionalMetrics?: Array<{
+    label: string;
+    value: string | number;
+    highlight?: boolean;
+  }>;
 }
 
 const getVerdictColor = (verdict: string) => {
   switch (verdict) {
-    case "Phishing":
-      return "bg-[#8B373A]/20 text-[#e1e1e1] border-[#E50914]/40";
-    case "Suspicious":
-      return "bg-[#FDD835]/20 text-[#FFB020] border-[#FFB020]/40";
-    case "Clean":
-      return "bg-[#43A047]/20 text-[#1FBF75] border-[#1FBF75]/40";
+    case "phishing":
+      return "bg-[#8B373A]/20 text-[#e1e1e1] border-[#E50914]/40 capitalize";
+    case "parked":
+      return "bg-[#FDD835]/20 text-[#FFB020] border-[#FFB020]/40 capitalize";
+    case "benign":
+      return "bg-[#43A047]/20 text-[#1FBF75] border-[#1FBF75]/40 capitalize";
     default:
-      return "bg-slate-500/20 text-slate-400 border-slate-500/40";
+      return "bg-slate-500/20 text-slate-400 border-slate-500/40 capitalize";
   }
 };
 
@@ -42,7 +46,7 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
   metaLeft,
   metaRight,
   lastScan,
-  additionalMetrics = []
+  additionalMetrics = [],
 }) => {
   const navigate = useNavigate();
 
@@ -62,20 +66,18 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
           </Button>
           <h1 className="text-2xl font-semibold text-white">{url}</h1>
         </div>
-        
+
         {/* Status chips */}
         <div className="flex items-center gap-2">
           {verdict && (
-            <Badge className={getVerdictColor(verdict)}>
-              {verdict}
-            </Badge>
+            <Badge className={getVerdictColor(verdict)}>{verdict}</Badge>
           )}
           {darkWebPresence && (
             <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/40">
               Dark-web presence
             </Badge>
           )}
-          {typeof confidence === 'number' && typeof risk === 'number' && (
+          {typeof confidence === "number" && typeof risk === "number" && (
             <Badge className="bg-slate-700/40 text-slate-300 border-slate-600/40">
               Confidence: {confidence}% | Risk: {risk}
             </Badge>
@@ -89,7 +91,11 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
           {additionalMetrics.map((metric, idx) => (
             <div key={idx} className="space-y-1">
               <p className="text-xs text-slate-400">{metric.label}:</p>
-              <p className={`text-lg font-semibold ${metric.highlight ? 'text-[#B71C1C]' : 'text-slate-200'}`}>
+              <p
+                className={`text-lg font-semibold ${
+                  metric.highlight ? "text-[#B71C1C]" : "text-slate-200"
+                }`}
+              >
                 {metric.value}
               </p>
             </div>
@@ -104,7 +110,9 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
           {metaLeft.map((item, idx) => (
             <div key={idx} className="flex justify-between items-center">
               <span className="text-sm text-slate-400">{item.label}:</span>
-              <span className="text-sm text-slate-200 font-medium">{item.value}</span>
+              <span className="text-sm text-slate-200 font-medium">
+                {item.value}
+              </span>
             </div>
           ))}
         </div>
@@ -114,7 +122,9 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
           {metaRight.map((item, idx) => (
             <div key={idx} className="flex justify-between items-center">
               <span className="text-sm text-slate-400">{item.label}:</span>
-              <span className="text-sm text-slate-200 font-medium">{item.value}</span>
+              <span className="text-sm text-slate-200 font-medium">
+                {item.value}
+              </span>
             </div>
           ))}
         </div>
@@ -123,13 +133,14 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
       {/* Last scan */}
       <div className="flex justify-end">
         <span className="text-xs text-slate-500">
-          Last Scan: {new Date(lastScan).toLocaleString('en-GB', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
+          Last Scan:{" "}
+          {new Date(lastScan).toLocaleString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
           })}
         </span>
       </div>
