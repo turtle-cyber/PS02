@@ -316,6 +316,103 @@ class DomainReputationAnalyzer:
             'parking_indicators': parking_indicators
         }
 
+    def analyze_redirect_risk(self, metadata: Dict) -> Dict:
+        """
+        Analyze redirect behavior for suspicious patterns
+
+        Args:
+            metadata: Domain metadata with redirect_chain and redirect_count
+
+        Returns:
+            Dictionary with redirect risk analysis
+        """
+        import json
+        from urllib.parse import urlparse
+
+        redirect_chain = metadata.get('redirect_chain', [])
+        redirect_count = metadata.get('redirect_count', 0)
+        registrable = metadata.get('registrable', '')
+
+        # Parse redirect chain if it's a JSON string
+        if isinstance(redirect_chain, str):
+            try:
+                redirect_chain = json.loads(redirect_chain)
+            except:
+                redirect_chain = []
+
+        risk_score = 0.0
+        risk_factors = []
+        is_cross_domain = False
+        is_excessive = False
+
+        # No redirects - benign
+        if redirect_count == 0 or len(redirect_chain) <= 1:
+            return {
+                'risk_score': 0.0,
+                'risk_factors': [],
+                'is_cross_domain': False,
+                'is_excessive': False,
+                'redirect_count': redirect_count,
+                'verdict': 'NO_REDIRECTS'
+            }
+
+        # Extract domains from redirect chain
+        def extract_domain(url):
+            """Extract registrable domain from URL"""
+            try:
+                parsed = urlparse(url)
+                hostname = parsed.hostname or parsed.netloc or url
+                # Simple domain extraction (not using tldextract to avoid dependency)
+                parts = hostname.split('.')
+                if len(parts) >= 2:
+                    return '.'.join(parts[-2:])
+                return hostname
+            except:
+                return url
+
+        try:
+            if len(redirect_chain) > 1:
+                original_domain = extract_domain(redirect_chain[0])
+                final_domain = extract_domain(redirect_chain[-1])
+
+                # Check for cross-domain redirect
+                if original_domain != final_domain and original_domain != registrable:
+                    is_cross_domain = True
+                    risk_score += 0.3
+                    risk_factors.append(f"Cross-domain redirect: {original_domain} → {final_domain}")
+        except Exception as e:
+            pass
+
+        # Check for excessive redirects (potential cloaking/evasion)
+        if redirect_count > 50:
+            is_excessive = True
+            risk_score += 0.4
+            risk_factors.append(f"Excessive redirects ({redirect_count} hops)")
+        elif redirect_count > 20:
+            is_excessive = True
+            risk_score += 0.2
+            risk_factors.append(f"Many redirects ({redirect_count} hops)")
+        elif redirect_count > 10:
+            risk_score += 0.1
+            risk_factors.append(f"Multiple redirects ({redirect_count} hops)")
+
+        # Determine verdict
+        if risk_score >= 0.5:
+            verdict = 'SUSPICIOUS_REDIRECTS'
+        elif risk_score >= 0.3:
+            verdict = 'UNUSUAL_REDIRECTS'
+        else:
+            verdict = 'NORMAL_REDIRECTS'
+
+        return {
+            'risk_score': min(risk_score, 1.0),
+            'risk_factors': risk_factors,
+            'is_cross_domain': is_cross_domain,
+            'is_excessive': is_excessive,
+            'redirect_count': redirect_count,
+            'verdict': verdict
+        }
+
     def analyze_tld_risk(self, domain: str) -> Dict:
         """Analyze TLD risk"""
         parts = domain.split('.')

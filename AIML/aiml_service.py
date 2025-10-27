@@ -501,9 +501,61 @@ class AIMlService:
                     'timestamp': datetime.now().isoformat()
                 }
 
+            # PRIORITY: Check for error pages (503/404/500) FIRST
+            # These should be marked as INACTIVE, not SUSPICIOUS
+            ocr_excerpt = (metadata.get('ocr_text_excerpt', '') or metadata.get('ocr_text', '')).lower()
+            error_page_keywords = [
+                '503 service temporarily unavailable',
+                '503 service unavailable',
+                '404 not found',
+                '404 page not found',
+                '500 internal server error',
+                '502 bad gateway',
+                '504 gateway timeout',
+                'nginx',  # Common in error pages
+                'this page isn\'t working',
+                'server error'
+            ]
+            has_error_page = any(kw in ocr_excerpt for kw in error_page_keywords)
+
+            # Also check if final_url or redirect_chain indicates error
+            redirect_chain = metadata.get('redirect_chain', [])
+            if isinstance(redirect_chain, str):
+                import json
+                try:
+                    redirect_chain = json.loads(redirect_chain)
+                except:
+                    redirect_chain = []
+
+            if has_error_page or (len(ocr_excerpt) < 100 and any(err in ocr_excerpt for err in ['503', '404', '500', '502', '504'])):
+                error_type = 'unknown'
+                if '503' in ocr_excerpt:
+                    error_type = '503 Service Unavailable'
+                elif '404' in ocr_excerpt:
+                    error_type = '404 Not Found'
+                elif '500' in ocr_excerpt:
+                    error_type = '500 Internal Server Error'
+                elif '502' in ocr_excerpt:
+                    error_type = '502 Bad Gateway'
+                elif '504' in ocr_excerpt:
+                    error_type = '504 Gateway Timeout'
+                else:
+                    error_type = 'Server Error'
+
+                logger.info(f"Domain {domain} detected as error page: {error_type}")
+                return {
+                    'domain': domain,
+                    'verdict': 'INACTIVE',
+                    'confidence': 0.90,
+                    'reason': f'Domain returns error page: {error_type}',
+                    'error_type': error_type,
+                    'source': 'aiml_error_detection',
+                    'timestamp': datetime.now().isoformat(),
+                    'original_crawler_verdict': crawler_verdict
+                }
+
             # CRITICAL: Check for parking indicators from metadata BEFORE trusting crawler
             # This runs even if HTML/screenshot loading failed, using OCR and metadata features
-            ocr_excerpt = (metadata.get('ocr_text_excerpt', '') or metadata.get('ocr_text', '')).lower()
             external_links = metadata.get('external_links', 0)
             cse_id = metadata.get('cse_id', '')
             registrable = metadata.get('registrable', domain)

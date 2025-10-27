@@ -877,6 +877,19 @@ class UnifiedPhishingDetector:
                 'detector_results': {}
             }
 
+        # 5. Check REDIRECT patterns (suspicious redirect chains)
+        redirect_result = self.domain_analyzer.analyze_redirect_risk(metadata)
+        if redirect_result['verdict'] == 'SUSPICIOUS_REDIRECTS':
+            return {
+                'verdict': 'SUSPICIOUS',
+                'confidence': 0.75,
+                'risk_score': redirect_result['risk_score'],
+                'reasons': redirect_result['risk_factors'],
+                'status_check': 'suspicious_redirects',
+                'redirect_details': redirect_result,
+                'detector_results': {}
+            }
+
         # Continue to ML detectors
         return None
 

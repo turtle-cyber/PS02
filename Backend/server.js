@@ -400,7 +400,7 @@ app.post('/api/submit-bulk', async (req, res) => {
     }
 
     // Limit batch size
-    const MAX_BATCH_SIZE = 10000;
+    const MAX_BATCH_SIZE = 1000000;
     if (urls.length > MAX_BATCH_SIZE) {
         logger.warn('⚠️ Bulk submission rejected: Batch too large', {
             count: urls.length,
