@@ -369,13 +369,18 @@ class AIMlService:
         crawler_confidence = metadata.get('confidence', 0.75)
 
         try:
-            # STEP 0: Load HTML content from disk if available
-            # This is CRITICAL - without this, we can't analyze page content
+            # STEP 0: Load HTML content and extract text features
+            # This is CRITICAL - it runs the offline feature extraction at runtime
             html_content = self.load_html_content(metadata)
             if html_content:
-                metadata['document_text'] = html_content
-                metadata['doc_length'] = len(html_content)
-                logger.debug(f"Loaded HTML for {domain}: {len(html_content)} bytes")
+                logger.debug(f"Loaded HTML for {domain}: {len(html_content)} bytes. Extracting text features...")
+                try:
+                    # Use the detector's text_extractor instance to get all doc_* features
+                    text_features = self.detector.text_extractor.extract_features(html_content=html_content)
+                    metadata.update(text_features)
+                    logger.info(f"Successfully extracted text features for {domain}. Keywords found: {text_features.get('doc_has_credential_keywords', False)}")
+                except Exception as e:
+                    logger.error(f"Failed to extract text features for {domain}: {e}")
 
             # Load OCR text if available
             ocr_text = self.load_ocr_text(metadata)
@@ -412,6 +417,21 @@ class AIMlService:
                     'confidence': 0.98,
                     'reason': 'Legitimate CSE domain (whitelisted)',
                     'source': 'cse_whitelist',
+                    'registrable': registrable,
+                    'timestamp': datetime.now().isoformat()
+                }
+
+            # NEW FAST PATH: Check for trusted government/educational TLDs
+            trusted_tlds = ['.gov.in', '.nic.in', '.ac.in', '.edu.in', '.res.in', '.mil.in', '.gov', '.edu', '.mil']
+            if any(registrable.endswith(tld) for tld in trusted_tlds):
+                matched_tld = next((tld for tld in trusted_tlds if registrable.endswith(tld)), 'trusted TLD')
+                logger.info(f"Domain {domain} has a trusted TLD ({matched_tld}) - returning BENIGN immediately")
+                return {
+                    'domain': domain,
+                    'verdict': 'BENIGN',
+                    'confidence': 0.99,
+                    'reason': f'Domain has a trusted TLD ({matched_tld})',
+                    'source': 'trusted_tld_whitelist',
                     'registrable': registrable,
                     'timestamp': datetime.now().isoformat()
                 }

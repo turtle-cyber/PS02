@@ -186,9 +186,13 @@ class TextFeatureExtractor:
 
         return min(1.0, risk_score)
 
-    def extract_features(self, html_path: str) -> Dict:
+    def extract_features(self, html_path: str = None, html_content: str = None) -> Dict:
         """
-        Extract all text-based features from HTML file
+        Extract all text-based features from HTML file or content string.
+
+        Args:
+            html_path: Path to HTML file (if html_content is not provided)
+            html_content: HTML content as a string
 
         Returns dict with:
         - document_text
@@ -204,9 +208,12 @@ class TextFeatureExtractor:
         - doc_has_credential_keywords
         """
         try:
-            # Read HTML file
-            with open(html_path, 'r', encoding='utf-8', errors='ignore') as f:
-                html_content = f.read()
+            # Ensure we have HTML content
+            if not html_content:
+                if not html_path or not Path(html_path).exists():
+                    raise ValueError("Either html_path or html_content must be provided")
+                with open(html_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    html_content = f.read()
 
             # Extract text
             document_text = self.extract_text_from_html(html_content)
@@ -250,7 +257,8 @@ class TextFeatureExtractor:
             }
 
         except Exception as e:
-            print(f"Error processing {html_path}: {e}")
+            error_source = html_path or "html_content"
+            print(f"Error processing {error_source}: {e}")
             return {
                 'document_text': '',
                 'doc_length': 0,
