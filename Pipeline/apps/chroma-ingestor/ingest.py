@@ -497,7 +497,15 @@ def stable_id(r: Dict[str,Any]) -> str:
         except:
             pass
 
-    # Priority 1: Extract full hostname from URL (if not cross-domain redirect)
+    # Priority 1: Extract from canonical_fqdn (ORIGINAL domain before redirects)
+    # This is CRITICAL for deduplication - ensures mha.gov.in and its Punycode
+    # redirect xn--... get the same ID
+    if not full_domain:
+        fqdn = r.get("canonical_fqdn") or r.get("fqdn") or r.get("host")
+        if fqdn:
+            full_domain = fqdn.lower()
+
+    # Priority 2: Extract full hostname from URL (fallback if canonical_fqdn missing)
     if not full_domain:
         url = r.get("url") or r.get("final_url")
         if url:
@@ -508,12 +516,6 @@ def stable_id(r: Dict[str,Any]) -> str:
                     full_domain = hostname.lower()
             except:
                 pass
-
-    # Priority 2: Extract from FQDN fields
-    if not full_domain:
-        fqdn = r.get("canonical_fqdn") or r.get("fqdn") or r.get("host")
-        if fqdn:
-            full_domain = fqdn.lower()
 
     # Priority 3: Use provided registrable as fallback
     if not full_domain:
