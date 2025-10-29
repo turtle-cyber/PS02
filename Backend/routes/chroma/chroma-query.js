@@ -483,6 +483,16 @@ router.get('/non-lookalikes', async (req, res) => {
 
         const collection = await chromaClient.getCollection({ name: VARIANTS_COLLECTION });
 
+        // CRITICAL: Fetch all IDs from original_domains collection to exclude them
+        // This ensures that lookalike seeds don't appear in URL reports table,
+        // even if they also exist in domains collection due to pipeline routing
+        const originalsCollection = await chromaClient.getCollection({ name: ORIGINALS_COLLECTION });
+        const originalsResults = await originalsCollection.get({
+            limit: 10000,
+            include: []  // Only need IDs, not metadata or documents
+        });
+        const originalSeedIds = new Set(originalsResults.ids);
+
         // Note: ChromaDB doesn't support filtering by "same base domain" natively
         // Strategy: Fetch ALL results and filter client-side, then paginate
         const fetchLimit = 10000; // Fetch large number to get all non-lookalikes
@@ -534,6 +544,18 @@ router.get('/non-lookalikes', async (req, res) => {
                 };
             })
             .filter(domain => {
+                // EXCLUDE original lookalike seeds (they should only appear in lookalike table)
+                // Check if this domain's ID exists in the original_domains collection
+                // This is more reliable than checking is_original_seed flag which may be lost in pipeline
+                if (originalSeedIds.has(domain.id)) {
+                    return false;  // Exclude - this is a lookalike seed
+                }
+
+                // Also exclude if is_original_seed flag is explicitly true (defensive check)
+                if (domain.metadata?.is_original_seed === true) {
+                    return false;  // Exclude from URL reports table
+                }
+
                 // Filter for non-lookalike submissions
                 if (!domain.seed_registrable) {
                     // No seed = non-lookalike (user submission)

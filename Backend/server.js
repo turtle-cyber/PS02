@@ -333,8 +333,12 @@ app.post('/api/submit', async (req, res) => {
             pipeline: pipelineDescription
         });
 
-        // DUAL SUBMISSION: If using full pipeline, ALSO submit original domain to direct pipeline
-        // This ensures the original seed gets full feature extraction (SSL, JS, forms, etc.)
+        // DUAL SUBMISSION REMOVED: DNSTwist runner already emits original seed to crawl queue
+        // for feature extraction, so this dual submission causes the bug where lookalike URLs
+        // appear in BOTH lookalike table AND URL reports table.
+        // The DNSTwist runner emits original seeds to phish.urls.crawl topic (see runner_continuous.py:342)
+        // which ensures full feature extraction without duplicating in domains collection.
+        /*
         if (useFullPipeline) {
             const directMessage = {
                 fqdn: extractedDomain,
@@ -367,6 +371,7 @@ app.post('/api/submit', async (req, res) => {
                 reason: 'ensure_full_feature_extraction'
             });
         }
+        */
 
         const duration = Date.now() - startTime;
 
