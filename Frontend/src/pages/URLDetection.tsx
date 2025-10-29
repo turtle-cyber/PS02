@@ -250,6 +250,7 @@ const URLDetection = () => {
     Papa.parse(file, {
       header: false,
       skipEmptyLines: true,
+      worker: true, // Parse in web worker to handle large files without blocking UI
       complete: async (results) => {
         try {
           // Extract URLs from CSV (first column of each row)

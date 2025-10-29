@@ -16,7 +16,7 @@ let chromaReady = false;
 (async () => {
     try {
         console.log('[threat-landscape] Connecting to ChromaDB...');
-        collection = await chroma.getCollection({ name: COLLECTION_NAME });
+        collection = await chroma.getOrCreateCollection({ name: COLLECTION_NAME });
         chromaReady = true;
         console.log('[threat-landscape] ChromaDB collection connected successfully');
     } catch (error) {

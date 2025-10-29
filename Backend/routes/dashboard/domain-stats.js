@@ -15,7 +15,7 @@ let chromaReady = false;
 (async () => {
     try {
         console.log('[domain-stats] Connecting to ChromaDB...');
-        collection = await chroma.getCollection({ name: COLLECTION_NAME });
+        collection = await chroma.getOrCreateCollection({ name: COLLECTION_NAME });
         chromaReady = true;
         console.log('[domain-stats] ChromaDB collection connected successfully');
     } catch (error) {

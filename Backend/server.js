@@ -108,7 +108,7 @@ app.use(helmet({
     contentSecurityPolicy: false  // Allow inline styles for simple HTML
 }));
 app.use(cors());
-app.use(express.json({limit:'300kb'}));
+app.use(express.json({limit:'100mb'}));
 app.use(express.urlencoded({ extended: true }));
 
 // Rate limiting
@@ -440,7 +440,7 @@ app.post('/api/submit-bulk', async (req, res) => {
     }
 
     // Limit batch size
-    const MAX_BATCH_SIZE = 10000;
+    const MAX_BATCH_SIZE = 1000000;
     if (urls.length > MAX_BATCH_SIZE) {
         logger.warn('⚠️ Bulk submission rejected: Batch too large', {
             count: urls.length,
