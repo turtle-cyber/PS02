@@ -29,7 +29,7 @@ const INACTIVE_META_PREFIX = "monitoring:meta:inactive:";
 
 /**
  * GET /api/monitoring/stats
- * Returns comprehensive monitoring statistics
+ * Returns monitoring statistics summary (counts only)
  */
 router.get('/monitoring/stats', async (req, res) => {
     try {
@@ -38,57 +38,12 @@ router.get('/monitoring/stats', async (req, res) => {
         const inactiveCount = await redisClient.zCard(INACTIVE_QUEUE);
         const totalMonitoring = activeCount + inactiveCount;
 
-        // Get all active monitoring domains (optional, can be limited)
-        const activeDomains = await redisClient.zRange(MONITOR_QUEUE, 0, -1);
-
-        // Get all inactive monitoring domains
-        const inactiveDomains = await redisClient.zRange(INACTIVE_QUEUE, 0, -1);
-
-        // Get monitoring details for a sample (first 10 of each)
-        const activeDetails = [];
-        for (let i = 0; i < Math.min(10, activeDomains.length); i++) {
-            const domain = activeDomains[i];
-            const score = await redisClient.zScore(MONITOR_QUEUE, domain);
-            const meta = await redisClient.hGetAll(`${MONITOR_META_PREFIX}${domain}`);
-            activeDetails.push({
-                domain,
-                next_check_timestamp: parseInt(score),
-                next_check_date: new Date(parseInt(score) * 1000).toISOString(),
-                ...meta
-            });
-        }
-
-        const inactiveDetails = [];
-        for (let i = 0; i < Math.min(10, inactiveDomains.length); i++) {
-            const domain = inactiveDomains[i];
-            const score = await redisClient.zScore(INACTIVE_QUEUE, domain);
-            const meta = await redisClient.hGetAll(`${INACTIVE_META_PREFIX}${domain}`);
-            inactiveDetails.push({
-                domain,
-                next_check_timestamp: parseInt(score),
-                next_check_date: new Date(parseInt(score) * 1000).toISOString(),
-                ...meta
-            });
-        }
-
         res.json({
             success: true,
             summary: {
                 total_monitoring: totalMonitoring,
                 active_monitoring: activeCount,
                 inactive_monitoring: inactiveCount
-            },
-            details: {
-                active_domains: {
-                    count: activeCount,
-                    sample: activeDetails,
-                    description: "Suspicious/parked domains being monitored for 90 days"
-                },
-                inactive_domains: {
-                    count: inactiveCount,
-                    sample: inactiveDetails,
-                    description: "Unregistered/inactive domains being monitored for registration/activation"
-                }
             },
             timestamp: new Date().toISOString()
         });

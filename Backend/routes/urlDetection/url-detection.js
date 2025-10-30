@@ -16,11 +16,12 @@ class SimpleEmbeddingFunction {
     }
 }
 
-// Helper function to fetch data directly from Chroma DB
-async function fetchData() {
+// Helper function to get count from Chroma DB
+async function getCount() {
     try {
         // Connect to Chroma DB and get/create the collection
         const client = chroma;
+
         // Use getOrCreateCollection to avoid "collection not found" errors
         const col = await client.getOrCreateCollection({
             name: 'domains',
@@ -28,26 +29,12 @@ async function fetchData() {
             embeddingFunction: new SimpleEmbeddingFunction()
         });
 
-        // Query Chroma DB to get all records (including metadata with file paths)
-        const res = await col.get(); // Returns { ids, documents, metadatas }
+        // Get total count only
+        const totalCount = await col.count();
 
-        // Combine IDs with metadata to return complete records
-        const rows = [];
-        const ids = res?.ids || [];
-        const metadatas = res?.metadatas || [];
-        const documents = res?.documents || [];
-
-        for (let i = 0; i < ids.length; i++) {
-            rows.push({
-                id: ids[i],
-                metadata: metadatas[i] || {},
-                document: documents[i] || ''
-            });
-        }
-
-        return rows; // Return array of complete records with metadata (including file paths)
+        return totalCount;
     } catch (error) {
-        console.error("Error fetching data from Chroma DB:", error);
+        console.error("Error fetching count from Chroma DB:", error);
         throw error;
     }
 }
@@ -55,22 +42,20 @@ async function fetchData() {
 // Define the /url-detection endpoint
 router.get('/url-detection', async (req, res) => {
     try {
-        const rows = await fetchData();
+        const totalCount = await getCount();
 
-        if (rows.length === 0) {
+        if (totalCount === 0) {
             return res.status(200).json({
                 success: true,
                 message: 'No domains have been processed yet. Submit URLs to begin analysis.',
-                rowCount: 0,
-                data: [],
+                count: 0
             });
         }
 
         res.json({
             success: true,
             message: 'Data fetched successfully from Chroma DB',
-            rowCount: rows.length,
-            data: rows, // Return the rows directly in the response
+            rowCount: totalCount
         });
     } catch (error) {
         console.error('ChromaDB error details:', {
@@ -81,7 +66,7 @@ router.get('/url-detection', async (req, res) => {
 
         res.status(500).json({
             success: false,
-            error: 'Failed to fetch data from Chroma DB',
+            error: 'Failed to fetch count from Chroma DB',
             details: error.message,
             hint: 'Ensure ChromaDB service is running and accessible'
         });
