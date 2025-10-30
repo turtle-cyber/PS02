@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "source": "dump_all.jsonl",
-  "n_domains": 116,
+  "n_domains": 120,
   "domains": [
     "recindia.nic.in",
     "sjvn.nic.in",
@@ -113,6 +113,10 @@
     "airtel.com",
     "irctc.com",
     "bankofbaroda.in",
+    "bankofbaroda.bank.in",
+    "bank.in",
+    "pnb.bank.in",
+    "ecatering.irctc.co.in",
     "bankofindia.co.in",
     "idbibank.in",
     "ntpc.co.in",

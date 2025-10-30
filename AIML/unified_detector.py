@@ -84,6 +84,60 @@ class ScreenshotAutoencoder(nn.Module):
 class UnifiedPhishingDetector:
     """Unified multi-modal phishing detection engine"""
 
+    # COMPREHENSIVE FEATURE MAPPING: Model feature names → Actual data field names
+    # This mapping handles the mismatch between training data features and runtime data schema
+    FEATURE_MAPPING = {
+        # === DIRECT MAPPINGS (field names match exactly) ===
+        'url_length': 'url_length',
+        'url_entropy': 'url_entropy',
+        'num_subdomains': 'num_subdomains',
+        'is_idn': 'is_idn',
+        'has_repeated_digits': 'has_repeated_digits',
+        'mixed_script': 'mixed_script',
+        'domain_age_days': 'domain_age_days',
+        'is_newly_registered': 'is_newly_registered',
+        'is_very_new': 'is_very_new',
+        'days_until_expiry': 'days_until_expiry',
+        'is_self_signed': 'is_self_signed',
+        'has_credential_form': 'has_credential_form',
+        'form_count': 'form_count',
+        'password_fields': 'password_fields',
+        'email_fields': 'email_fields',
+        'has_suspicious_forms': 'has_suspicious_forms',
+        'suspicious_form_count': 'suspicious_form_count',
+        'html_size': 'html_size',
+        'external_links': 'external_links',
+        'iframe_count': 'iframe_count',
+        'js_obfuscated': 'js_obfuscated',
+        'js_keylogger': 'js_keylogger',
+        'js_form_manipulation': 'js_form_manipulation',
+        'js_eval_usage': 'js_eval_usage',
+        'js_risk_score': 'js_risk_score',
+        'redirect_count': 'redirect_count',
+        'had_redirects': 'had_redirects',  # THIS EXISTS! Was causing error
+        'a_count': 'a_count',
+        'mx_count': 'mx_count',
+        'ns_count': 'ns_count',
+
+        # === RENAMED FEATURES (model feature → actual field name) ===
+        'doc_has_verdict': 'has_verdict',  # Renamed: doc_has_verdict → has_verdict
+        'doc_risk_score': 'risk_score',    # Renamed: doc_risk_score → risk_score
+        'doc_form_count': 'form_count',    # Same as form_count (duplicate)
+        'ocr_length': 'ocr_text_length',   # Renamed: ocr_length → ocr_text_length
+
+        # === SPECIAL DERIVATIONS (need custom extraction) ===
+        'cert_age_days': 'domain_age_days',  # Fallback: use domain_age_days
+        'doc_length': 'html_size',           # Fallback: use html_size (or derive from document_text)
+
+        # === KEYWORD FEATURES (require text analysis) ===
+        'doc_has_login_keywords': None,      # Extract from document_text
+        'doc_has_verify_keywords': None,     # Extract from document_text
+        'doc_has_password_keywords': None,   # Extract from document_text
+        'doc_has_credential_keywords': None, # Extract from document_text
+        'ocr_has_login_keywords': None,      # Extract from ocr_text_excerpt
+        'ocr_has_verify_keywords': None,     # Extract from ocr_text_excerpt
+    }
+
     def __init__(self, config: Dict = None):
         """
         Initialize unified detector
@@ -110,13 +164,15 @@ class UnifiedPhishingDetector:
         self.feature_names = None
 
         # Verdict weights (configurable)
-        # Adjusted to prioritize reliable detectors
+        # PHASE 2: Reweighted for CSE-specificity to reduce false positives
+        # Prioritize detectors that are CSE-focused (visual, domain)
+        # Reduce weight of generic detectors (content, anomaly, autoencoder)
         self.weights = {
-            'anomaly': 0.10,     # Reduced (often has feature errors)
-            'visual': 0.20,      # Reduced (high false positives with small index)
-            'content': 0.25,     # Increased (works reliably)
-            'domain': 0.35,      # Increased (most reliable, was too low)
-            'autoencoder': 0.10  # Reduced (supplementary detector)
+            'anomaly': 0.05,     # REDUCED from 0.10 - flags all non-CSE sites as anomalies
+            'visual': 0.40,      # INCREASED from 0.20 - most CSE-specific detector (CLIP similarity)
+            'content': 0.15,     # REDUCED from 0.25 - not CSE-specific (flags generic phishing)
+            'domain': 0.35,      # UNCHANGED - partially CSE-specific (typosquat, favicon, homograph)
+            'autoencoder': 0.05  # REDUCED from 0.10 - flags all non-CSE sites as anomalies
         }
 
     def _get_default_config(self) -> Dict:
@@ -249,28 +305,29 @@ class UnifiedPhishingDetector:
 
     def _derive_missing_feature(self, feature_name: str, metadata: Dict) -> Optional[float]:
         """
-        Try to derive missing features from available metadata
+        Try to derive missing features from available metadata using FEATURE_MAPPING
 
         Args:
-            feature_name: Name of the missing feature
-            metadata: Available metadata
+            feature_name: Name of the missing feature (from model training)
+            metadata: Available metadata (from dump_all.jsonl)
 
         Returns:
             Derived value or None if cannot derive
         """
-        # PRIORITY 1: Feature name mappings (simple renames)
-        feature_mappings = {
-            'doc_has_verdict': lambda m: int(bool(m.get('has_verdict', False))),
-            'doc_risk_score': lambda m: float(m.get('risk_score', 0.0)),
-            'doc_form_count': lambda m: int(m.get('form_count', 0)),
-            'ocr_length': lambda m: int(m.get('ocr_text_length', 0)),
-        }
+        # PRIORITY 1: Use FEATURE_MAPPING dictionary
+        mapped_field_name = self.FEATURE_MAPPING.get(feature_name)
 
-        if feature_name in feature_mappings:
-            try:
-                return feature_mappings[feature_name](metadata)
-            except:
-                return None
+        if mapped_field_name is not None:
+            # Direct field mapping
+            value = metadata.get(mapped_field_name)
+
+            # Convert boolean to int
+            if isinstance(value, bool):
+                return int(value)
+            # Return numeric values
+            elif isinstance(value, (int, float)):
+                return float(value)
+            # If value is None or missing, continue to other strategies
 
         # PRIORITY 2: Keyword extraction from HTML text
         if feature_name in ['doc_has_login_keywords', 'doc_has_verify_keywords',
@@ -281,7 +338,7 @@ class UnifiedPhishingDetector:
         if feature_name in ['ocr_has_login_keywords', 'ocr_has_verify_keywords']:
             return self._extract_keyword_feature(feature_name, metadata, source='ocr')
 
-        # PRIORITY 4: Special cases
+        # PRIORITY 4: Special case - doc_length (try to extract clean text)
         if feature_name == 'doc_length':
             # Try to get actual text length from document_text, fallback to html_size
             document_text = metadata.get('document_text', '')
@@ -292,42 +349,14 @@ class UnifiedPhishingDetector:
                         from bs4 import BeautifulSoup
                         soup = BeautifulSoup(document_text, 'html.parser')
                         clean_text = soup.get_text()
-                        return len(clean_text.strip())
+                        return float(len(clean_text.strip()))
                     except:
-                        return len(document_text)
+                        return float(len(document_text))
                 else:
-                    return len(document_text)
+                    return float(len(document_text))
             else:
                 # Fallback to html_size
-                return metadata.get('html_size', 0)
-
-        if feature_name == 'cert_age_days':
-            # Fallback to domain_age_days if no cert data available
-            # In practice, cert age would be calculated from TLS cert issuance date
-            return metadata.get('domain_age_days', 0)
-
-        # PRIORITY 5: URL pattern features - can derive from domain/URL
-        url_derivations = {
-            'ampersand_count': lambda m: m.get('url', '').count('&') if 'url' in m else 0,
-            'at_count': lambda m: m.get('url', '').count('@') if 'url' in m else 0,
-            'dash_count': lambda m: m.get('registrable', '').count('-') if 'registrable' in m else 0,
-            'digit_count': lambda m: sum(c.isdigit() for c in m.get('registrable', '')) if 'registrable' in m else 0,
-            'dot_count': lambda m: m.get('registrable', '').count('.') if 'registrable' in m else 0,
-            'slash_count': lambda m: m.get('url', '').count('/') if 'url' in m else 0,
-            'question_count': lambda m: m.get('url', '').count('?') if 'url' in m else 0,
-
-            # Subdomain features
-            'avg_subdomain_length': lambda m: self._calc_avg_subdomain_length(m.get('domain', '')),
-            'max_subdomain_length': lambda m: self._calc_max_subdomain_length(m.get('domain', '')),
-            'subdomain_digit_ratio': lambda m: self._calc_subdomain_digit_ratio(m.get('domain', '')),
-        }
-
-        # Check if we have a derivation function for this feature
-        if feature_name in url_derivations:
-            try:
-                return url_derivations[feature_name](metadata)
-            except:
-                return None
+                return float(metadata.get('html_size', 0))
 
         return None
 
@@ -722,10 +751,21 @@ class UnifiedPhishingDetector:
         else:
             final_risk_score = 0.3  # Default neutral
 
+        # ============ CSE-TARGETING GATE (CRITICAL FOR FALSE POSITIVE REDUCTION) ============
+        # Check if ANY detector found CSE impersonation/targeting signal
+        # Without CSE-targeting, maximum verdict is SUSPICIOUS (never PHISHING)
+        has_cse_signal, signal_type, target_cse = self._has_cse_targeting_signal(results)
+
         # Determine final verdict
         if final_risk_score >= 0.7:
-            final_verdict = 'PHISHING'
-            final_confidence = 0.7 + final_risk_score * 0.25
+            if has_cse_signal:
+                # CSE impersonation detected → PHISHING allowed
+                final_verdict = 'PHISHING'
+                final_confidence = 0.7 + final_risk_score * 0.25
+            else:
+                # High risk but NO CSE targeting → Cap at SUSPICIOUS
+                final_verdict = 'SUSPICIOUS'
+                final_confidence = 0.50 + final_risk_score * 0.20  # Lower confidence
         elif final_risk_score >= 0.45:
             final_verdict = 'SUSPICIOUS'
             final_confidence = 0.5 + final_risk_score * 0.3
@@ -737,6 +777,20 @@ class UnifiedPhishingDetector:
 
         # Collect reasons
         reasons = []
+
+        # Add CSE-targeting reason if detected
+        if has_cse_signal:
+            signal_desc = {
+                'visual_impersonation': 'Visual impersonation',
+                'typosquatting': 'Typosquatting',
+                'idn_homograph': 'IDN homograph attack',
+                'favicon_impersonation': 'Favicon impersonation'
+            }.get(signal_type, signal_type)
+            reasons.append(f"CSE Targeting: {signal_desc} of {target_cse}")
+        elif final_risk_score >= 0.7:
+            # High risk but no CSE targeting
+            reasons.append("High risk indicators but no CSE impersonation detected")
+
         for detector, result in results.items():
             if result['verdict'] in ['PHISHING', 'MALICIOUS', 'SUSPICIOUS', 'ANOMALY', 'SIMILAR']:
                 reasons.append(f"{detector}: {result.get('reason', result['verdict'])}")
@@ -773,6 +827,58 @@ class UnifiedPhishingDetector:
                 return True
 
         return False
+
+    def _has_cse_targeting_signal(self, results: Dict) -> tuple[bool, str, str]:
+        """
+        Check if ANY detector found CSE impersonation/targeting signals.
+        This is the gate that prevents non-CSE phishing from being marked as PHISHING.
+
+        CSE-targeting signals include:
+        1. Visual similarity to CSE ≥ 0.92 (CLIP detector)
+        2. Typosquatting CSE domain (≥85% similarity)
+        3. IDN homograph targeting CSE
+        4. Favicon matching CSE entity
+
+        Args:
+            results: Dictionary with results from each detector
+
+        Returns:
+            Tuple of (has_signal: bool, signal_type: str, target_cse: str)
+        """
+        # Check 1: Visual detector - CLIP similarity to CSE
+        visual_result = results.get('visual', {})
+        if visual_result.get('verdict') == 'PHISHING':
+            details = visual_result.get('details', {})
+            clip_similarity = details.get('clip_similarity', 0)
+            matched_cse = details.get('matched_cse_domain', '')
+
+            if clip_similarity >= 0.92 and matched_cse:
+                return (True, 'visual_impersonation', matched_cse)
+
+        # Check 2: Domain reputation - Typosquatting/Homograph/Favicon
+        domain_result = results.get('domain', {})
+        domain_details = domain_result.get('details', {})
+
+        # Check 2a: Typosquatting
+        if domain_details.get('is_typosquatting'):
+            typosquat_target = domain_details.get('typosquat_target', '')
+            if typosquat_target:
+                return (True, 'typosquatting', typosquat_target)
+
+        # Check 2b: IDN Homograph
+        if domain_details.get('is_homograph_attack'):
+            homograph_target = domain_details.get('homograph_target', '')
+            if homograph_target:
+                return (True, 'idn_homograph', homograph_target)
+
+        # Check 2c: Favicon impersonation
+        if domain_details.get('is_favicon_impersonation'):
+            favicon_target = domain_details.get('favicon_target', '')
+            if favicon_target:
+                return (True, 'favicon_impersonation', favicon_target)
+
+        # No CSE-targeting signal detected
+        return (False, '', '')
 
     def is_insufficient_data(self, metadata: Dict) -> bool:
         """

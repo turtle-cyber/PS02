@@ -668,7 +668,7 @@ class DomainReputationAnalyzer:
         if is_homograph:
             risk_score += 0.7
         if is_favicon_impersonation:  # NEW
-            risk_score += 0.8  # Very high confidence indicator
+            risk_score += 0.3  # Reduced from 0.8 - many legitimate sites share similar favicons
         risk_score += tld_analysis['tld_risk_score'] * 0.3
         risk_score += pattern_analysis['pattern_risk_score'] * 0.4
         risk_score += registrar_analysis['registrar_risk_score'] * 0.2  # NEW

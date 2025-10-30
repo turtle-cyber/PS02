@@ -342,6 +342,14 @@ services:
       - BATCH_SIZE=1
       - FLUSH_INTERVAL_SEC=5
 
+      # ---- Real-time Excel submission export ----
+      # NOTE: Disabled in favor of generate_submission.py for final submission
+      # Real-time writer has duplicate rows and incomplete data issues
+      # Use: python AIML/generate_submission.py --application-id AIGR-123456
+      - EXCEL_REALTIME_ENABLED=false
+      - SUBMISSION_APP_ID=AIGR-123456
+      - EXCEL_OUTPUT_PATH=/out/PS-02_Live_Submission.xlsx
+
       # ---- Optional: JSONL batch ingestion ----
       # Uncomment below to backfill from existing JSONL files:
       # - JSONL_DIR=/data/out
@@ -349,6 +357,10 @@ services:
     volumes:
       # Needed for JSONL backfill; harmless to keep mounted.
       - ../out:/data/out:ro
+      # Real-time Excel writer module
+      - ../../AIML:/workspace/AIML:ro
+      # Output directory for Excel file
+      - ../out:/out
 
   monitor-scheduler:
     build:
@@ -470,6 +482,11 @@ services:
       # Logging
       - PYTHONUNBUFFERED=1
       - LOG_LEVEL=INFO
+      # Real-time Excel submission export
+      # NOTE: Disabled in favor of generate_submission.py for final submission
+      - EXCEL_REALTIME_ENABLED=false
+      - SUBMISSION_APP_ID=AIGR-123456
+      - EXCEL_OUTPUT_PATH=/out/PS-02_Live_Submission.xlsx
     volumes:
       # Mount output directory for JSON verdicts
       - ../out:/out

@@ -1,0 +1,58 @@
+{
+  "weights": {
+    "tld_risk": 1.0,
+    "domain_age": 1.2,
+    "dns_infrastructure": 0.8,
+    "network_reputation": 1.0,
+    "domain_entropy": 0.6,
+    "registrar_reputation": 0.7,
+    "whois_privacy": 0.5
+  },
+  "thresholds": {
+    "benign": 10,
+    "suspicious": 40,
+    "likely_phishing": 70
+  },
+  "confidence_ranges": {
+    "benign": [0.40, 0.55],
+    "suspicious": [0.50, 0.65],
+    "likely_phishing": [0.60, 0.75],
+    "phishing": [0.70, 0.85]
+  },
+  "age_thresholds": {
+    "very_new": 7,
+    "new": 30,
+    "recent": 90
+  },
+  "high_risk_tlds": [
+    ".tk", ".ml", ".ga", ".cf", ".gq",
+    ".top", ".xyz", ".club", ".work", ".live",
+    ".click", ".link", ".online", ".site", ".website",
+    ".bid", ".win", ".vip", ".red", ".date"
+  ],
+  "trusted_tlds": [
+    ".gov", ".mil", ".edu",
+    ".gov.in", ".nic.in", ".ac.in", ".edu.in",
+    ".gov.uk", ".ac.uk", ".nhs.uk"
+  ],
+  "parking_nameservers": [
+    "afternic.com", "parkingcrew.net", "bodis.com",
+    "sedoparking.com", "parklogic.com", "above.com",
+    "dan.com", "hugedomains.com", "godaddy.com",
+    "domaincontrol.com", "parkweb.com", "namebrightdns.com",
+    "dsredirection.com", "parkpage.foundationapi.com",
+    "registrar-servers.com", "worldnic.com", "uniregistrymarket.link"
+  ],
+  "high_risk_asns": [
+    "197695",
+    "44592",
+    "39798",
+    "394695"
+  ],
+  "high_risk_countries": [
+    "RU", "CN", "KP", "IR"
+  ],
+  "low_reputation_registrars": [
+    "namecheap", "namesilo", "freenom"
+  ]
+}

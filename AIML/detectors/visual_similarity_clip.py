@@ -45,7 +45,7 @@ class CLIPVisualDetector:
         }
 
         # Thresholds
-        self.clip_similarity_threshold = 0.85  # Raised from 0.80 to reduce false positives
+        self.clip_similarity_threshold = 0.92  # Raised from 0.85 to 0.92 to significantly reduce false positives
         self.phash_distance_threshold = 10
 
         # Load CSE index
@@ -272,7 +272,7 @@ class CLIPVisualDetector:
             confidence = 0.95
             reason = f'Domain in CSE whitelist (similarity={max_sim:.3f})'
         elif max_sim >= self.clip_similarity_threshold:
-            # High visual similarity detected
+            # High visual similarity detected (≥0.92)
             if domain_matches_cse:
                 # Domain matches the CSE it's similar to → Legitimate CSE domain
                 verdict = 'BENIGN'
@@ -280,24 +280,25 @@ class CLIPVisualDetector:
                 reason = f'Legitimate CSE domain matching own baseline (similarity={max_sim:.3f})'
             else:
                 # High similarity but domain doesn't match
-                # Additional validation: check if domains are related
-                if 0.85 <= max_sim < 0.92:  # Marginal similarity range
-                    domains_related = self._domains_are_similar(registrable, matched_domain_clean)
-                    if not domains_related:
-                        # Probably spurious match (similar layout/colors, unrelated orgs)
-                        verdict = 'UNKNOWN'
-                        confidence = 0.0
-                        reason = f'Visual match but unrelated domains (similarity={max_sim:.3f}, may be spurious)'
-                    else:
-                        # Related domains, likely legitimate
-                        verdict = 'BENIGN'
-                        confidence = 0.80
-                        reason = f'Related domain with similar visuals (similarity={max_sim:.3f})'
-                else:
-                    # Very high similarity (>0.92) → likely phishing
+                # Additional validation: check if domains are related (name similarity)
+                domains_related = self._domains_are_similar(registrable, matched_domain_clean)
+
+                if max_sim >= 0.95:
+                    # Very high similarity (≥95%) → PHISHING even without name match
                     verdict = 'PHISHING'
-                    confidence = 0.7 + min(0.25, (max_sim - 0.85) * 2.0)  # 0.70-0.95
-                    reason = f'Visually impersonates {matched_domain} (similarity={max_sim:.3f})'
+                    confidence = 0.85 + min(0.10, (max_sim - 0.95) * 2.0)  # 0.85-0.95
+                    reason = f'Visually impersonates {matched_domain} (similarity={max_sim:.3f}, very high confidence)'
+                elif domains_related:
+                    # Moderate similarity (0.92-0.95) + related names → likely phishing
+                    verdict = 'PHISHING'
+                    confidence = 0.70 + min(0.15, (max_sim - 0.92) * 5.0)  # 0.70-0.85
+                    reason = f'Visually impersonates {matched_domain} (similarity={max_sim:.3f}, name similarity detected)'
+                else:
+                    # Moderate similarity (0.92-0.95) + unrelated names → spurious match
+                    # Probably similar layout/colors but different organizations
+                    verdict = 'SUSPICIOUS'
+                    confidence = 0.50
+                    reason = f'Visual similarity to {matched_domain} but unrelated domain names (similarity={max_sim:.3f}, likely spurious)'
         else:
             # Not similar to any CSE
             verdict = 'UNKNOWN'

@@ -1,4 +1,4 @@
-import os, glob, time, hashlib, ujson as json, redis
+import os, glob, time, hashlib, ujson as json, redis, sys
 from typing import Dict, Any, Iterable, List
 
 # --- Chroma client (HTTP, server mode) ---
@@ -15,6 +15,15 @@ from kafka import KafkaConsumer
 # --- Registrable domain extraction ---
 import tldextract
 _tld_extract = tldextract.TLDExtract(suffix_list_urls=None)
+
+# --- Real-time Excel writer ---
+sys.path.insert(0, '/workspace/AIML')  # Add AIML module to path
+try:
+    from excel_writer_realtime import get_excel_writer
+    print("[ingestor] ✓ Excel writer module loaded (real-time submission export enabled)")
+except ImportError as e:
+    print(f"[ingestor] ⚠️  Excel writer module not available: {e}")
+    get_excel_writer = lambda: None  # Dummy function if module not available
 
 CHROMA_HOST = os.getenv("CHROMA_HOST", "chroma")
 CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
@@ -991,10 +1000,37 @@ def upsert_docs(variants_col, originals_col, model, rows: List[Dict[str,Any]]):
         try:
             variants_col.upsert(ids=ids, documents=docs, embeddings=vecs, metadatas=metas)
             print(f"[ingestor] ✓ Upserted {len(docs)} documents to '{COLLECTION}' collection")
+
+            # NEW: Append to Excel (Stage 1 - crawler data)
+            # Only write feature-complete messages to avoid duplicates
+            try:
+                excel_writer = get_excel_writer()
+                if excel_writer:
+                    # Filter to only feature-complete metadata (has html_size, url_features, or forms)
+                    feature_metas = [m for m in metas if m.get('html_size') or m.get('url_features') or m.get('forms')]
+                    if feature_metas:
+                        excel_writer.append_batch_to_excel(feature_metas)
+                        print(f"[ingestor] ✓ Wrote {len(feature_metas)} feature-complete rows to Excel")
+            except Exception as excel_error:
+                print(f"[ingestor] ⚠️  Excel write failed (non-critical): {excel_error}")
+
         except Exception as e:
             print(f"[ingestor] Upsert failed, trying add: {e}")
             variants_col.add(ids=ids, documents=docs, embeddings=vecs, metadatas=metas)
             print(f"[ingestor] ✓ Added {len(docs)} documents to '{COLLECTION}' collection")
+
+            # NEW: Append to Excel (Stage 1 - crawler data) after add
+            # Only write feature-complete messages to avoid duplicates
+            try:
+                excel_writer = get_excel_writer()
+                if excel_writer:
+                    # Filter to only feature-complete metadata (has html_size, url_features, or forms)
+                    feature_metas = [m for m in metas if m.get('html_size') or m.get('url_features') or m.get('forms')]
+                    if feature_metas:
+                        excel_writer.append_batch_to_excel(feature_metas)
+                        print(f"[ingestor] ✓ Wrote {len(feature_metas)} feature-complete rows to Excel")
+            except Exception as excel_error:
+                print(f"[ingestor] ⚠️  Excel write failed (non-critical): {excel_error}")
 
 def from_kafka(variants_col, originals_col, model):
     """Stream from Kafka and continuously ingest from multiple topics"""

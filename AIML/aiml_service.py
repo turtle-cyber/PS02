@@ -20,6 +20,7 @@ import chromadb
 from chromadb.config import Settings, DEFAULT_TENANT, DEFAULT_DATABASE
 import pandas as pd
 from unified_detector import UnifiedPhishingDetector
+from fallback_detector import FallbackDetector
 
 # Configure logging
 logging.basicConfig(
@@ -88,7 +89,7 @@ class AIMlService:
             logger.error(f"Failed to load AIML models: {e}")
             raise
 
-        # Load CSE whitelist for early exit checks
+        # Load CSE whitelist FIRST (needed by fallback detector)
         self.cse_whitelist = set()
         try:
             cse_baseline_file = Path('data/training/cse_baseline_profile.json')
@@ -101,6 +102,25 @@ class AIMlService:
                     logger.info(f"Loaded CSE whitelist: {len(self.cse_whitelist)} domains")
         except Exception as e:
             logger.warning(f"Could not load CSE whitelist: {e}")
+
+        # Initialize Fallback Detector for insufficient data cases
+        logger.info("Loading fallback detector for metadata-based analysis...")
+        try:
+            fallback_config_path = Path('fallback_config.json')
+            if fallback_config_path.exists():
+                with open(fallback_config_path, 'r') as f:
+                    fallback_config = json.load(f)
+            else:
+                fallback_config = None  # Use default config
+            # Pass CSE whitelist to fallback detector
+            self.fallback_detector = FallbackDetector(
+                config=fallback_config,
+                cse_whitelist=self.cse_whitelist
+            )
+            logger.info("Fallback detector loaded successfully with CSE whitelist")
+        except Exception as e:
+            logger.warning(f"Failed to load fallback detector config, using defaults: {e}")
+            self.fallback_detector = FallbackDetector(cse_whitelist=self.cse_whitelist)
 
         # Track processed domains
         self.processed_domains = set()
@@ -409,13 +429,39 @@ class AIMlService:
 
             # FAST PATH 2: Check if domain is CSE whitelisted (HIGHEST PRIORITY)
             # CSE domains should ALWAYS return BENIGN regardless of other checks
+            # Use subdomain-aware matching: check full domain, registrable domain, and suffix matches
+            is_whitelisted = False
+            matched_cse = None
+
+            # Check 1: Exact match (full domain or registrable)
             if domain in self.cse_whitelist or registrable in self.cse_whitelist:
-                logger.info(f"Domain {domain} is CSE whitelisted - returning BENIGN immediately")
+                is_whitelisted = True
+                matched_cse = domain if domain in self.cse_whitelist else registrable
+
+            # Check 2: Subdomain-aware matching (e.g., www.icicibank.com matches icicibank.com)
+            if not is_whitelisted:
+                for cse_domain in self.cse_whitelist:
+                    # Check if domain ends with CSE domain (suffix match for subdomains)
+                    if domain.endswith('.' + cse_domain) or domain == cse_domain:
+                        is_whitelisted = True
+                        matched_cse = cse_domain
+                        logger.info(f"Domain {domain} matched CSE whitelist via subdomain: {cse_domain}")
+                        break
+
+                    # Check if registrable matches CSE domain (strip www/subdomains)
+                    if registrable == cse_domain:
+                        is_whitelisted = True
+                        matched_cse = cse_domain
+                        logger.info(f"Domain {domain} matched CSE whitelist via registrable: {cse_domain}")
+                        break
+
+            if is_whitelisted:
+                logger.info(f"Domain {domain} is CSE whitelisted (matched: {matched_cse}) - returning BENIGN immediately")
                 return {
                     'domain': domain,
                     'verdict': 'BENIGN',
                     'confidence': 0.98,
-                    'reason': 'Legitimate CSE domain (whitelisted)',
+                    'reason': f'Legitimate CSE domain (whitelisted: {matched_cse})',
                     'source': 'cse_whitelist',
                     'registrable': registrable,
                     'timestamp': datetime.now().isoformat()
@@ -499,27 +545,22 @@ class AIMlService:
                         'original_crawler_verdict': crawler_verdict
                     }
 
-                # PRIORITY 3: Trust crawler verdict if available
-                if crawler_verdict:
-                    logger.info(f"Domain {domain} has crawler verdict '{crawler_verdict}' but no AIML data - using crawler verdict")
-                    return {
-                        'domain': domain,
-                        'verdict': crawler_verdict.upper(),
-                        'confidence': metadata.get('confidence', 0.75),
-                        'reason': f'Verdict from pipeline crawler (no page data available for AIML analysis)',
-                        'source': 'crawler',
-                        'timestamp': datetime.now().isoformat()
-                    }
+                # PRIORITY 3: Use fallback detector for metadata-based analysis
+                # This provides more accurate risk assessment than blindly trusting crawler verdict
+                # when no page content is available
+                logger.info(f"Domain {domain} has insufficient content data - using fallback detector")
+                fallback_result = self.fallback_detector.analyze_metadata(metadata)
 
-                # PRIORITY 4: No data and no crawler verdict = insufficient data
-                logger.warning(f"Domain {domain} has no data and no crawler verdict")
-                return {
-                    'domain': domain,
-                    'verdict': 'INSUFFICIENT_DATA',
-                    'confidence': 0.0,
-                    'reason': 'No HTML, screenshot, OCR, or crawler verdict available',
-                    'timestamp': datetime.now().isoformat()
-                }
+                # If there was a crawler verdict, include it for reference
+                if crawler_verdict:
+                    fallback_result['original_crawler_verdict'] = crawler_verdict
+                    fallback_result['crawler_confidence'] = metadata.get('confidence', 0.5)
+                    logger.info(f"Original crawler verdict was '{crawler_verdict}' but replaced with "
+                               f"fallback analysis: {fallback_result['verdict']} (risk={fallback_result['risk_score']})")
+
+                logger.info(f"Fallback detector verdict for {domain}: {fallback_result['verdict']} "
+                           f"(risk_score={fallback_result['risk_score']}, confidence={fallback_result['confidence']})")
+                return fallback_result
 
             # PRIORITY: Check for error pages (503/404/500) FIRST
             # These should be marked as INACTIVE, not SUSPICIOUS
@@ -814,6 +855,58 @@ class AIMlService:
                 else:
                     raise  # Re-raise if not a NaN/inf error
 
+            # POST-SCORING VALIDATION: Override benign verdicts if critical risk indicators present
+            original_verdict = result['verdict']
+            original_confidence = result['confidence']
+
+            # ============ REMOVED: Visual Impersonation Override ============
+            # REASON: Caused false positives (e.g., bank.in, bankofbaroda.bank.in)
+            # Visual detector now contributes to ensemble consensus instead of overriding
+            # Visual impersonation details still captured in detector_results for analysis
+
+            # Don't override special verdicts
+            PROTECTED_VERDICTS = {'parked', 'inactive', 'unregistered', 'error', 'cse_whitelisted'}
+
+            if original_verdict.lower() in PROTECTED_VERDICTS:
+                logger.info(f"Skipping post-validation for protected verdict: {original_verdict}")
+                result['post_validation'] = 'PROTECTED'
+
+            elif original_verdict.lower() in ['benign', 'legitimate']:
+                # Run fallback detector analysis to check for metadata risk indicators
+                logger.info(f"Running post-scoring validation for domain: {domain}")
+                fallback_analysis = self.fallback_detector.analyze_metadata(metadata)
+                fallback_verdict = fallback_analysis['verdict']
+                fallback_risk_score = fallback_analysis['risk_score']
+
+                # Special verdicts take priority (PARKED, INACTIVE)
+                if fallback_verdict in ['PARKED', 'INACTIVE', 'UNREGISTERED']:
+                    logger.info(f"Fallback detected special status: {fallback_verdict}")
+                    result.update(fallback_analysis)
+                    result['post_validation'] = 'SPECIAL_STATUS_DETECTED'
+                    result['original_ml_verdict'] = original_verdict
+                    result['original_ml_confidence'] = original_confidence
+
+                # Override if fallback detector finds significant risk (lowered threshold: 40+)
+                elif fallback_risk_score >= 40:
+                    logger.warning(f"OVERRIDE: Domain {domain} marked {original_verdict} by ML but has "
+                                 f"risk_score={fallback_risk_score} from metadata analysis. Upgrading verdict.")
+
+                    result['verdict'] = fallback_verdict
+                    result['confidence'] = min(fallback_analysis['confidence'], 0.75)  # Cap at 0.75 for overrides
+                    result['risk_score'] = fallback_risk_score
+                    result['override_reason'] = fallback_analysis['reason']
+                    result['fallback_signals'] = fallback_analysis.get('fallback_signals', {})
+                    result['original_ml_verdict'] = original_verdict
+                    result['original_ml_confidence'] = original_confidence
+                    result['post_validation'] = 'OVERRIDE_APPLIED'
+
+                    logger.info(f"Verdict upgraded: {original_verdict} ({original_confidence:.2f}) -> "
+                               f"{result['verdict']} ({result['confidence']:.2f})")
+                else:
+                    logger.info(f"Post-validation passed: risk_score={fallback_risk_score} < 40, keeping {original_verdict}")
+                    result['post_validation'] = 'PASSED'
+                    result['risk_score'] = fallback_risk_score
+
             # Add metadata to result
             result['timestamp'] = datetime.now().isoformat()
             result['source'] = 'aiml_service'
@@ -922,6 +1015,22 @@ class AIMlService:
             aggregated_file = self.output_dir / "aiml_verdicts_all.jsonl"
             with open(aggregated_file, 'a') as f:
                 f.write(json.dumps(result) + '\n')
+
+            # NEW: Update Excel with AIML verdict (Stage 2 - columns 6 & 20)
+            try:
+                from excel_writer_realtime import get_excel_writer
+                excel_writer = get_excel_writer()
+                if excel_writer:
+                    excel_writer.update_aiml_verdict(
+                        domain=domain,
+                        verdict=result.get('verdict', 'UNKNOWN'),
+                        confidence=result.get('confidence', 0.0),
+                        reason=result.get('reason', '')
+                    )
+            except ImportError:
+                pass  # Excel writer not available, skip
+            except Exception as excel_error:
+                logger.warning(f"Failed to update Excel verdict (non-critical): {excel_error}")
 
         except Exception as e:
             # Safe error logging with fallback
