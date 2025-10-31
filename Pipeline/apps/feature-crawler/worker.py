@@ -1117,6 +1117,17 @@ def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registra
     parsed = urlparse(url)
     hostname = parsed.hostname or ""
 
+    # Ensure registrable is set correctly (prefer canonical_fqdn if registrable is missing)
+    # This prevents issues where redirect target domain might be used instead of original
+    if not registrable and canonical_fqdn:
+        try:
+            from tldextract import tldextract
+            ext = tldextract.extract(canonical_fqdn)
+            if ext.domain and ext.suffix:
+                registrable = f"{ext.domain}.{ext.suffix}"
+        except Exception:
+            registrable = canonical_fqdn  # Fallback to canonical_fqdn
+
     return {
         "url": url,
         "canonical_fqdn": canonical_fqdn,  # For rule-scorer fusion key matching

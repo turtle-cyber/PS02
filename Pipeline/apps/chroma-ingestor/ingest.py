@@ -490,10 +490,23 @@ def stable_id(r: Dict[str,Any]) -> str:
                 if hostname and last_hostname:
                     # Normalize www for comparison
                     norm_first = hostname[4:] if hostname.startswith("www.") else hostname
-                    norm_last = last_hostname[4:] if last_hostname.startswith("www.") else hostname
-                    # If domains differ, it's cross-domain - use first
+                    norm_last = last_hostname[4:] if last_hostname.startswith("www.") else last_hostname
+                    # If domains differ, use ORIGINAL domain (first in chain)
                     if norm_first != norm_last:
-                        full_domain = hostname.lower()
+                        # PRIORITY: Use canonical_fqdn if available (original domain before redirects)
+                        canonical = r.get("canonical_fqdn")
+                        if canonical:
+                            full_domain = canonical.lower()
+                        else:
+                            # Fallback to registrable of first URL to avoid asset hosts
+                            try:
+                                first_reg = extract_registrable(first_url)
+                                if first_reg:
+                                    full_domain = first_reg.lower()
+                                else:
+                                    full_domain = hostname.lower()
+                            except Exception:
+                                full_domain = hostname.lower()
         except:
             pass
 
@@ -541,10 +554,10 @@ def stable_id(r: Dict[str,Any]) -> str:
     return f"rec-{h[:24]}"
 
 def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
-    # Initialize ALL 125 fields to None to ensure consistent schema across all records
+    # Initialize ALL 172 fields to None to ensure consistent schema across all records
     # Fields will be populated with actual data when available
     keep = {
-        # Common metadata fields (7 fields)
+        # Common metadata fields (10 fields - expanded from 7)
         "cse_id": None,
         "seed_registrable": None,
         "registrable": None,
@@ -552,6 +565,9 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
         "first_seen": None,
         "stage": None,
         "is_original_seed": None,
+        "src": None,              # NEW - Data source (e.g., "dns", "http", "features")
+        "observed_at": None,      # NEW - Observation timestamp from collector
+        "ttl_summary": None,      # NEW - JSON string with TTL summary
 
         # DNSTwist statistics (4 fields) - only for original seeds
         "dnstwist_variants_registered": None,
@@ -564,11 +580,35 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
         "enrichment_level": None,
         "has_features": None,
 
-        # DNS/Network fields (17 fields)
-        "dns": None,  # JSON string
+        # DNS/Network fields (32 fields - expanded from 17)
+        "dns": None,  # JSON string (full nested object)
         "a_count": None,
         "mx_count": None,
         "ns_count": None,
+        "cname_count": None,  # NEW
+        "aaaa_count": None,   # NEW
+
+        # Actual DNS records (NEW - store first few for searchability)
+        "a_records": None,     # JSON array of IP addresses
+        "mx_records": None,    # JSON array of mail servers
+        "ns_records": None,    # JSON array of nameservers
+        "cname_records": None, # JSON array of canonical names
+
+        # TTL fields (NEW - for fast-flux detection)
+        "ttl_a": None,         # TTL for A records
+        "ttl_mx": None,        # TTL for MX records
+        "ttl_ns": None,        # TTL for NS records
+        "ttl_cname": None,     # TTL for CNAME records
+        "min_ttl": None,       # Minimum TTL across all record types
+        "has_low_ttl": None,   # Boolean flag for fast-flux detection (TTL < 60s)
+
+        # Nameserver features (NEW - for suspicious NS detection)
+        "ns_features": None,        # JSON string (full object)
+        "ns_concat_entropy": None,  # Entropy of concatenated nameservers
+        "ns_avg_label_len": None,   # Average label length in nameservers
+        "ns_numeric_frac": None,    # Fraction of numeric labels in nameservers
+
+        # GeoIP fields
         "country": None,
         "city": None,
         "latitude": None,
@@ -578,12 +618,20 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
         "geoip": None,  # JSON string
         "rdap": None,  # JSON string
 
-        # WHOIS/Domain age fields (6 fields)
+        # WHOIS/Domain age fields (13 fields - expanded from 6)
+        "whois": None,  # JSON string (full WHOIS object)
         "registrar": None,
         "domain_age_days": None,
         "is_newly_registered": None,
         "is_very_new": None,
         "days_until_expiry": None,
+        "created_date_iso": None,      # NEW - Human-readable creation date (e.g., "2019-06-21")
+        "expiry_date_iso": None,       # NEW - Human-readable expiry date (e.g., "2026-06-21")
+        "creation_date": None,         # NEW - Unix timestamp of creation
+        "expiration_date": None,       # NEW - Unix timestamp of expiration
+        "name_servers": None,          # NEW - JSON array of nameservers from WHOIS
+        "whois_status": None,          # NEW - JSON array of EPP status codes
+        "expires_soon": None,          # NEW - Boolean flag for domains expiring soon
 
         # Crawl status fields (3 fields)
         "crawl_failed": None,
@@ -732,13 +780,17 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
     }
 
     # Common metadata fields
-    for k in ("cse_id","seed_registrable","registrable","reasons","first_seen","stage","is_original_seed"):
+    for k in ("cse_id","seed_registrable","registrable","reasons","first_seen","stage","is_original_seed","src","observed_at"):
         if k in r:
             val = r[k]
             if isinstance(val, list):
                 keep[k] = ",".join(str(v) for v in val)
             else:
                 keep[k] = val
+
+    # Store TTL summary as JSON
+    if "ttl_summary" in r and isinstance(r["ttl_summary"], dict):
+        keep["ttl_summary"] = json.dumps(r["ttl_summary"])
 
     # DNSTwist stats (for original seeds only)
     for k in ("dnstwist_variants_registered", "dnstwist_variants_unregistered", "dnstwist_total_generated", "dnstwist_processed_at"):
@@ -750,11 +802,47 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
 
     # Store full DNS record (includes A, AAAA, MX, NS, CNAME, TXT, etc.)
     if "dns" in r and isinstance(r["dns"], dict):
-        keep["dns"] = json.dumps(r["dns"])
-        # Also keep summary counts for easy filtering
-        keep["a_count"] = len(r["dns"].get("A",[]) or [])
-        keep["mx_count"] = len(r["dns"].get("MX",[]) or [])
-        keep["ns_count"] = len(r["dns"].get("NS",[]) or [])
+        dns_obj = r["dns"]
+        keep["dns"] = json.dumps(dns_obj)
+
+        # Summary counts for easy filtering
+        keep["a_count"] = len(dns_obj.get("A",[]) or [])
+        keep["mx_count"] = len(dns_obj.get("MX",[]) or [])
+        keep["ns_count"] = len(dns_obj.get("NS",[]) or [])
+        keep["cname_count"] = len(dns_obj.get("CNAME",[]) or [])
+        keep["aaaa_count"] = len(dns_obj.get("AAAA",[]) or [])
+
+        # Store actual DNS records (first 5 of each type for searchability)
+        if dns_obj.get("A"):
+            keep["a_records"] = json.dumps(dns_obj["A"][:5])
+        if dns_obj.get("MX"):
+            keep["mx_records"] = json.dumps(dns_obj["MX"][:5])
+        if dns_obj.get("NS"):
+            keep["ns_records"] = json.dumps(dns_obj["NS"][:5])
+        if dns_obj.get("CNAME"):
+            keep["cname_records"] = json.dumps(dns_obj["CNAME"][:5])
+
+        # TTL analysis for fast-flux detection
+        ttls = dns_obj.get("ttls", {})
+        if ttls and isinstance(ttls, dict):
+            keep["ttl_a"] = ttls.get("A")
+            keep["ttl_mx"] = ttls.get("MX")
+            keep["ttl_ns"] = ttls.get("NS")
+            keep["ttl_cname"] = ttls.get("CNAME")
+
+            # Calculate minimum TTL across all record types
+            valid_ttls = [v for v in ttls.values() if isinstance(v, (int, float)) and v > 0]
+            if valid_ttls:
+                keep["min_ttl"] = int(min(valid_ttls))
+                keep["has_low_ttl"] = keep["min_ttl"] < 60  # Fast-flux indicator
+
+    # Store nameserver features for suspicious NS detection
+    if "ns_features" in r and isinstance(r["ns_features"], dict):
+        ns_f = r["ns_features"]
+        keep["ns_features"] = json.dumps(ns_f)
+        keep["ns_concat_entropy"] = ns_f.get("ns_concat_entropy")
+        keep["ns_avg_label_len"] = ns_f.get("ns_avg_label_len")
+        keep["ns_numeric_frac"] = ns_f.get("ns_numeric_frac")
     if "geoip" in r:
         geo = r["geoip"]
         keep["country"] = geo.get("country")
@@ -770,15 +858,43 @@ def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
     # Fallback to geoip ASN if rdap ASN not available
     elif "geoip" in r and r["geoip"].get("asn"):
         keep["asn"] = r["geoip"].get("asn")
-    if "whois" in r:
+    # Store full WHOIS record (preserve all fields)
+    if "whois" in r and isinstance(r["whois"], dict):
         whois = r["whois"]
+        keep["whois"] = json.dumps(whois)
+
+        # Extract commonly queried fields for easy filtering
         keep["registrar"] = whois.get("registrar")
+
+        # Domain age fields
         if "domain_age_days" in whois:
             keep["domain_age_days"] = whois["domain_age_days"]
             keep["is_newly_registered"] = bool(whois.get("is_newly_registered", False))
             keep["is_very_new"] = bool(whois.get("is_very_new", False))
         if "days_until_expiry" in whois:
             keep["days_until_expiry"] = whois["days_until_expiry"]
+
+        # Date fields (ISO format and timestamps)
+        if "created_date_iso" in whois:
+            keep["created_date_iso"] = whois["created_date_iso"]
+        if "expiry_date_iso" in whois:
+            keep["expiry_date_iso"] = whois["expiry_date_iso"]
+        if "creation_date" in whois:
+            keep["creation_date"] = whois["creation_date"]
+        if "expiration_date" in whois:
+            keep["expiration_date"] = whois["expiration_date"]
+
+        # Nameservers from WHOIS (may differ from DNS NS records)
+        if "name_servers" in whois and isinstance(whois["name_servers"], list):
+            keep["name_servers"] = json.dumps(whois["name_servers"])
+
+        # EPP status codes (clientTransferProhibited, etc.)
+        if "status" in whois and isinstance(whois["status"], list):
+            keep["whois_status"] = json.dumps(whois["status"])
+
+        # Expiry warning flag
+        if "expires_soon" in whois:
+            keep["expires_soon"] = bool(whois["expires_soon"])
 
     # Store full GeoIP record
     if "geoip" in r and isinstance(r["geoip"], dict):
@@ -1132,6 +1248,44 @@ def batched(iterable: Iterable, n: int):
 
 # --------------- ingestion functions ---------------
 
+def merge_with_existing(collection, doc_id: str, new_metadata: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Fetch existing record from ChromaDB and merge with new metadata.
+    This preserves fields from progressive enrichment (domain → features → verdict).
+
+    Strategy:
+    - Existing non-None values are preserved unless new value is also non-None
+    - New non-None values override existing None values
+    - This allows DNS/WHOIS data to persist when verdict messages arrive later
+    """
+    try:
+        # Fetch existing record
+        result = collection.get(ids=[doc_id], include=["metadatas"])
+
+        if result and result["metadatas"] and len(result["metadatas"]) > 0:
+            existing = result["metadatas"][0]
+
+            # Merge: new values override, but preserve existing non-None values
+            merged = dict(existing)  # Start with existing data
+
+            for key, new_value in new_metadata.items():
+                # If new value is not None, use it (overrides existing)
+                if new_value is not None:
+                    merged[key] = new_value
+                # If new value is None but key doesn't exist in merged, add it
+                elif key not in merged:
+                    merged[key] = None
+
+            return merged
+        else:
+            # No existing record, return new metadata as-is
+            return new_metadata
+
+    except Exception as e:
+        # If fetch fails, just return new metadata
+        print(f"[ingestor] Warning: Failed to fetch existing record for merge: {e}")
+        return new_metadata
+
 def upsert_docs(variants_col, originals_col, model, rows: List[Dict[str,Any]]):
     """Embed and upsert documents into ChromaDB (routing to correct collection)"""
     # Separate rows into originals and variants
@@ -1152,8 +1306,14 @@ def upsert_docs(variants_col, originals_col, model, rows: List[Dict[str,Any]]):
                     r["dnstwist_total_generated"] = stats["total_generated"]
                     r["dnstwist_processed_at"] = stats["processed_at"]
 
-            ids.append(stable_id(r))
-            metas.append(to_metadata(r))
+            doc_id = stable_id(r)
+            new_meta = to_metadata(r)
+
+            # Merge with existing metadata to preserve DNS/WHOIS fields from earlier messages
+            merged_meta = merge_with_existing(originals_col, doc_id, new_meta)
+
+            ids.append(doc_id)
+            metas.append(merged_meta)
             docs.append(record_to_text(r))
 
         print(f"[ingestor] Encoding {len(docs)} original seed documents...")
@@ -1171,8 +1331,14 @@ def upsert_docs(variants_col, originals_col, model, rows: List[Dict[str,Any]]):
     if variant_rows:
         docs, metas, ids = [], [], []
         for r in variant_rows:
-            ids.append(stable_id(r))
-            metas.append(to_metadata(r))
+            doc_id = stable_id(r)
+            new_meta = to_metadata(r)
+
+            # Merge with existing metadata to preserve DNS/WHOIS fields from earlier messages
+            merged_meta = merge_with_existing(variants_col, doc_id, new_meta)
+
+            ids.append(doc_id)
+            metas.append(merged_meta)
             docs.append(record_to_text(r))
 
         print(f"[ingestor] Encoding {len(docs)} variant documents...")

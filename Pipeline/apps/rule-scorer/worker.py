@@ -145,6 +145,10 @@ PARKING_CONTENT_MARKERS = {
     "domain for sale": 15,
     "buy this domain": 15,
     "this domain is parked": 20,
+    "is for sale": 15,
+    "buy now": 12,
+    "purchase domain": 12,
+    "acquire this domain": 12,
     "make an offer": 12,
     "inquire about this domain": 12,
     "sponsored listings": 10,
@@ -179,7 +183,8 @@ PARKING_MARKERS = [
     "domain for sale", "buy this domain", "this domain is parked",
     "make an offer", "inquire about this domain", "sponsored listings",
     "related searches", "sedoparking", "parkingcrew", "bodis",
-    "cashparking", "afternic", "dan.com", "hugedomains"
+    "cashparking", "afternic", "dan.com", "hugedomains",
+    "is for sale", "buy now", "purchase domain", "atom.com"
 ]
 
 MAX_KEYS = int(os.getenv("MAX_KEYS", "12000"))
@@ -587,7 +592,7 @@ def detect_parked_domain(domain: Dict, http: Dict, feat: Dict) -> Tuple[bool, Li
             parking_urls = [
                 "sedo.com", "dan.com", "afternic.com", "hugedomains.com",
                 "godaddy.com/domainfind", "uniregistry.com", "flippa.com",
-                "brandbucket.com", "brandroot.com"
+                "brandbucket.com", "brandroot.com", "atom.com", "domains.atom.com"
             ]
 
             for parking_url in parking_urls:
@@ -600,7 +605,18 @@ def detect_parked_domain(domain: Dict, http: Dict, feat: Dict) -> Tuple[bool, Li
         if feat:
             title = (feat.get("title") or "").lower()
             page_text = (feat.get("page_text") or "")[:5000].lower()  # First 5KB
-            combined = title + " " + page_text
+            # Include OCR text when available (sale pages often render text in images)
+            ocr_text = ""
+            ocr = feat.get("ocr")
+            if isinstance(ocr, dict):
+                ocr_text = (ocr.get("text_excerpt") or "")[:5000]
+            elif isinstance(ocr, str):
+                try:
+                    ocr_obj = json.loads(ocr)
+                    ocr_text = (ocr_obj.get("text_excerpt") or "")[:5000]
+                except Exception:
+                    pass
+            combined = (title + " " + page_text + " " + ocr_text).lower()
 
             # Check weighted content markers
             content_score = 0
@@ -867,7 +883,7 @@ def score_bundle(domain: dict, http: dict, feat: dict):
     http_url = (http or {}).get("final_url") or (http or {}).get("url") or ""
     if http_url and not is_parked:
         http_lower = http_url.lower()
-        for parker in ["sedo.com", "dan.com", "afternic.com", "hugedomains.com", "godaddy.com/domainfind", "sav.com/auction"]:
+        for parker in ["sedo.com", "dan.com", "afternic.com", "hugedomains.com", "godaddy.com/domainfind", "sav.com/auction", "atom.com", "domains.atom.com"]:
             if parker in http_lower:
                 is_parked = True
                 parked_reasons.append(f"Redirects to parking marketplace ({parker})")
@@ -877,7 +893,18 @@ def score_bundle(domain: dict, http: dict, feat: dict):
     if not is_parked and feat:
         title = (feat or {}).get("title") or ""
         page_text = (feat or {}).get("page_text") or ""
-        combined = (title + " " + page_text).lower()
+        # Include OCR text if present (parking sale banners are often image-based)
+        ocr_text = ""
+        ocr = (feat or {}).get("ocr")
+        if isinstance(ocr, dict):
+            ocr_text = (ocr.get("text_excerpt") or "")
+        elif isinstance(ocr, str):
+            try:
+                ocr_obj = json.loads(ocr)
+                ocr_text = (ocr_obj.get("text_excerpt") or "")
+            except Exception:
+                pass
+        combined = (title + " " + page_text + " " + ocr_text).lower()
         marker_count = sum(1 for marker in PARKING_MARKERS if marker in combined)
         if marker_count >= 2:  # At least 2 parking phrases
             is_parked = True
@@ -1423,7 +1450,7 @@ def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
     out = {
         "record_type": "merged",
         "canonical_fqdn": scored["canonical_fqdn"],
-        "registrable": scored["registrable"],
+        "registrable": scored["registrable"],  # Will be corrected below for cross-domain redirects
         "url": scored["url"] or (http or {}).get("final_url") or (feat or {}).get("url"),
         "reasons": scored["reasons"],
         "stage": stage,
@@ -1456,6 +1483,11 @@ def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
         out["redirect_chain"] = redirect_chain
         out["redirected_to_domain"] = final_domain
         out["original_domain"] = original_domain
+
+        # CRITICAL FIX: Ensure registrable uses ORIGINAL domain, not redirect target
+        # This prevents duplicate database entries in chroma-ingestor
+        if original_domain:
+            out["registrable"] = original_domain
 
         # Calculate redirect penalty
         redirect_penalty, redirect_reasons = calculate_redirect_penalty(redirect_chain, cross_domain_hops)
@@ -1495,7 +1527,7 @@ def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
     if domain:
         dcopy = dict(domain)
         _drop_heavy(dcopy)
-        for k in ("dns","whois","rdap","geoip","a_count","mx_count","ns_count","country"):
+        for k in ("dns","whois","rdap","geoip","a_count","mx_count","ns_count","country","ns_features","ttl_summary"):
             if k in dcopy: out[k] = dcopy[k]
 
     # TLS/basic HTTP
