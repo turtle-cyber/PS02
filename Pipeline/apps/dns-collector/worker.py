@@ -10,6 +10,7 @@ writes JSONL to /out and publishes to Kafka topic domains.resolved.
 """
 
 import os, time, asyncio, ujson, traceback
+import socket, ssl
 from pathlib import Path
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
@@ -41,6 +42,14 @@ GEOIP_ASN_DB = os.getenv("GEOIP_ASN_DB", "/configs/mmdb/GeoLite2-ASN.mmdb")
 CONSUMER_GROUP = os.getenv("CONSUMER_GROUP", "dns-collector-group")
 RETRY_WAIT = float(os.getenv("RETRY_WAIT", "2.0"))
 MAX_CONCURRENT_DNS = int(os.getenv("MAX_CONCURRENT_DNS", "50"))
+
+# Optional date filter (inclusive window). If set, only allow records where
+# WHOIS creation_date OR certificate notBefore date falls within the window.
+# Format examples: "2025-10-01", "2025/10/01", "1/10/2025" (auto-parsed)
+DATE_FILTER_START = os.getenv("DATE_FILTER_START", "").strip()
+DATE_FILTER_END = os.getenv("DATE_FILTER_END", "").strip()
+# Mode: 'any' (pass if either WHOIS or cert date in range) or 'both'
+DATE_FILTER_MODE = os.getenv("DATE_FILTER_MODE", "any").strip().lower()
 
 # WHOIS queue settings
 WHOIS_WORKERS = int(os.getenv("WHOIS_WORKERS", "2"))  # Concurrent WHOIS lookups
@@ -88,6 +97,70 @@ def parse_date(x):
             if x is None:
                 return None
         return dateparse.parse(str(x)).timestamp()
+    except Exception:
+        return None
+
+def parse_date_env(x: str):
+    """Parse a flexible date string from env into unix timestamp at 00:00 UTC.
+    Accepts ISO formats or common dd/mm/yyyy and mm/dd/yyyy; relies on dateutil.
+    """
+    if not x:
+        return None
+    try:
+        dt = dateparse.parse(x, dayfirst=True)  # favor dd/mm/yyyy like 1/10/2025
+        # Normalize to midnight UTC for inclusive window comparisons
+        return datetime(dt.year, dt.month, dt.day).timestamp()
+    except Exception:
+        try:
+            dt = dateparse.parse(x)
+            return datetime(dt.year, dt.month, dt.day).timestamp()
+        except Exception:
+            return None
+
+DATE_FILTER_START_TS = parse_date_env(DATE_FILTER_START)
+DATE_FILTER_END_TS = parse_date_env(DATE_FILTER_END)
+
+def ts_to_iso(ts: float):
+    try:
+        if ts is None:
+            return None
+        return time.strftime("%Y-%m-%d", time.gmtime(ts))
+    except Exception:
+        return None
+
+def date_in_window(ts: float) -> bool:
+    if ts is None:
+        return False
+    if DATE_FILTER_START_TS is None or DATE_FILTER_END_TS is None:
+        return True  # no filter configured
+    return (DATE_FILTER_START_TS <= ts <= (DATE_FILTER_END_TS + 86399.999))
+
+def fetch_cert_notbefore(hostname: str, port: int = 443, timeout: float = 5.0):
+    """Return certificate notBefore timestamp for a hostname if available.
+    Uses a non-verifying SSL context to extract certificate dates even for invalid certs.
+    Returns float timestamp or None.
+    """
+    if not hostname:
+        return None
+    try:
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        with socket.create_connection((hostname, port), timeout=timeout) as sock:
+            with ctx.wrap_socket(sock, server_hostname=hostname) as ssock:
+                cert = ssock.getpeercert()
+                if not cert:
+                    return None
+                nb = cert.get("notBefore")
+                if not nb:
+                    return None
+                # Example: 'Oct  1 00:00:00 2025 GMT'
+                try:
+                    dt = datetime.strptime(nb, "%b %d %H:%M:%S %Y %Z")
+                except Exception:
+                    # Fallback parse
+                    dt = dateparse.parse(str(nb))
+                return dt.timestamp()
     except Exception:
         return None
 
@@ -447,6 +520,51 @@ async def main():
         async with dns_semaphore:
             try:
                 enriched = await process_fqdn(fqdn, payload, loop, executor, whois_queue)
+
+                # Optional: date-window filter
+                if DATE_FILTER_START_TS is not None and DATE_FILTER_END_TS is not None:
+                    whois_res = enriched.get("whois", {}) or {}
+                    created_ts = whois_res.get("creation_date")
+                    created_ok = date_in_window(created_ts) if created_ts else False
+
+                    cert_ok = False
+                    cert_nb_ts = None
+                    # Short-circuit to avoid unnecessary TLS probe
+                    if DATE_FILTER_MODE == "any" and created_ok:
+                        cert_ok = True
+                    elif DATE_FILTER_MODE == "both" and not created_ok:
+                        cert_ok = False
+                    else:
+                        try:
+                            host_for_cert = enriched.get("canonical_fqdn") or fqdn
+                            cert_nb_ts = await loop.run_in_executor(executor, fetch_cert_notbefore, host_for_cert)
+                            if cert_nb_ts:
+                                cert_ok = date_in_window(cert_nb_ts)
+                        except Exception:
+                            cert_ok = False
+
+                    allow = (created_ok and cert_ok) if DATE_FILTER_MODE == "both" else (created_ok or cert_ok)
+                    if not allow:
+                        created_iso = whois_res.get("created_date_iso") or ts_to_iso(created_ts)
+                        cert_nb_iso = ts_to_iso(cert_nb_ts)
+                        win_start = ts_to_iso(DATE_FILTER_START_TS)
+                        win_end = ts_to_iso(DATE_FILTER_END_TS)
+                        reasons = []
+                        if created_ts is None:
+                            reasons.append("whois:missing")
+                        elif not created_ok:
+                            reasons.append("whois:out_of_range")
+                        if cert_nb_ts is None:
+                            reasons.append("cert:missing")
+                        elif not cert_ok:
+                            reasons.append("cert:out_of_range")
+                        why = ",".join(reasons) if reasons else "out_of_range"
+                        print(
+                            f"[dns] DROP {fqdn} (date filter): window=[{win_start}..{win_end}] mode={DATE_FILTER_MODE} "
+                            f"whois_created={created_iso or '-'} cert_notBefore={cert_nb_iso or '-'} "
+                            f"created_ok={created_ok} cert_ok={cert_ok} why={why}"
+                        )
+                        return
 
                 # Write JSONL (locked)
                 async with file_lock:
