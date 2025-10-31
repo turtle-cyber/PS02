@@ -541,7 +541,195 @@ def stable_id(r: Dict[str,Any]) -> str:
     return f"rec-{h[:24]}"
 
 def to_metadata(r: Dict[str,Any]) -> Dict[str,Any]:
-    keep = {}
+    # Initialize ALL 125 fields to None to ensure consistent schema across all records
+    # Fields will be populated with actual data when available
+    keep = {
+        # Common metadata fields (7 fields)
+        "cse_id": None,
+        "seed_registrable": None,
+        "registrable": None,
+        "reasons": None,
+        "first_seen": None,
+        "stage": None,
+        "is_original_seed": None,
+
+        # DNSTwist statistics (4 fields) - only for original seeds
+        "dnstwist_variants_registered": None,
+        "dnstwist_variants_unregistered": None,
+        "dnstwist_total_generated": None,
+        "dnstwist_processed_at": None,
+
+        # Enrichment level fields (3 fields)
+        "record_type": None,
+        "enrichment_level": None,
+        "has_features": None,
+
+        # DNS/Network fields (17 fields)
+        "dns": None,  # JSON string
+        "a_count": None,
+        "mx_count": None,
+        "ns_count": None,
+        "country": None,
+        "city": None,
+        "latitude": None,
+        "longitude": None,
+        "asn_org": None,
+        "asn": None,
+        "geoip": None,  # JSON string
+        "rdap": None,  # JSON string
+
+        # WHOIS/Domain age fields (6 fields)
+        "registrar": None,
+        "domain_age_days": None,
+        "is_newly_registered": None,
+        "is_very_new": None,
+        "days_until_expiry": None,
+
+        # Crawl status fields (3 fields)
+        "crawl_failed": None,
+        "failure_reason": None,
+        "failure_status": None,
+
+        # Inactive/monitoring status fields (7 fields)
+        "is_inactive": None,
+        "inactive_status": None,
+        "inactive_reason": None,
+        "monitoring_reasons": None,
+
+        # Verdict & Risk scoring fields (11 fields)
+        "has_verdict": None,
+        "verdict": None,
+        "final_verdict": None,
+        "risk_score": None,
+        "confidence": None,
+        "monitor_until": None,
+        "monitor_reason": None,
+        "requires_monitoring": None,
+        # Category breakdowns (cat_*) are dynamically added, so we don't pre-initialize them
+
+        # URL structure fields (17 fields)
+        "url": None,
+        "url_features": None,  # JSON string
+        "url_length": None,
+        "url_entropy": None,
+        "num_dots": None,
+        "num_hyphens": None,
+        "num_slashes": None,
+        "num_underscores": None,
+        "has_repeated_digits": None,
+        "domain_length": None,
+        "domain_entropy": None,
+        "domain_hyphens": None,
+        "num_subdomains": None,
+        "avg_subdomain_length": None,
+        "subdomain_entropy": None,
+        "path_length": None,
+        "path_has_query": None,
+        "path_has_fragment": None,
+
+        # IDN analysis fields (3 fields)
+        "idn": None,  # JSON string
+        "is_idn": None,
+        "mixed_script": None,
+
+        # Form analysis fields (11 fields)
+        "forms": None,  # JSON string
+        "form_count": None,
+        "password_fields": None,
+        "email_fields": None,
+        "has_credential_form": None,
+        "suspicious_form_count": None,
+        "has_suspicious_forms": None,
+        "forms_to_ip": None,
+        "forms_to_suspicious_tld": None,
+        "forms_to_private_ip": None,
+
+        # Page content fields (7 fields)
+        "text_keywords": None,  # JSON array
+        "phishing_keywords": None,  # CSV string (legacy)
+        "keyword_count": None,
+        "html_size": None,
+        "external_links": None,
+        "iframe_count": None,
+        "images_count": None,
+        "external_scripts": None,
+        "external_stylesheets": None,
+
+        # Favicon fields (10 fields)
+        "favicon_md5": None,
+        "favicon_sha256": None,
+        "favicon_size": None,
+        "favicon_color_scheme": None,  # JSON string
+        "favicon_color_count": None,
+        "favicon_color_variance": None,
+        "favicon_color_entropy": None,
+        "favicon_has_transparency": None,
+        "favicon_avg_brightness": None,
+        "favicon_dominant_color": None,
+
+        # OCR analysis fields (9 fields)
+        "ocr": None,  # JSON string
+        "ocr_text_length": None,
+        "ocr_text_excerpt": None,
+        "image_ocr": None,  # JSON string
+        "images_with_ocr_text": None,
+        "images_with_brand_keywords": None,
+        "images_with_suspicious_keywords": None,
+        "ocr_total_text_length": None,
+        "ocr_extracted_keywords": None,
+
+        # Image quality fields (8 fields)
+        "image_metadata": None,  # JSON string
+        "avg_image_sharpness": None,
+        "avg_image_resolution": None,
+        "image_overall_quality": None,
+        "high_quality_images": None,
+        "medium_quality_images": None,
+        "low_quality_images": None,
+
+        # SSL/TLS certificate fields (10 fields)
+        "tls": None,  # JSON string
+        "uses_https": None,
+        "is_self_signed": None,
+        "domain_mismatch": None,
+        "trusted_issuer": None,
+        "cert_age_days": None,
+        "is_newly_issued_cert": None,
+        "cert_risk_score": None,
+        "cert_issuer": None,
+        "cert_subject": None,
+
+        # JavaScript analysis fields (10 fields)
+        "javascript": None,  # JSON string
+        "js_obfuscated": None,
+        "js_obfuscated_count": None,
+        "js_eval_usage": None,
+        "js_eval_count": None,
+        "js_encoding_count": None,
+        "js_keylogger": None,
+        "js_form_manipulation": None,
+        "js_redirect_detected": None,
+        "js_risk_score": None,
+
+        # Redirect tracking fields (9 fields)
+        "redirect_count": None,
+        "had_redirects": None,
+        "had_cross_domain_redirect": None,
+        "cross_domain_redirect_count": None,
+        "redirect_chain": None,  # JSON array
+        "redirected_to_domain": None,
+        "original_domain": None,
+        "redirect_penalty_score": None,
+        "original_domain_score": None,
+        "final_domain_score": None,
+        "redirected_final_website_data": None,  # JSON string
+
+        # File artifact paths (3 fields)
+        "html_path": None,
+        "pdf_path": None,
+        "screenshot_path": None,
+        "screenshot_paths_all": None,
+    }
 
     # Common metadata fields
     for k in ("cse_id","seed_registrable","registrable","reasons","first_seen","stage","is_original_seed"):
