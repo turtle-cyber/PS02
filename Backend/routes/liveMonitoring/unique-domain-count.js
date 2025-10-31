@@ -8,6 +8,15 @@ const chroma = new ChromaClient({
     path: `http://${process.env.CHROMA_HOST || 'chroma'}:${process.env.CHROMA_PORT || '8000'}`
 });
 
+// Simple custom embedding function (no-op) to avoid requiring default-embed package
+class SimpleEmbeddingFunction {
+    async generate(texts) {
+        // Return simple embeddings (vectors of zeros)
+        // This is fine if you're just storing/retrieving data without semantic search
+        return texts.map(() => new Array(384).fill(0));
+    }
+}
+
 const COLLECTION_NAME = process.env.CHROMA_COLLECTION || 'domains';
 let collection = null;
 let chromaReady = false;
@@ -16,7 +25,10 @@ let chromaReady = false;
 (async () => {
     try {
         console.log('[unique-domain-count] Connecting to ChromaDB...');
-        collection = await chroma.getCollection({ name: COLLECTION_NAME });
+        collection = await chroma.getOrCreateCollection({
+            name: COLLECTION_NAME,
+            embeddingFunction: new SimpleEmbeddingFunction()
+        });
         chromaReady = true;
         console.log('[unique-domain-count] ChromaDB collection connected successfully');
     } catch (error) {

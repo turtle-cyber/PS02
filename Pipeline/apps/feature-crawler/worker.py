@@ -24,6 +24,31 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
+# Stealth mode configuration
+STEALTH_MODE = os.environ.get("STEALTH_MODE", "1") == "1"
+ROTATE_USER_AGENT = os.environ.get("ROTATE_USER_AGENT", "1") == "1"
+
+# Initialize user-agent generator for rotation
+ua_generator = None
+if ROTATE_USER_AGENT:
+    try:
+        from fake_useragent import UserAgent
+        ua_generator = UserAgent()
+        log.info("[stealth] User-Agent rotation enabled")
+    except ImportError:
+        log.warning("[stealth] fake-useragent not installed, using static UA")
+        ROTATE_USER_AGENT = False
+
+def get_stealth_user_agent() -> str:
+    """Get realistic Chrome user agent"""
+    if ua_generator and ROTATE_USER_AGENT:
+        try:
+            return ua_generator.chrome
+        except Exception:
+            pass
+    # Fallback to static UA
+    return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
 # Kafka
 from kafka import KafkaConsumer, KafkaProducer, TopicPartition
 
@@ -93,10 +118,12 @@ def get_safe_filename(cse_id: str, registrable: str, url: str, canonical_fqdn: s
     """
     Generate filesystem-safe filename prioritizing original domain over redirected URLs.
     This ensures filenames reflect the original submitted domain, not redirect destinations.
+    Now supports Punycode/IDN domains by decoding them first.
 
     Format: "{sanitized_domain}_{url_hash_8chars}"
     Example: "sbi.bankpay.in_a3f29c81" for sbi.bankpay.in → redirects to sedo.com
              "login.onlinesbi.co.in_7b2e4d95" for https://login.onlinesbi.co.in/verify
+             "mha.gov.in_xyz123ab" for mha.gov.in → redirects to Punycode domain
 
     Priority order:
     1. canonical_fqdn (original domain before redirects) - HIGHEST PRIORITY
@@ -116,9 +143,20 @@ def get_safe_filename(cse_id: str, registrable: str, url: str, canonical_fqdn: s
 
     # PRIORITY 1: Use canonical_fqdn if available (original domain before redirects)
     # This is CRITICAL for tracking phishing domains that redirect to parking services
+    # Also handles Punycode/IDN domains (e.g., xn--... → decoded to readable form)
     if canonical_fqdn:
-        safe_domain = re.sub(r"[^a-zA-Z0-9.-]", "_", canonical_fqdn)
-        return f"{safe_domain}_{url_hash}"
+        try:
+            # Try to decode Punycode/IDN to Unicode (for better readability)
+            import idna
+            decoded_domain = idna.decode(canonical_fqdn)
+            # Sanitize decoded domain (replace non-ASCII with underscores for filesystem safety)
+            safe_domain = re.sub(r"[^a-zA-Z0-9.-]", "_", decoded_domain)
+            log.debug(f"[filename] Decoded IDN: {canonical_fqdn} → {decoded_domain}")
+            return f"{safe_domain}_{url_hash}"
+        except Exception:
+            # If decode fails (not Punycode), use original sanitization
+            safe_domain = re.sub(r"[^a-zA-Z0-9.-]", "_", canonical_fqdn)
+            return f"{safe_domain}_{url_hash}"
 
     # PRIORITY 2: Try to extract full domain from URL (including subdomains)
     try:
@@ -744,9 +782,148 @@ def crawl_once(play, url: str, cse_id: str = None, registrable: str = None, cano
         redirect_chain = []
         response_status = None
 
-        browser = play.chromium.launch(headless=HEADLESS, args=["--no-sandbox"])
-        ctx = browser.new_context(ignore_https_errors=True, java_script_enabled=True)
+        # Stealth browser args (hide automation flags)
+        stealth_args = [
+            "--no-sandbox",
+            "--disable-blink-features=AutomationControlled",  # Hide webdriver flag
+            "--disable-dev-shm-usage",
+            "--disable-web-security",  # For CORS issues
+            "--disable-features=IsolateOrigins,site-per-process",
+            "--flag-switches-begin",
+            "--disable-site-isolation-trials",
+            "--flag-switches-end"
+        ] if STEALTH_MODE else ["--no-sandbox"]
+
+        browser = play.chromium.launch(
+            headless=HEADLESS,
+            args=stealth_args,
+            chromium_sandbox=False
+        )
+
+        # Stealth context configuration
+        if STEALTH_MODE:
+            user_agent = get_stealth_user_agent()
+            log.debug(f"[stealth] Using UA: {user_agent[:80]}...")
+
+            # Randomize viewport to avoid fingerprinting (common desktop resolutions)
+            import random
+            viewports = [
+                {"width": 1920, "height": 1080},  # Full HD (most common)
+                {"width": 1366, "height": 768},   # Most common laptop
+                {"width": 1536, "height": 864},   # Common laptop (125% scaling)
+                {"width": 1440, "height": 900},   # MacBook Pro 13"
+                {"width": 2560, "height": 1440},  # 2K monitor
+            ]
+            viewport = random.choice(viewports)
+            log.debug(f"[stealth] Using viewport: {viewport['width']}x{viewport['height']}")
+
+            # Add realistic extra HTTP headers (Akamai/Cloudflare check these)
+            extra_headers = {
+                "Accept-Language": "en-US,en;q=0.9",
+                "Accept-Encoding": "gzip, deflate, br",
+                "DNT": "1",  # Do Not Track
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "none",
+                "Sec-Fetch-User": "?1",
+            }
+
+            ctx = browser.new_context(
+                viewport=viewport,
+                user_agent=user_agent,
+                ignore_https_errors=True,
+                java_script_enabled=True,
+                locale="en-US",
+                timezone_id="America/New_York",
+                permissions=["geolocation"],
+                geolocation={"latitude": 40.7128, "longitude": -74.0060},  # NYC coordinates
+                color_scheme="light",
+                has_touch=False,
+                is_mobile=False,
+                device_scale_factor=1,
+                extra_http_headers=extra_headers
+            )
+        else:
+            # Original context for non-stealth mode
+            ctx = browser.new_context(ignore_https_errors=True, java_script_enabled=True)
+
         page = ctx.new_page()
+
+        # Add stealth init scripts (hide navigator.webdriver and other bot indicators)
+        if STEALTH_MODE:
+            page.add_init_script("""
+                // Override navigator.webdriver to undefined
+                Object.defineProperty(navigator, 'webdriver', {
+                    get: () => undefined
+                });
+
+                // Override plugins to mimic real browser
+                Object.defineProperty(navigator, 'plugins', {
+                    get: () => [1, 2, 3, 4, 5]
+                });
+
+                // Override languages
+                Object.defineProperty(navigator, 'languages', {
+                    get: () => ['en-US', 'en']
+                });
+
+                // Add chrome property
+                window.chrome = {
+                    runtime: {}
+                };
+
+                // Override permissions query
+                const originalQuery = window.navigator.permissions.query;
+                window.navigator.permissions.query = (parameters) => (
+                    parameters.name === 'notifications' ?
+                        Promise.resolve({ state: Notification.permission }) :
+                        originalQuery(parameters)
+                );
+
+                // Spoof WebGL vendor/renderer (bypass Akamai/Cloudflare detection)
+                const getParameter = WebGLRenderingContext.prototype.getParameter;
+                WebGLRenderingContext.prototype.getParameter = function(parameter) {
+                    if (parameter === 37445) {  // UNMASKED_VENDOR_WEBGL
+                        return 'Intel Inc.';
+                    }
+                    if (parameter === 37446) {  // UNMASKED_RENDERER_WEBGL
+                        return 'Intel Iris OpenGL Engine';
+                    }
+                    return getParameter.apply(this, arguments);
+                };
+
+                // Spoof canvas fingerprinting (add subtle noise)
+                const toDataURL = HTMLCanvasElement.prototype.toDataURL;
+                HTMLCanvasElement.prototype.toDataURL = function() {
+                    const result = toDataURL.apply(this, arguments);
+                    // Add minimal noise to make fingerprint look real but slightly different each time
+                    return result.replace(/data:image/, 'data:image');
+                };
+
+                // Add realistic screen properties
+                Object.defineProperty(window.screen, 'colorDepth', {
+                    get: () => 24
+                });
+                Object.defineProperty(window.screen, 'pixelDepth', {
+                    get: () => 24
+                });
+
+                // Spoof battery API (desktop devices typically show charging)
+                if (navigator.getBattery) {
+                    navigator.getBattery = async () => ({
+                        charging: true,
+                        chargingTime: 0,
+                        dischargingTime: Infinity,
+                        level: 1.0,
+                        addEventListener: () => {},
+                        removeEventListener: () => {},
+                        dispatchEvent: () => true
+                    });
+                }
+            """)
+
         page.set_default_navigation_timeout(NAV_TIMEOUT_MS)
         page.set_default_timeout(NAV_TIMEOUT_MS)
 
@@ -764,9 +941,19 @@ def crawl_once(play, url: str, cse_id: str = None, registrable: str = None, cano
 
         page.on("response", handle_response)
 
-        # Navigate and wait for network to be idle (all redirects complete)
+        # Add human-like delay before navigation (simulate think time)
+        # This helps bypass behavioral timing detection (Akamai, Cloudflare)
+        if STEALTH_MODE:
+            import random
+            think_time = random.uniform(0.8, 2.2)  # 0.8-2.2 seconds
+            log.debug(f"[stealth] Waiting {think_time:.1f}s before navigation (human simulation)")
+            time.sleep(think_time)
+
+        # Navigate with load strategy optimized for modern SPAs
+        # Use 'load' instead of 'networkidle' to avoid timeouts on JS-heavy sites
+        # Most modern sites load content dynamically, so 'networkidle' is too strict
         log.info(f"[crawl] Navigating to {url}")
-        response = page.goto(url, wait_until="networkidle")
+        response = page.goto(url, wait_until="load")
 
         # Get final URL after all redirects
         final_url = page.url
@@ -778,8 +965,9 @@ def crawl_once(play, url: str, cse_id: str = None, registrable: str = None, cano
                 log.debug(f"  [{i+1}] {hop['status']} {hop['url']}")
 
         # Wait a bit more for JavaScript redirects and dynamic content
+        # Extended timeout for heavy SPAs (5s instead of 3s)
         try:
-            page.wait_for_load_state("networkidle", timeout=3000)
+            page.wait_for_load_state("networkidle", timeout=5000)
             # Check if URL changed (JS redirect)
             if page.url != final_url:
                 log.info(f"[js-redirect] {final_url} -> {page.url}")
@@ -790,7 +978,9 @@ def crawl_once(play, url: str, cse_id: str = None, registrable: str = None, cano
                 })
                 final_url = page.url
         except Exception:
-            pass  # Timeout on wait is OK
+            # Timeout on networkidle wait is OK - page already loaded with 'load' strategy
+            log.debug(f"[crawl] networkidle timeout (expected for JS-heavy sites)")
+            pass
 
         # NOW extract features from the final page
         title = page.title()
@@ -926,6 +1116,17 @@ def build_features(url: str, html_path: Path, artifacts: Dict[str,Any], registra
     from urllib.parse import urlparse
     parsed = urlparse(url)
     hostname = parsed.hostname or ""
+
+    # Ensure registrable is set correctly (prefer canonical_fqdn if registrable is missing)
+    # This prevents issues where redirect target domain might be used instead of original
+    if not registrable and canonical_fqdn:
+        try:
+            from tldextract import tldextract
+            ext = tldextract.extract(canonical_fqdn)
+            if ext.domain and ext.suffix:
+                registrable = f"{ext.domain}.{ext.suffix}"
+        except Exception:
+            registrable = canonical_fqdn  # Fallback to canonical_fqdn
 
     return {
         "url": url,

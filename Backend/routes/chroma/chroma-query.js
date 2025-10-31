@@ -6,6 +6,15 @@ const { formatTimestamp } = require('../../utils/dateFormatter');
 
 const router = express.Router();
 
+// Simple custom embedding function (no-op) to avoid requiring default-embed package
+class SimpleEmbeddingFunction {
+    async generate(texts) {
+        // Return simple embeddings (vectors of zeros)
+        // This is fine if you're just storing/retrieving data without semantic search
+        return texts.map(() => new Array(384).fill(0));
+    }
+}
+
 // Logger
 const logger = winston.createLogger({
     level: process.env.LOG_LEVEL || 'info',
@@ -237,7 +246,10 @@ router.get('/originals', async (req, res) => {
             where.verdict = req.query.verdict;
         }
 
-        const collection = await chromaClient.getCollection({ name: ORIGINALS_COLLECTION });
+        const collection = await chromaClient.getOrCreateCollection({
+            name: ORIGINALS_COLLECTION,
+            embeddingFunction: new SimpleEmbeddingFunction()
+        });
 
         // Get more results than needed for client-side sorting
         const fetchLimit = Math.min((limit + offset) * 2, 1000);
@@ -382,7 +394,10 @@ router.get('/variants', async (req, res) => {
             where.risk_score = { $gte: min, $lte: max };
         }
 
-        const collection = await chromaClient.getCollection({ name: VARIANTS_COLLECTION });
+        const collection = await chromaClient.getOrCreateCollection({
+            name: VARIANTS_COLLECTION,
+            embeddingFunction: new SimpleEmbeddingFunction()
+        });
 
         // Get results with filters
         const results = await collection.get({
@@ -481,7 +496,23 @@ router.get('/non-lookalikes', async (req, res) => {
             where.risk_score = { $gte: min, $lte: max };
         }
 
-        const collection = await chromaClient.getCollection({ name: VARIANTS_COLLECTION });
+        const collection = await chromaClient.getOrCreateCollection({
+            name: VARIANTS_COLLECTION,
+            embeddingFunction: new SimpleEmbeddingFunction()
+        });
+
+        // CRITICAL: Fetch all IDs from original_domains collection to exclude them
+        // This ensures that lookalike seeds don't appear in URL reports table,
+        // even if they also exist in domains collection due to pipeline routing
+        const originalsCollection = await chromaClient.getOrCreateCollection({
+            name: ORIGINALS_COLLECTION,
+            embeddingFunction: new SimpleEmbeddingFunction()
+        });
+        const originalsResults = await originalsCollection.get({
+            limit: 10000,
+            include: []  // Only need IDs, not metadata or documents
+        });
+        const originalSeedIds = new Set(originalsResults.ids);
 
         // Note: ChromaDB doesn't support filtering by "same base domain" natively
         // Strategy: Fetch ALL results and filter client-side, then paginate
@@ -534,6 +565,18 @@ router.get('/non-lookalikes', async (req, res) => {
                 };
             })
             .filter(domain => {
+                // EXCLUDE original lookalike seeds (they should only appear in lookalike table)
+                // Check if this domain's ID exists in the original_domains collection
+                // This is more reliable than checking is_original_seed flag which may be lost in pipeline
+                if (originalSeedIds.has(domain.id)) {
+                    return false;  // Exclude - this is a lookalike seed
+                }
+
+                // Also exclude if is_original_seed flag is explicitly true (defensive check)
+                if (domain.metadata?.is_original_seed === true) {
+                    return false;  // Exclude from URL reports table
+                }
+
                 // Filter for non-lookalike submissions
                 if (!domain.seed_registrable) {
                     // No seed = non-lookalike (user submission)
@@ -651,7 +694,10 @@ router.get('/search', async (req, res) => {
         // Search originals
         if (collectionType === 'originals' || collectionType === 'both') {
             try {
-                const originalsCol = await chromaClient.getCollection({ name: ORIGINALS_COLLECTION });
+                const originalsCol = await chromaClient.getOrCreateCollection({
+                    name: ORIGINALS_COLLECTION,
+                    embeddingFunction: new SimpleEmbeddingFunction()
+                });
                 const originalsResults = await originalsCol.query({
                     queryTexts: [query],
                     nResults: limit,
@@ -674,7 +720,10 @@ router.get('/search', async (req, res) => {
         // Search variants
         if (collectionType === 'variants' || collectionType === 'both') {
             try {
-                const variantsCol = await chromaClient.getCollection({ name: VARIANTS_COLLECTION });
+                const variantsCol = await chromaClient.getOrCreateCollection({
+                    name: VARIANTS_COLLECTION,
+                    embeddingFunction: new SimpleEmbeddingFunction()
+                });
                 const variantsResults = await variantsCol.query({
                     queryTexts: [query],
                     nResults: limit,
@@ -830,7 +879,10 @@ router.get('/domain/:domain', async (req, res) => {
 
         // Search in originals first
         try {
-            const originalsCol = await chromaClient.getCollection({ name: ORIGINALS_COLLECTION });
+            const originalsCol = await chromaClient.getOrCreateCollection({
+                name: ORIGINALS_COLLECTION,
+                embeddingFunction: new SimpleEmbeddingFunction()
+            });
             found = await searchCollection(originalsCol, ORIGINALS_COLLECTION, 10000);
             if (found) {
                 collectionName = ORIGINALS_COLLECTION;
@@ -842,7 +894,10 @@ router.get('/domain/:domain', async (req, res) => {
         // If not found in originals, search variants
         if (!found) {
             try {
-                const variantsCol = await chromaClient.getCollection({ name: VARIANTS_COLLECTION });
+                const variantsCol = await chromaClient.getOrCreateCollection({
+                    name: VARIANTS_COLLECTION,
+                    embeddingFunction: new SimpleEmbeddingFunction()
+                });
                 found = await searchCollection(variantsCol, VARIANTS_COLLECTION, 50000);
                 if (found) {
                     collectionName = VARIANTS_COLLECTION;
@@ -961,7 +1016,10 @@ router.get('/stats', async (req, res) => {
 
         // Get originals stats
         try {
-            const originalsCol = await chromaClient.getCollection({ name: ORIGINALS_COLLECTION });
+            const originalsCol = await chromaClient.getOrCreateCollection({
+                name: ORIGINALS_COLLECTION,
+                embeddingFunction: new SimpleEmbeddingFunction()
+            });
             const originalsCount = await originalsCol.count();
             stats.originals = {
                 name: ORIGINALS_COLLECTION,
@@ -973,7 +1031,10 @@ router.get('/stats', async (req, res) => {
 
         // Get variants stats
         try {
-            const variantsCol = await chromaClient.getCollection({ name: VARIANTS_COLLECTION });
+            const variantsCol = await chromaClient.getOrCreateCollection({
+                name: VARIANTS_COLLECTION,
+                embeddingFunction: new SimpleEmbeddingFunction()
+            });
             const variantsCount = await variantsCol.count();
             stats.variants = {
                 name: VARIANTS_COLLECTION,

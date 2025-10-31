@@ -4,7 +4,7 @@
 export const CSE_DATA = [
   // Power & Energy
   { category: "Power & Energy", name: "Power Grid Corporation of India Ltd", url: "https://www.powergrid.in" },
-  { category: "Power & Energy", name: "Grid Controller of India Ltd", url: "https://gridcontroller.in" },
+  { category: "Power & Energy", name: "Grid Controller of India Ltd", url: "https://grid-india.in" },
   { category: "Power & Energy", name: "State Load Dispatch Centres (SLDCs)", url: "https://sldcdelhi.org" },
   { category: "Power & Energy", name: "NTPC Ltd", url: "https://www.ntpc.co.in" },
   { category: "Power & Energy", name: "NHPC Ltd", url: "https://www.nhpcindia.com" },

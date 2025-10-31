@@ -8,6 +8,15 @@ const chroma = new ChromaClient({
     path: `http://${process.env.CHROMA_HOST || 'chroma'}:${process.env.CHROMA_PORT || '8000'}`
 });
 
+// Simple custom embedding function (no-op) to avoid requiring default-embed package
+class SimpleEmbeddingFunction {
+    async generate(texts) {
+        // Return simple embeddings (vectors of zeros)
+        // This is fine if you're just storing/retrieving data without semantic search
+        return texts.map(() => new Array(384).fill(0));
+    }
+}
+
 /**
  * Convert UTC timestamp to IST (Indian Standard Time) format
  * IST is UTC+5:30
@@ -53,7 +62,10 @@ let chromaReady = false;
 (async () => {
     try {
         console.log('[url-processes] Connecting to ChromaDB...');
-        collection = await chroma.getCollection({ name: COLLECTION_NAME });
+        collection = await chroma.getOrCreateCollection({
+            name: COLLECTION_NAME,
+            embeddingFunction: new SimpleEmbeddingFunction()
+        });
         chromaReady = true;
         console.log('[url-processes] ChromaDB collection connected successfully');
     } catch (error) {

@@ -131,7 +131,7 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
       </div>
 
       {/* Last scan */}
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
         <span className="text-xs text-slate-500">
           Last Scan:{" "}
           {new Date(lastScan).toLocaleString("en-GB", {
@@ -143,7 +143,7 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
             second: "2-digit",
           })}
         </span>
-      </div>
+      </div> */}
     </div>
   );
 };
