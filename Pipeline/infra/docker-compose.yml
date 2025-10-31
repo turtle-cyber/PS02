@@ -164,6 +164,11 @@ services:
         # WHOIS Queue settings
         WHOIS_WORKERS: "4"
         WHOIS_DELAY_MS: "500"
+        # Optional: date window filter (inclusive). Keep items where WHOIS creation
+        # OR certificate notBefore lies within this window. Mode can be 'any' or 'both'.
+        DATE_FILTER_START: "2025-10-01"
+        DATE_FILTER_END: "2025-10-15"
+        DATE_FILTER_MODE: "any"
       volumes:
         - ../configs:/configs:ro
         - ../out:/out
