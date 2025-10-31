@@ -1447,6 +1447,43 @@ def make_merged_record(domain: dict, http: dict, feat: dict, scored: dict):
     is_cross_domain, original_domain, final_domain, redirect_chain, cross_domain_hops = \
         extract_cross_domain_redirect_info(http, feat)
 
+    # Normalize original domain for marketplace/parking redirects.
+    # If we detect a redirect into marketplace hosts, prefer the canonical seed domain
+    # to avoid splitting records under the marketplace hostname.
+    try:
+        canonical_seed = (scored.get("canonical_fqdn") or "").lower()
+        MARKETPLACE_HOST_HINTS = (
+            "atom.com",
+            "domains.atom.com",
+            "img.atom.com",
+            "sedo.com",
+            "afternic.com",
+            "godaddy.com",
+            "dan.com",
+            "hugedomains.com",
+            "bodis.com",
+            "undeveloped.com",
+            "namesilo.com",
+            "namecheap.com",
+            "parkingcrew",
+            "dnparking",
+        )
+
+        def _is_marketplace(host: str) -> bool:
+            return bool(host) and any(hint in host.lower() for hint in MARKETPLACE_HOST_HINTS)
+
+        if is_cross_domain and canonical_seed:
+            # If original_domain is missing, equals the final domain, or is itself a marketplace host,
+            # treat the canonical seed as the true original.
+            if (not original_domain) or (original_domain == final_domain) or _is_marketplace(original_domain):
+                original_domain = canonical_seed
+            # Also, if final domain is marketplace and original doesn't match canonical, snap to canonical
+            elif _is_marketplace(final_domain) and original_domain != canonical_seed:
+                original_domain = canonical_seed
+    except Exception:
+        # Best-effort normalization; do not break scoring on errors
+        pass
+
     out = {
         "record_type": "merged",
         "canonical_fqdn": scored["canonical_fqdn"],

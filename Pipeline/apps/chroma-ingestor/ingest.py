@@ -471,9 +471,54 @@ def stable_id(r: Dict[str,Any]) -> str:
     """
     full_domain = None
 
-    # PRIORITY 0: For cross-domain redirects, use ORIGINAL domain (not final)
-    # This ensures phishing-site.com -> legitimate.com is stored under phishing-site.com
-    if r.get("had_cross_domain_redirect") and r.get("original_domain"):
+    # Prefer original seed for marketplace/parking redirects
+    # Many parked domains redirect to marketplace hosts (atom.com, sedo.com, afternic.com, etc.).
+    # We want to consolidate all enrichment under the ORIGINAL seed rather than the marketplace host.
+    MARKETPLACE_HOST_HINTS = (
+        "atom.com",
+        "domains.atom.com",
+        "img.atom.com",
+        "sedo.com",
+        "afternic.com",
+        "godaddy.com",
+        "dan.com",
+        "hugedomains.com",
+        "bodis.com",
+        "undeveloped.com",
+        "namesilo.com",
+        "namecheap.com",
+        "parkingcrew",
+        "dnparking",
+    )
+
+    def is_marketplace_host(host: str) -> bool:
+        if not host:
+            return False
+        h = host.lower()
+        return any(x in h for x in MARKETPLACE_HOST_HINTS)
+
+    # Extract handy fields
+    canonical = (r.get("canonical_fqdn") or r.get("fqdn") or r.get("host") or "").lower()
+    redirected_to = (r.get("redirected_to_domain") or "").lower()
+    original_dom = (r.get("original_domain") or "").lower()
+
+    # If this looks like a cross-domain redirect into a marketplace, always prefer the canonical/original
+    # even if original_domain was populated incorrectly upstream.
+    if r.get("had_cross_domain_redirect"):
+        if canonical and (is_marketplace_host(original_dom) or original_dom == redirected_to or not original_dom):
+            full_domain = canonical
+        elif original_dom:
+            full_domain = original_dom
+    else:
+        # Even without explicit cross-domain flag, if the final/redirected host is a marketplace
+        # and we have a canonical domain, prefer canonical to prevent fragmentation.
+        if canonical and is_marketplace_host(redirected_to):
+            full_domain = canonical
+
+    # PRIORITY 0 (fallback from marketplace normalization above):
+    # For cross-domain redirects, use ORIGINAL domain (not final)
+    # Only if we haven't already forced to canonical for marketplace cases.
+    if not full_domain and r.get("had_cross_domain_redirect") and r.get("original_domain"):
         full_domain = r.get("original_domain").lower()
     # Alternative: check redirect_chain if original_domain not set
     elif r.get("redirect_chain") and isinstance(r.get("redirect_chain"), list) and len(r.get("redirect_chain")) > 1:
