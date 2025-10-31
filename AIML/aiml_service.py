@@ -627,38 +627,66 @@ class AIMlService:
 
             if not is_cse_domain and not is_gov_domain:
                 # Check OCR for parking keywords
+                # FIX: Refined parking keywords to reduce false positives
+                # Removed overly broad keywords that catch legitimate hosting/setup pages
                 parking_keywords = [
-                    'is this your domain',
-                    'create your website',
                     'buy this domain',
                     'domain for sale',
                     'this domain is for sale',
-                    'get started with a website',
-                    'register this domain',
-                    'premium domain'
+                    'premium domain',
+                    'parked domain',
+                    'domain parking',
+                    'domain is parked',
+                    'afternic'
                 ]
-                has_parking_ocr = any(kw in ocr_excerpt for kw in parking_keywords)
+                # Require at least 2 parking keyword matches to reduce false positives
+                parking_keyword_count = sum(1 for kw in parking_keywords if kw in ocr_excerpt)
+                has_parking_ocr = parking_keyword_count >= 2
 
                 # Check for bloated HTML with no real links (common parking page pattern)
+                # FIX: Add domain age check - established domains less likely to be parked
+                domain_age_days = metadata.get('domain_age_days')
                 has_bloated_html_no_links = (html_size > 10000 and html_size < 500000 and external_links == 0)
 
-                if has_parking_ocr or has_bloated_html_no_links:
-                    parking_reason = []
-                    if has_parking_ocr:
-                        parking_reason.append("OCR contains parking keywords")
-                    if has_bloated_html_no_links:
-                        parking_reason.append(f"large HTML ({html_size}B) with no external links")
+                # Reduce parking detection for established domains (1+ year old)
+                if domain_age_days and domain_age_days >= 365:
+                    # Established domains need stronger evidence (both OCR and HTML patterns)
+                    if has_parking_ocr and has_bloated_html_no_links:
+                        parking_reason = []
+                        if has_parking_ocr:
+                            parking_reason.append(f"OCR contains {parking_keyword_count} parking keywords")
+                        if has_bloated_html_no_links:
+                            parking_reason.append(f"large HTML ({html_size}B) with no external links")
 
-                    logger.info(f"Domain {domain} detected as PARKED from metadata: {', '.join(parking_reason)}")
-                    return {
-                        'domain': domain,
-                        'verdict': 'PARKED',
-                        'confidence': 0.85 if has_parking_ocr else 0.75,
-                        'reason': f"Parked domain detected: {', '.join(parking_reason)}",
-                        'source': 'aiml_metadata_check',
-                        'timestamp': datetime.now().isoformat(),
-                        'original_crawler_verdict': crawler_verdict
-                    }
+                        logger.info(f"Domain {domain} detected as PARKED from metadata: {', '.join(parking_reason)}")
+                        return {
+                            'domain': domain,
+                            'verdict': 'PARKED',
+                            'confidence': 0.85,
+                            'reason': f"Parked domain detected: {', '.join(parking_reason)}",
+                            'source': 'aiml_metadata_check',
+                            'timestamp': datetime.now().isoformat(),
+                            'original_crawler_verdict': crawler_verdict
+                        }
+                else:
+                    # New domains or unknown age - use original logic (either indicator sufficient)
+                    if has_parking_ocr or has_bloated_html_no_links:
+                        parking_reason = []
+                        if has_parking_ocr:
+                            parking_reason.append(f"OCR contains {parking_keyword_count} parking keywords")
+                        if has_bloated_html_no_links:
+                            parking_reason.append(f"large HTML ({html_size}B) with no external links")
+
+                        logger.info(f"Domain {domain} detected as PARKED from metadata: {', '.join(parking_reason)}")
+                        return {
+                            'domain': domain,
+                            'verdict': 'PARKED',
+                            'confidence': 0.85 if has_parking_ocr else 0.75,
+                            'reason': f"Parked domain detected: {', '.join(parking_reason)}",
+                            'source': 'aiml_metadata_check',
+                            'timestamp': datetime.now().isoformat(),
+                            'original_crawler_verdict': crawler_verdict
+                        }
 
             # Calculate feature quality score (for logging only, not for early exit)
             feature_quality = self.calculate_feature_quality(metadata)
@@ -886,16 +914,36 @@ class AIMlService:
                     result['original_ml_verdict'] = original_verdict
                     result['original_ml_confidence'] = original_confidence
 
-                # Override if fallback detector finds significant risk (lowered threshold: 40+)
-                elif fallback_risk_score >= 40:
-                    logger.warning(f"OVERRIDE: Domain {domain} marked {original_verdict} by ML but has "
-                                 f"risk_score={fallback_risk_score} from metadata analysis. Upgrading verdict.")
+                # FIX: Increase override threshold to reduce false positives (40 -> 55)
+                # Only override if there's significant metadata risk AND CSE-targeting indicators
+                elif fallback_risk_score >= 55:
+                    # Check if there are CSE-targeting signals (typosquatting, visual similarity)
+                    fallback_signals = fallback_analysis.get('fallback_signals', {})
+                    has_cse_targeting = (
+                        fallback_signals.get('typosquat_risk', 0) >= 20 or  # High similarity to CSE domain
+                        result.get('detector_results', {}).get('visual', {}).get('is_impersonation', False) or  # Visual similarity
+                        result.get('detector_results', {}).get('domain', {}).get('typosquat_detected', False)  # Domain typosquatting
+                    )
 
-                    result['verdict'] = fallback_verdict
-                    result['confidence'] = min(fallback_analysis['confidence'], 0.75)  # Cap at 0.75 for overrides
+                    # Only override to PHISHING if CSE-targeting detected
+                    # Otherwise cap at SUSPICIOUS for general risk
+                    if has_cse_targeting:
+                        logger.warning(f"OVERRIDE: Domain {domain} marked {original_verdict} by ML but has "
+                                     f"risk_score={fallback_risk_score} + CSE targeting signals. Upgrading verdict.")
+
+                        result['verdict'] = fallback_verdict
+                        result['confidence'] = min(fallback_analysis['confidence'], 0.75)  # Cap at 0.75 for overrides
+                    else:
+                        # High metadata risk but no CSE targeting - cap at SUSPICIOUS
+                        logger.warning(f"OVERRIDE: Domain {domain} has risk_score={fallback_risk_score} but no CSE targeting. "
+                                     f"Upgrading to SUSPICIOUS (not PHISHING).")
+
+                        result['verdict'] = 'SUSPICIOUS'
+                        result['confidence'] = min(fallback_analysis['confidence'], 0.65)
+
                     result['risk_score'] = fallback_risk_score
                     result['override_reason'] = fallback_analysis['reason']
-                    result['fallback_signals'] = fallback_analysis.get('fallback_signals', {})
+                    result['fallback_signals'] = fallback_signals
                     result['original_ml_verdict'] = original_verdict
                     result['original_ml_confidence'] = original_confidence
                     result['post_validation'] = 'OVERRIDE_APPLIED'
@@ -903,7 +951,7 @@ class AIMlService:
                     logger.info(f"Verdict upgraded: {original_verdict} ({original_confidence:.2f}) -> "
                                f"{result['verdict']} ({result['confidence']:.2f})")
                 else:
-                    logger.info(f"Post-validation passed: risk_score={fallback_risk_score} < 40, keeping {original_verdict}")
+                    logger.info(f"Post-validation passed: risk_score={fallback_risk_score} < 55, keeping {original_verdict}")
                     result['post_validation'] = 'PASSED'
                     result['risk_score'] = fallback_risk_score
 
