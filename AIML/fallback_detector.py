@@ -237,6 +237,48 @@ class FallbackDetector:
 
         return None
 
+    def _extract_nested_metadata(self, metadata: Dict) -> None:
+        """
+        Extract fields from nested JSON structures (geoip, rdap)
+        Modifies metadata dict in-place to add top-level fields
+
+        Args:
+            metadata: Domain metadata dict (modified in-place)
+        """
+        # Extract from geoip JSON (primary source)
+        geoip_str = metadata.get('geoip', '{}')
+        if geoip_str and geoip_str != '{}':
+            try:
+                geoip = json.loads(geoip_str) if isinstance(geoip_str, str) else geoip_str
+                if not metadata.get('asn'):
+                    metadata['asn'] = str(geoip.get('asn', ''))
+                if not metadata.get('asn_org'):
+                    metadata['asn_org'] = geoip.get('asn_org', '')
+                if not metadata.get('country'):
+                    metadata['country'] = geoip.get('country', '')
+                if not metadata.get('latitude'):
+                    metadata['latitude'] = geoip.get('latitude')
+                if not metadata.get('longitude'):
+                    metadata['longitude'] = geoip.get('longitude')
+            except (json.JSONDecodeError, TypeError) as e:
+                logger.warning(f"Failed to parse geoip JSON: {e}")
+
+        # Fallback to rdap JSON if still missing
+        if not metadata.get('asn'):
+            rdap_str = metadata.get('rdap', '{}')
+            if rdap_str and rdap_str != '{}':
+                try:
+                    rdap = json.loads(rdap_str) if isinstance(rdap_str, str) else rdap_str
+                    if not metadata.get('asn'):
+                        metadata['asn'] = str(rdap.get('asn', ''))
+                    if 'network' in rdap:
+                        if not metadata.get('asn_org'):
+                            metadata['asn_org'] = rdap['network'].get('name', '')
+                        if not metadata.get('country'):
+                            metadata['country'] = rdap['network'].get('country', '')
+                except (json.JSONDecodeError, TypeError) as e:
+                    logger.warning(f"Failed to parse rdap JSON: {e}")
+
     def analyze_metadata(self, metadata: Dict) -> Dict:
         """
         Perform fallback analysis on domain metadata
@@ -247,6 +289,9 @@ class FallbackDetector:
         Returns:
             Dict with verdict, confidence, risk_score, and reasoning
         """
+        # Extract nested fields FIRST (asn, country from geoip/rdap)
+        self._extract_nested_metadata(metadata)
+
         domain = metadata.get('registrable') or metadata.get('domain', 'unknown')
         logger.info(f"Starting fallback analysis for domain: {domain}")
 
@@ -307,31 +352,6 @@ class FallbackDetector:
                     'whois': bool(metadata.get('rdap') or metadata.get('whois'))
                 }
             }
-
-        # PRIORITY 2: Check for potential typosquatting (adds risk, doesn't auto-flag)
-        # Note: Name similarity alone is NOT enough for PHISHING verdict
-        # Only visual impersonation (when content available) should auto-flag
-        typosquat_result = self._check_typosquatting(domain)
-        typosquat_risk = 0
-        typosquat_target = None
-        typosquat_similarity = 0
-
-        if typosquat_result:
-            cse_target, similarity = typosquat_result
-            # Add risk points based on similarity (not auto-PHISHING)
-            # High similarity (0.85+) = +30 risk
-            # Medium similarity (0.75-0.85) = +20 risk
-            if similarity >= 0.85:
-                typosquat_risk = 30
-            else:
-                typosquat_risk = 20
-
-            typosquat_target = cse_target
-            typosquat_similarity = similarity
-            logger.info(
-                f"Domain {domain} is {similarity:.2%} similar to CSE domain {cse_target} "
-                f"(adding +{typosquat_risk} risk points - needs content verification)"
-            )
 
         # PRIORITY 3: Check INACTIVE (no A records)
         a_count = metadata.get('a_count', 0)
@@ -399,6 +419,59 @@ class FallbackDetector:
         except (json.JSONDecodeError, TypeError):
             pass  # Continue to normal risk scoring
 
+        # PRIORITY 3.5: Cloudflare parking / INACTIVE detection
+        # Detect active domains with Cloudflare infrastructure but no actual content
+        # These should be marked as INACTIVE, not PHISHING (even if typosquatting detected)
+        try:
+            dns_str = metadata.get('dns', '{}')
+            dns = json.loads(dns_str) if isinstance(dns_str, str) else dns_str
+
+            a_records = dns.get('A', [])
+            ns_list = dns.get('NS', [])
+            mx_list = dns.get('MX', [])
+
+            # Cloudflare parking indicators
+            cloudflare_ips = any(
+                ip.startswith('104.21.') or ip.startswith('172.67.')
+                for ip in a_records
+            )
+            cloudflare_ns = any(
+                'cloudflare.com' in ns.lower()
+                for ns in ns_list
+            )
+
+            # Check if no meaningful content available
+            # HTML < 100 bytes is likely just placeholder/error page
+            has_html = metadata.get('html_size', 0) > 100
+            has_ocr = metadata.get('ocr_text_length', 0) > 0
+            no_content = not (has_html or has_ocr)
+
+            # Check MX
+            mx_count = metadata.get('mx_count', 0)
+            no_mx = (mx_count == 0) or (len(mx_list) == 0) or (mx_list == [''])
+
+            # If Cloudflare parking + no MX + no content → INACTIVE
+            if (cloudflare_ips or cloudflare_ns) and no_mx and no_content:
+                logger.info(f"Domain {domain} identified as INACTIVE (Cloudflare placeholder, no content)")
+                return {
+                    'domain': domain,
+                    'verdict': 'INACTIVE',
+                    'confidence': 0.80,
+                    'risk_score': 30,
+                    'reason': 'Active domain with no content (Cloudflare placeholder page)',
+                    'source': 'aiml_fallback_cloudflare_inactive',
+                    'timestamp': datetime.now(timezone.utc).isoformat(),
+                    'data_availability': {
+                        'html': has_html,
+                        'screenshot': bool(metadata.get('screenshot_path')),
+                        'ocr': has_ocr,
+                        'dns': bool(metadata.get('dns')),
+                        'whois': bool(metadata.get('rdap') or metadata.get('whois'))
+                    }
+                }
+        except (json.JSONDecodeError, TypeError, KeyError):
+            pass  # Continue to normal risk scoring
+
         # PRIORITY 5: Heuristic-based parking detection (for domains without content/parking NS)
         # Detect premium/for-sale domains based on patterns
         domain_age = metadata.get('domain_age_days')
@@ -436,11 +509,6 @@ class FallbackDetector:
         # Collect all risk signals
         signals = {}
         reasons = []
-
-        # 0. Typosquatting Risk (if detected earlier)
-        if typosquat_risk > 0:
-            signals['typosquat_risk'] = typosquat_risk
-            reasons.append(f"Similar to CSE domain {typosquat_target} (similarity={typosquat_similarity:.2%})")
 
         # 1. DNS Analysis
         dns_risk, dns_reasons = self._analyze_dns(metadata)
@@ -563,26 +631,29 @@ class FallbackDetector:
         # Domain age analysis
         domain_age_days = metadata.get('domain_age_days')
 
-        # CRITICAL FIX: If domain age is missing, treat as suspicious
-        # Legitimate established domains have WHOIS data. Missing age = suspicious.
+        # CONTEXT: Dataset domains registered Oct 1-15, 2025 (age: 16-30 days)
+        # Cannot heavily penalize ALL domains for being new - need OTHER suspicious signals
+        # Reduced penalties to avoid false positives on legitimate new domains
         if domain_age_days is None:
-            risk += 20
+            risk += 10  # Reduced from 20 - missing WHOIS not always suspicious
             reasons.append("Domain age unknown (data unavailable)")
-            logger.warning(f"Domain {domain}: Missing domain_age_days - adding +20 risk")
-        elif domain_age_days < self.config['age_thresholds']['very_new']:
-            risk += 30
+            logger.warning(f"Domain {domain}: Missing domain_age_days - adding +10 risk")
+        elif domain_age_days < self.config['age_thresholds']['very_new']:  # < 7 days
+            risk += 20  # Reduced from 30 - still very suspicious if < 7 days
             reasons.append(f"Very new domain ({domain_age_days} days)")
-        elif domain_age_days < self.config['age_thresholds']['new']:
-            risk += 25
+        elif domain_age_days < self.config['age_thresholds']['new']:  # < 30 days
+            risk += 5   # Reduced from 25 - most dataset domains fall here (16-30 days)
             reasons.append(f"Recently registered ({domain_age_days} days)")
-        elif domain_age_days < self.config['age_thresholds']['recent']:
-            risk += 10
+        elif domain_age_days < self.config['age_thresholds']['recent']:  # < 90 days
+            risk += 3   # Reduced from 10 - normal for many legitimate domains
             reasons.append(f"Recent domain ({domain_age_days} days)")
 
         # Check if marked as newly registered
-        if metadata.get('is_newly_registered'):
-            risk += 20
-            reasons.append("Flagged as newly registered")
+        # REDUCED PENALTY: is_newly_registered flag is TRUE for ALL Oct 1-15 domains
+        # Only add small penalty if ALSO very new (< 7 days)
+        if metadata.get('is_newly_registered') and domain_age_days is not None and domain_age_days < 7:
+            risk += 10  # Reduced from 20, only if < 7 days
+            reasons.append("Flagged as very newly registered (< 7 days)")
 
         # Entropy analysis (very high or very low can be suspicious)
         if domain_entropy > 4.5:

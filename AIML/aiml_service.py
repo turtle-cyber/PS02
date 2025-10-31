@@ -388,6 +388,25 @@ class AIMlService:
         crawler_verdict = metadata.get('verdict')
         crawler_confidence = metadata.get('confidence', 0.75)
 
+        # Check enrichment level to determine which detection path to use
+        enrichment_level = metadata.get('enrichment_level', 2)
+        has_features = metadata.get('has_features', False)
+
+        # FAST PATH 0: Trust crawler PARKED verdict (HIGHEST PRIORITY)
+        # Crawler has high confidence for PARKED (0.90-0.95) based on parking NS detection
+        if crawler_verdict and crawler_verdict.upper() == 'PARKED':
+            logger.info(f"Domain {domain} identified as PARKED by crawler (confidence: {crawler_confidence})")
+            return {
+                'domain': domain,
+                'verdict': 'PARKED',
+                'confidence': crawler_confidence,
+                'risk_score': metadata.get('risk_score', 40),
+                'reason': metadata.get('reasons', 'Identified as parked domain by crawler'),
+                'source': 'crawler_parked_verdict',
+                'registrable': registrable,
+                'timestamp': datetime.now().isoformat()
+            }
+
         try:
             # STEP 0: Load HTML content and extract text features
             # This is CRITICAL - it runs the offline feature extraction at runtime
@@ -482,24 +501,25 @@ class AIMlService:
                     'timestamp': datetime.now().isoformat()
                 }
 
-            # FAST PATH 3: Check if crawler already identified as parked
-            if crawler_verdict and crawler_verdict.lower() == 'parked':
-                logger.info(f"Domain {domain} already identified as PARKED by crawler")
-                return {
-                    'domain': domain,
-                    'verdict': 'PARKED',
-                    'confidence': 0.95,
-                    'reason': 'Identified as parked domain by crawler (DNS/HTTP/content analysis)',
-                    'source': 'crawler',
-                    'timestamp': datetime.now().isoformat()
-                }
-
             # Check what data we actually have available NOW (after loading HTML)
             has_html_content = bool(metadata.get('document_text'))
             has_screenshot = bool(metadata.get('screenshot_path'))
             # Check both ocr_text (loaded) and ocr_text_excerpt (from metadata)
             has_ocr = bool(metadata.get('ocr_text') or metadata.get('ocr_text_excerpt'))
             html_size = metadata.get('html_size', 0)
+
+            # ENRICHMENT LEVEL ROUTING: 95% of domains are enrichment_level=2 (metadata only)
+            # Use fallback detector for metadata-only records to avoid feature mismatch errors
+            if enrichment_level == 2 or not has_features:
+                logger.info(f"Domain {domain} is enrichment_level={enrichment_level}, has_features={has_features} - using fallback detector")
+                fallback_result = self.fallback_detector.analyze_metadata(metadata)
+
+                # Include original crawler verdict for reference
+                if crawler_verdict:
+                    fallback_result['original_crawler_verdict'] = crawler_verdict
+                    fallback_result['crawler_confidence'] = crawler_confidence
+
+                return fallback_result
 
             # FAST PATH 3: If truly no data available, check inactive/parked before giving up
             if not has_html_content and not has_screenshot and not has_ocr and html_size == 0:
